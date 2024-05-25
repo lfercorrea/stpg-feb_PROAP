@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('solicitacoes', function (Blueprint $table) {
+        Schema::create('importacoes_discentes', function (Blueprint $table) {
             $table->id();
 
             $table->string('status')->nullable();
@@ -79,6 +79,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('solicitacoes');
+        Schema::dropIfExists('importacoes_discentes');
     }
 };

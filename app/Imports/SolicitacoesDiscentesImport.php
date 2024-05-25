@@ -2,10 +2,10 @@
 
 namespace App\Imports;
 
-use App\Models\Solicitacoes;
+use App\Models\ImportacoesDiscentes;
 use Maatwebsite\Excel\Concerns\ToModel;
 
-class SolicitacoesImport implements ToModel
+class SolicitacoesDiscentesImport implements ToModel
 {
     /**
     * @param array $row
@@ -14,7 +14,7 @@ class SolicitacoesImport implements ToModel
     */
     public function model(array $row)
     {
-        return new Solicitacoes([
+        return new ImportacoesDiscentes([
             'status' => $row[0],
             'carimbo_data_hora' => $row[1],
             'email' => $row[2],

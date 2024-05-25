@@ -1,0 +1,222 @@
+/**
+ * Arquivo de customização css.
+ * 
+ * Qualquer personalização de classe do materialize CSS deverá ser 
+ * incorporada neste arquivo, bem como qualquer criação de classe completamente nova.
+ * 
+ * @nando.correa
+ */
+
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+
+/** classe para aplicar preenchimento de imagens */
+.image-padding {
+    padding: 30px; /* Ajuste conforme necessário */
+    display: inline-block; /* Para a div se ajustar ao tamanho da imagem */
+    overflow: hidden;
+}
+.image-padding.black {
+    background-color: black;
+}
+.image-padding.grey {
+    background-color: grey;
+}
+.image-padding.white {
+    background-color: white;
+}
+
+/** classe para aplicar bordas em imagens */
+.image-border {
+    border-radius: 2px; /* Borda arredondada */
+    display: inline-block; /* Para a div se ajustar ao tamanho da imagem */
+}
+.image-border.black {
+    border: 1px solid black;
+}
+.image-border.grey {
+    border: 1px solid grey;
+}
+.image-border.white {
+    border: 1px solid white;
+}
+
+
+/** para aplicar animação e esmaecimento às divs com id success-message */
+@keyframes fadeOut {
+    0% { opacity: 1; }
+    100% { opacity: 0; display: none; }
+}
+
+#success-message {
+    animation: fadeOut 1s ease-in-out 4s forwards; /* após 4 segundos, começa a esmaecer. após mais 1 segundo, esmaeceu completamente */
+}
+
+/** aplica o efeito popup às divs, mesmo rolando a página elas permanecem estáticas */
+.popup {
+    position: fixed;
+    bottom: 20px; /* Espaço em relação ao fundo da página */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 999; /* Para garantir que esteja sempre acima do conteúdo */
+    width: 80%; /* Largura do popup, em relação ao container em que estiver inscrito */
+    max-width: 800px; /* Largura máxima do popup. testar em celulares, ajustar conforme necessário */
+}
+
+.msg-box{
+    padding: 30px;
+}
+
+.code{
+    font-family: 'Courier New', Courier, monospace;
+    font-size: small;
+    line-height: 0.5;
+}
+
+/** 
+* para ajuste de imagens em algumas seções específicas como navbars, tabelas, etc
+*/
+.responsive-img.brand-logo {
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    max-height: 50px;
+}
+.responsive-img.image-cell {
+    max-width: 200px;
+}
+.responsive-img.avatar-cell {
+    width: 80px;
+    height: 80px;
+}
+.responsive-img.avatar-navbar {
+    width: 63px;
+    height: 63px;
+}
+
+/** estilos CSS especificos para impressao */
+
+/* Estilo normal */
+.content {
+    display: block;
+}
+
+/* Estilo para impressão */
+@media print {
+    .print-hidden {
+        /* visibility: hidden; */
+        display: none;
+    }
+}
+
+.photo-legend {
+    font-size: 12px;
+}
+
+.photo-tag {
+    font-size: 16px;
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    border-radius: 3px;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 5px;
+}
+
+/** exclusivo para ver_categoria */
+.background-category-container {
+    position: relative;
+    width: 100%;
+    height: 300px;
+}
+.background-category-image {
+    display: block;
+    max-height: 300px;
+    overflow: hidden;
+    border-radius: 10px;
+}
+.background-category-title {
+    font-size: 32px;
+    font-weight: 300;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 1);
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    border-radius: 3px;
+    transform: translate(-50%, -50%); /* Ajuste para centralizar verticalmente */
+    background-color: rgba(0, 0, 0, 0);
+    color: white;
+    padding: 5px;
+}
+.background-category-description {
+    font-size: inherit;
+    font-weight: 300;
+    text-align: center;
+    position: absolute;
+    top: 70%;
+    bottom: auto;
+    left: 50%;
+    border-radius: 3px;
+    transform: translate(-50%, -50%); /* Ajuste para centralizar verticalmente */
+    background-color: rgba(0, 0, 0, 0.15);
+    color: white;
+    padding: 5px;
+    width: 90%;
+}
+
+.card-title {
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 1);
+}
+
+.modal-fixed-width {
+    width: 90% !important;
+}
+
+.section-margins {
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+.section-margin-top {
+    margin-top: 50px;
+}
+.section-margin-bottom {
+    margin-bottom: 50px;
+}
+
+.side-margins{
+    margin-left: 15px;
+    margin-right: 15px;
+}
+
+.img-max-width {
+    max-width: 1080px;
+}
+
+.scrollable-table {
+    width: 95%;
+    height: 500px;
+    overflow: auto;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+th, td {
+    border: 1px dashed black;
+    padding: 8px;
+    text-align: left;
+}
