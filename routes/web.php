@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CsvImportController;
 use App\Http\Controllers\SiteController;
+use App\Http\Controllers\SolicitacaoController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [SiteController::class, 'index'])->name('site.index');
@@ -16,3 +17,5 @@ Route::post('import/docentes', [CsvImportController::class, 'import_docentes'])-
 
 Route::get('importacoes', [SiteController::class, 'importacoes'])->name('site.importacoes');
 Route::post('importacoes/discentes/drop', [SiteController::class, 'drop_importacoes_discentes'])->name('site.drop_importacoes_discentes');
+
+Route::get('solicitacoes', [SolicitacaoController::class, 'index'])->name('site.solicitacoes');

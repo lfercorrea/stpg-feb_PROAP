@@ -22,7 +22,7 @@
     </header>
 
     <main>
-      <div class="section-margins side-margins">
+      <div class="section-margin-bottom side-margins">
         <p>@yield('content')</p>
       </div>
     </main>
