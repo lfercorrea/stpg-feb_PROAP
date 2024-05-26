@@ -214,12 +214,13 @@ class CsvImportController extends Controller
              */
 
             foreach($importacoes as $importacao) {
+                $solicitante_id = Solicitante::where('email', $importacao->email)->value('id');
+                $programa_id = Programa::where('nome', $importacao->programa)->value('id');
+                $programa_categoria_id = ProgramaCategoria::where('nome', $importacao->categoria)->value('id');
+
                 switch($importacao->tipo_solicitacao) {
                     case 'Auxílio para Pesquisa de Campo':
                         if(!empty($importacao->atividade_descricao)) {
-                            $solicitante_id = Solicitante::where('email', $importacao->email)->value('id');
-                            $programa_id = Programa::where('nome', $importacao->programa)->value('id');
-                            $programa_categoria_id = ProgramaCategoria::where('nome', $importacao->categoria)->value('id');
                             $atividade_id = Atividade::where('descricao', $importacao->atividade_descricao)->value('id');
 
                             Solicitacao::firstOrCreate([
@@ -235,9 +236,6 @@ class CsvImportController extends Controller
                         break;
                     case 'Auxílio para Participação em Evento':
                         if(!empty($importacao->evento_nome)) {
-                            $solicitante_id = Solicitante::where('email', $importacao->email)->value('id');
-                            $programa_id = Programa::where('nome', $importacao->programa)->value('id');
-                            $programa_categoria_id = ProgramaCategoria::where('nome', $importacao->categoria)->value('id');
                             $evento_id = Evento::where('nome', $importacao->evento_nome)->value('id');
 
                             Solicitacao::firstOrCreate([
@@ -253,9 +251,6 @@ class CsvImportController extends Controller
                         break;
                     case 'Aquisição de Material':
                         if(!empty($importacao->material_descricao)) {
-                            $solicitante_id = Solicitante::where('email', $importacao->email)->value('id');
-                            $programa_id = Programa::where('nome', $importacao->programa)->value('id');
-                            $programa_categoria_id = ProgramaCategoria::where('nome', $importacao->categoria)->value('id');
                             $material_id = Material::where('descricao', $importacao->material_descricao)->value('id');
 
                             Solicitacao::firstOrCreate([
@@ -271,9 +266,6 @@ class CsvImportController extends Controller
                         break;
                     case 'Contratação de Serviço':
                         if(!empty($importacao->servico_tipo)) {
-                            $solicitante_id = Solicitante::where('email', $importacao->email)->value('id');
-                            $programa_id = Programa::where('nome', $importacao->programa)->value('id');
-                            $programa_categoria_id = ProgramaCategoria::where('nome', $importacao->categoria)->value('id');
                             $servico_id = Servico::where('titulo_artigo', $importacao->servico_titulo_artigo)->value('id');
 
                             Solicitacao::firstOrCreate([
