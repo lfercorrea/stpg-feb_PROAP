@@ -37,15 +37,12 @@
       <div class="container">
         <div class="row">
           <div class="col l6 s12">
-            <h5 class="black-text">s2 s2</h5>
             <p class="black-text">
               <i>
-                Subi num pé de manga<br>
-                Para ver meu amor passar<br>
-                Meu amor não passou<br>
-                Desci<br>
+                "O melhor a se fazer, às vezes, é não fazer porra nenhuma."
               </i>
-              Autor desconhecido
+              <br>
+              <b>Autor brilhante desconhecido</b>
             </p>
           </div>
         </div>

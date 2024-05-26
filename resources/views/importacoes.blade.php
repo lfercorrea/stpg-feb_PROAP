@@ -5,8 +5,7 @@
         <div class="section-margins side-margins">
             <h5>Solicitações importadas via CSV</h5>
             <p>
-                Os dados desta tabela são crus e esta tabela só serve para conferir que a importação deu certo.
-                Pode esvaziar esta tabela sem medo de ser feliz.
+                Esses são os dados da última importação.
             </p>
         </div>
         <div class="row center scrollable-table">
@@ -136,15 +135,18 @@
                 </tbody>
             </table>
         </div>
-        <div class="container center">
+        {{-- <div class="container center">
             <form action="{{ route('site.drop_importacoes_discentes') }}" method="POST">
             @csrf
-                <button type="submit" class="btn black waves-effect waves-light">Esvaziar tabela de importacoes</button>
+                <button type="submit" class="btn red darken-2 waves-effect waves-light">Esvaziar tabela de importacoes</button>
             </form>
-        </div>
+        </div> --}}
     @else
         <div class="row center section-margins side-margins">
             <h5>A tabela de importações tá vazia.</h5>
         </div>
     @endif
+    <div class="row center section-margins side-margins">
+        <a href="{{ route('site.index') }}" class="btn black waves-effect waves-light">Voltar</a>
+    </div>
 @endsection

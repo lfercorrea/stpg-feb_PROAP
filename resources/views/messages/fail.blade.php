@@ -22,7 +22,7 @@
         </div>
 
         <div class="container center">
-            <p><a href="{{ url()->current() }}" class="btn waves-effect waves-light blue darken-2">blz</a></p>
+            <p><a href="{{ url()->current() }}" class="btn waves-effect waves-light blue darken-2">ok</a></p>
         </div>
     </div>
 

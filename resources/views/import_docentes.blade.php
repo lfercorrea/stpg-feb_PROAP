@@ -4,13 +4,13 @@
 
     <div class="container">
 
-        <div class="section-margins">
+        <div class="section-margin-bottom">
             <h5>Importar solicitações de docentes</h5>
+            <p>
+                Gere o CSV diretamente do Google Sheets e importe por aqui.
+            </p>
         </div>
 
-        <p>
-            Gere o CSV diretamente do Google Sheets e importe por aqui.
-        </p>
 
         @if ($message = Session::get('success'))
         <div>
