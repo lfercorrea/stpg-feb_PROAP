@@ -214,72 +214,37 @@ class CsvImportController extends Controller
              */
 
             foreach($importacoes as $importacao) {
-                $solicitante_id = Solicitante::where('email', $importacao->email)->value('id');
-                $programa_id = Programa::where('nome', $importacao->programa)->value('id');
-                $programa_categoria_id = ProgramaCategoria::where('nome', $importacao->categoria)->value('id');
+                $dados = [
+                    'solicitante_id' => Solicitante::where('email', $importacao->email)->value('id'),
+                    'programa_id' => Programa::where('nome', $importacao->programa)->value('id'),
+                    'programa_categoria_id' => ProgramaCategoria::where('nome', $importacao->categoria)->value('id'),
+                    'importacao_id' => $importacao->id,
+                ];
 
                 switch($importacao->tipo_solicitacao) {
                     case 'Auxílio para Pesquisa de Campo':
                         if(!empty($importacao->atividade_descricao)) {
-                            $atividade_id = Atividade::where('descricao', $importacao->atividade_descricao)->value('id');
-
-                            Solicitacao::firstOrCreate([
-                                'importacao_id' => $importacao->id,
-                            ], [
-                                'solicitante_id' => $solicitante_id,
-                                'programa_id' => $programa_id,
-                                'programa_categoria_id' => $programa_categoria_id,
-                                'atividade_id' => $atividade_id,
-                                'importacao_id' => $importacao->id,
-                            ]);
+                            $dados['atividade_id'] = Atividade::where('descricao', $importacao->atividade_descricao)->value('id');
                         }
                         break;
                     case 'Auxílio para Participação em Evento':
                         if(!empty($importacao->evento_nome)) {
-                            $evento_id = Evento::where('nome', $importacao->evento_nome)->value('id');
-
-                            Solicitacao::firstOrCreate([
-                                'importacao_id' => $importacao->id,
-                            ], [
-                                'solicitante_id' => $solicitante_id,
-                                'programa_id' => $programa_id,
-                                'programa_categoria_id' => $programa_categoria_id,
-                                'evento_id' => $evento_id,
-                                'importacao_id' => $importacao->id,
-                            ]);
+                            $dados['evento_id'] = Evento::where('nome', $importacao->evento_nome)->value('id');
                         }
                         break;
                     case 'Aquisição de Material':
                         if(!empty($importacao->material_descricao)) {
-                            $material_id = Material::where('descricao', $importacao->material_descricao)->value('id');
-
-                            Solicitacao::firstOrCreate([
-                                'importacao_id' => $importacao->id,
-                            ], [
-                                'solicitante_id' => $solicitante_id,
-                                'programa_id' => $programa_id,
-                                'programa_categoria_id' => $programa_categoria_id,
-                                'material_id' => $material_id,
-                                'importacao_id' => $importacao->id,
-                            ]);
+                            $dados['material_id'] = Material::where('descricao', $importacao->material_descricao)->value('id');
                         }
                         break;
                     case 'Contratação de Serviço':
                         if(!empty($importacao->servico_tipo)) {
-                            $servico_id = Servico::where('titulo_artigo', $importacao->servico_titulo_artigo)->value('id');
-
-                            Solicitacao::firstOrCreate([
-                                'importacao_id' => $importacao->id,
-                            ], [
-                                'solicitante_id' => $solicitante_id,
-                                'programa_id' => $programa_id,
-                                'programa_categoria_id' => $programa_categoria_id,
-                                'servico_id' => $servico_id,
-                                'importacao_id' => $importacao->id,
-                            ]);
+                            $dados['servico_id'] = Servico::where('titulo_artigo', $importacao->servico_titulo_artigo)->value('id');
                         }
                         break;
-                }
+                    }
+                    
+                Solicitacao::firstOrCreate(['importacao_id' => $importacao->id], $dados);
             }
 
             return back()->with('success', 'Arquivo importado.');
