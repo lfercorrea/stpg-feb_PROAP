@@ -12,4 +12,12 @@ class Solicitante extends Model
     protected $guarded = [
         //
     ];
+
+    public function solicitacao() {
+        return $this->hasMany(Solicitacao::class);
+    }
+
+    public function programa() {
+        return $this->hasMany(Programa::class);
+    }
 }

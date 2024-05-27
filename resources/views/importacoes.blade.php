@@ -147,6 +147,6 @@
         </div>
     @endif
     <div class="row center section-margins side-margins">
-        <a href="{{ route('site.index') }}" class="btn black waves-effect waves-light">Voltar</a>
+        <a href="{{ route('site.index') }}" class="btn black waves-effect waves-light">Inicial</a>
     </div>
 @endsection

@@ -4,7 +4,7 @@
 
     <div class="container">
 
-        <div class="section-margin-bottom">
+        <div class="section-margins">
             <h5>Importar solicitações de discentes</h5>
             <p>
                 Gere o CSV diretamente do Google Sheets e importe por aqui. Cuidado, porque essa merda do

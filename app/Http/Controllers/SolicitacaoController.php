@@ -9,7 +9,6 @@ use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\Validators\ValidationException;
 use App\Imports\SolicitacoesDiscentesImport;
 use App\Imports\SolicitacoesDocentesImport;
-use App\Models\Categoria;
 use App\Models\Atividade;
 use App\Models\Evento;
 use App\Models\Material;
@@ -19,26 +18,58 @@ use App\Models\Programa;
 use App\Models\ProgramaCategoria;
 use App\Models\Solicitante;
 use App\Models\Solicitacao;
+use App\Models\SolicitacaoTipo;
 
 class SolicitacaoController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index() {
-        return view('solicitacoes', [
-            'solicitacoes' => Solicitacao::with([
+    public function index(Request $request) {
+        $count_solicitacoes = 0;
+
+        if($request->has('search') OR $request->has('programa_id') OR $request->has('tipo_solicitacao_id')){
+            $solicitacoes = Solicitacao::search($request->search, $request->programa_id, $request->tipo_solicitacao_id)->paginate(30);
+            $count_solicitacoes = Solicitacao::search($request->search, $request->programa_id, $request->tipo_solicitacao_id)->count();
+        }
+        else{
+            $solicitacoes = Solicitacao::with([
+                'tipo',
                 'solicitante',
                 'programa',
                 'programaCategoria',
                 'atividade',
                 'evento',
                 'material',
-                'servico'
-            ])->paginate(30),
-            'programas' => Programa::orderBy('nome', 'asc')->get(),
-            'categorias' => Categoria::orderBy('nome', 'asc')->get(),
-        ]);
+                'servico',
+            ])
+            ->orderByRaw(" STR_TO_DATE(carimbo_data_hora, '%d/%m/%Y %H:%i:%s') DESC ")
+            ->paginate(30);
+            // $count_solicitacoes = Solicitacao::with([
+            //     'tipo',
+            //     'solicitante',
+            //     'programa',
+            //     'programaCategoria',
+            //     'atividade',
+            //     'evento',
+            //     'material',
+            //     'servico',
+            // ])->count();
+        }
+
+        $vars = [
+            'page_title' => 'Estoque',
+            'solicitacoes' => $solicitacoes,
+            'count_solicitacoes' => $count_solicitacoes,
+            'search_term' => $request->search,
+            'search_programa_id' => $request->programa_id,
+            'search_tipo_solicitacao_id' => $request->tipo_solicitacao_id,
+            'tipos_solicitacao' => SolicitacaoTipo::orderBy('nome', 'asc')->pluck('nome', 'id')->toArray(),
+            'programas' => Programa::orderBy('nome', 'asc')->pluck('nome', 'id')->toArray(),
+            'solicitacoes' => $solicitacoes,
+        ];
+
+        return view('solicitacoes', $vars);
     }
 
     /**

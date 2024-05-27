@@ -20,6 +20,22 @@ main {
     flex: 1;
 }
 
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+table.highlight tbody tr {
+    transition: background-color 0.3s ease;
+}
+
+table.highlight tbody tr:hover {
+    background-color: #a1d5ffa4;
+}
 
 /** classe para aplicar preenchimento de imagens */
 .image-padding {

@@ -13,7 +13,9 @@
     <header>
         <nav>
             <div class="nav-wrapper black">
-              <a href="{{ route('site.index') }}" class="brand-logo side-margins">index</a>
+              <a href="{{ route('site.index') }}" class="brand-logo waves-effect waves-light">
+                <img src="{{ asset('storage/static/images/logo.jpg') }}" class="responsive-img brand-logo">
+              </a>
               <ul id="nav-mobile" class="right hide-on-med-and-down">
                 <li><a href="/">PROAP</a></li>
               </ul>

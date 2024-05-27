@@ -9,7 +9,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\Validators\ValidationException;
 use App\Imports\SolicitacoesDiscentesImport;
 use App\Imports\SolicitacoesDocentesImport;
-use App\Models\Categoria;
+use App\Models\SolicitacaoTipo;
 use App\Models\Atividade;
 use App\Models\Evento;
 use App\Models\Material;
@@ -45,6 +45,7 @@ class CsvImportController extends Controller
              */
             ImportacoesDiscentes::truncate();
             Excel::import(new SolicitacoesDiscentesImport, $request->file('file'));
+            ImportacoesDiscentes::destroy(1); // remove a primeira linha do csv
             $importacoes = ImportacoesDiscentes::all();
 
             /**
@@ -110,14 +111,14 @@ class CsvImportController extends Controller
             /**
              * realimenta a tabela de tipos de solicitacao e injeta na tabela de categorias
              */
-            $categorias_importadas_distintos = DB::table('importacoes_discentes')
+            $tipos_solicitacao_distintos = DB::table('importacoes_discentes')
                 ->select('tipo_solicitacao')
                 ->distinct('tipo_solicitacao')
                 ->get();
 
             // Categoria::truncate();
-            foreach($categorias_importadas_distintos as $distinto) {
-                Categoria::firstOrCreate([
+            foreach($tipos_solicitacao_distintos as $distinto) {
+                SolicitacaoTipo::firstOrCreate([
                     'nome' => $distinto->tipo_solicitacao,
                 ]);
             }
@@ -218,6 +219,8 @@ class CsvImportController extends Controller
                     'solicitante_id' => Solicitante::where('email', $importacao->email)->value('id'),
                     'programa_id' => Programa::where('nome', $importacao->programa)->value('id'),
                     'programa_categoria_id' => ProgramaCategoria::where('nome', $importacao->categoria)->value('id'),
+                    'tipo_solicitacao_id' => SolicitacaoTipo::where('nome', $importacao->tipo_solicitacao)->value('id'),
+                    'carimbo_data_hora' => $importacao->carimbo_data_hora,
                     'importacao_id' => $importacao->id,
                 ];
 

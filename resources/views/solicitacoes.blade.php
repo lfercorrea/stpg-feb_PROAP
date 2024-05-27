@@ -7,31 +7,29 @@
     </div>
 
     <div class="row">
-        <div class="col s12 m3 input-field">
-            <a href="#" class="btn green waves-effect waves-light">Nova</a>
-            <a href="#" class="btn black waves-effect waves-light">Extrato</a>
+        <div class="col s12 m2 input-field">
+            <a href="{{ route('import_discentes_form') }}" class="btn green waves-effect waves-light">Importar</a>
         </div>
         <form action="#" method="GET">
             <div class="col s12 m3 input-field">
                 <input type="text" name="search" placeholder="Buscar"> 
             </div>
-            <div class="col s4 m2 input-field">
+            <div class="col s4 m3 input-field">
                 <select name="programa_id[]" id="programa_id" multiple="" tabindex="-1" style="display: none;">
                     <option value="" selected disabled>Programas</option>
-                    {{-- <optgroup label="Tamanhos"> --}}
                         
-                        @foreach ($programas as $programa)
-                            <option value="{{ $programa->id }}">{{ $programa->nome }}</option>
+                        @foreach ($programas as $key => $value)
+                            <option value="{{ $key }}">{{ $value }}</option>
                         @endforeach
                         
                     </optgroup>
                 </select>
             </div>
             <div class="col s8 m2 input-field">
-                <select class="browser-default" name="id_categoria"><option value="">Todas as categorias</option>
+                <select class="browser-default" name="tipo_solicitacao_id"><option value="">Solicitação</option>
                     
-                    @foreach ($categorias as $categoria)
-                        <option value="{{ $categoria->id }}">{{ $categoria->nome }}</option>
+                    @foreach ($tipos_solicitacao as $key => $value)
+                        <option value="{{ $key }}">{{ $value }}</option>
                     @endforeach
                     
                 </select>
@@ -42,44 +40,43 @@
         </form>
     </div>
 
-    {{-- @if ($count_solicitacoes > 0)
-        <div class="container center">
+    @if ($count_solicitacoes > 0)
+        <div class="row">
             @php
                 $count_message = [];
 
-                if (!empty($search_term)) {
-                    $count_message[] = "termo <b><i>\"$search_term\"</i></b>";
+                if(!empty($search_term)) {
+                    $count_message[] = "Termo: <b><i>\"$search_term\"</i></b>";
                 }
 
-                if (!empty($search_id_categoria)) {
-                    $count_message[] = "categoria <b><i>\"{$categoria_nome[$search_id_categoria]}\"</i></b>";
+                if (!empty($search_tipo_solicitacao_id)) {
+                    $count_message[] = "Solicitacão: <b><i>\"$tipos_solicitacao[$search_tipo_solicitacao_id]\"</i></b>";
                 }
 
-                if (!empty($search_id_tamanho)) {
-                    $arr_tamanhos_selecionados = [];
+                if(!empty($search_programa_id)) {
+                    $arr_programas_selecionados = [];
                     
-                    foreach ( $search_id_tamanho as $selected_id) {
-                        $arr_tamanhos_selecionados[] = $tamanho_nome[$selected_id];
+                    foreach($search_programa_id as $selected_id) {
+                        $arr_programas_selecionados[] = $programas[$selected_id];
                     }
 
-                    $tamanhos_selecionados = implode(', ', $arr_tamanhos_selecionados);
-                    $count_message[] = "tamanhos selecionados <b><i>\"{$tamanhos_selecionados}\"</i></b>";
+                    $programas_selecionados = implode(', ', $arr_programas_selecionados);
+                    $count_message[] = "Programas: <b><i>\"$programas_selecionados\"</i></b>";
                 }
 
-                $plural = (count($count_message) > 0) ? ': ' : '';
+                $plural = ($count_solicitacoes > 1) ? 's' : '';
 
-                echo "<h5>$count_solicitacoes itens encontrados$plural " . implode(", ", $count_message) . "</h5>";
+                echo "<b>$count_solicitacoes</b> resultado$plural<br>" . implode("<br>", $count_message);
             @endphp
         </div>
-    @endif --}}
-
-
+    @endif
+    
     <div class="row">
-        @if (request()->input('search') OR request()->input('id_categoria') OR request()->input('id_tamanho'))
+        @if (request()->input('search') OR request()->input('tipo_solicitacao_id') OR request()->input('programa_id'))
             {{ $solicitacoes->appends([
                 'search' => request()->input('search'), 
-                'id_categoria' => request()->input('id_categoria'),
-                'id_tamanho' =>request()->input('id_tamanho'),
+                'programa_id' => request()->input('programa_id'),
+                'tipo_solicitacao_id' => request()->input('tipo_solicitacao_id'),
                 ])
                 ->links('common/pagination') }}
         @else
@@ -105,12 +102,14 @@
     </div>
 
     @if (count($solicitacoes) > 0)
-        <table class="striped responsive-table">
+        <table class="striped responsive-table highlight">
             <thead>
                 <tr>
                     <th class="center-align">Ações</th>
                     <th>Solicitante</th>
+                    <th>Tipo de solicitação</th>
                     <th>Programa</th>
+                    <th>Data</th>
                 </tr>
             </thead>
 
@@ -125,26 +124,28 @@
                             <i class="material-icons center">delete</i>
                         </button>
                     </td>
-                    <td>{{ $solicitacao->solicitante->nome }}</td>
-                    <td><b>{{ $solicitacao->programa->nome }}</b></td>
+                    <td><a href="#" class="black-text hover"><b>{{ Str::upper($solicitacao->solicitante->nome) }}</b></a> ({{ $solicitacao->solicitante->email }})</td>
+                    <td>{{ $solicitacao->tipo->nome }}</td>
+                    <td>{{ $solicitacao->programa->nome }}</td>
+                    <td>{{ $solicitacao->carimbo_data_hora }}</td>
                 </tr>
                 @endforeach
             </tbody>
         </table>
     @else
         <div class="container center">
-            <h5>Nenhum solicitacao encontrado.</h5>
+            <h5>Nenhuma solicitacão encontrada.</h5>
             <br>
-            <a href="{{ route('admin.estoque') }}" class="btn waves-effect waves-light black">Voltar</a>
+            <a href="{{ route('site.index') }}" class="btn waves-effect waves-light black">Inicial</a>
         </div>
     @endif
 
     <div class="row">
-        @if (request()->input('search') OR request()->input('id_categoria') OR request()->input('id_tamanho'))
+        @if (request()->input('search') OR request()->input('tipo_solicitacao_id') OR request()->input('programa_id'))
             {{ $solicitacoes->appends([
                 'search' => request()->input('search'), 
-                'id_categoria' => request()->input('id_categoria'),
-                'id_tamanho' => request()->input('id_tamanho'),
+                'programa_id' => request()->input('programa_id'),
+                'tipo_solicitacao_id' => request()->input('tipo_solicitacao_id'),
                 ])
                 ->links('common/pagination') }}
         @else
