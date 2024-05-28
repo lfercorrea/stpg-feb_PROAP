@@ -106,9 +106,14 @@
             <thead>
                 <tr>
                     <th class="center-align">Ações</th>
+                    {{-- <th>Solicitação</th> --}}
                     <th>Solicitante</th>
                     <th>Tipo de solicitação</th>
                     <th>Programa</th>
+                    <th class="center-align">Parecer</th>
+                    <th class="center-align">Orçamento</th>
+                    <th class="center-align">Artigo</th>
+                    <th class="center-align">Aceite</th>
                     <th>Data</th>
                 </tr>
             </thead>
@@ -116,14 +121,47 @@
             <tbody>
                 @foreach ($solicitacoes as $solicitacao)
                 <tr>
+                    @php
+                        $link_artigo_aceite = optional($solicitacao->evento)->artigo_aceite;
+                        $link_artigo_copia = optional($solicitacao->evento)->artigo_copia;
+                        $link_parecer = optional($solicitacao->evento)->parecer_orientador 
+                            ?? optional($solicitacao->atividade)->parecer_orientador 
+                            ?? optional($solicitacao->material)->parecer_orientador 
+                            ?? optional($solicitacao->servico)->parecer_orientador;
+                        $link_orcamento = optional($solicitacao->evento)->orcamento_passagens 
+                            ?? optional($solicitacao->atividade)->orcamento_passagens 
+                            ?? optional($solicitacao->material)->orcamento 
+                            ?? optional($solicitacao->servico)->orcamento;
+                    @endphp
                     <td class="center-align">
                         <a href="{{ route('site.solicitante', ['id' => $solicitacao->solicitante->id]) }}" class="btn-flat waves-effect">
                             <i class="material-icons small blue-text darken-1 center">edit</i>
                         </a>
                     </td>
-                    <td><a href="{{ route('site.solicitante', ['id' => $solicitacao->solicitante->id]) }}" class="black-text hover-underline"><b>{{ Str::upper($solicitacao->solicitante->nome) }}</b></a> (<a href="mailto:{{ $solicitacao->solicitante->email }}" class="hover-underline">{{ $solicitacao->solicitante->email }}</a>)</td>
+                    {{-- <td>evento_id: {{ $solicitacao->evento_id }} <br> importacao_id: {{ $solicitacao->importacao_id }} <br> solicitante_id: {{ $solicitacao->solicitante_id }}</td> --}}
+                    <td><div class="chip">{{ $solicitacao->solicitante->tipo_solicitante }}</div><a href="{{ route('site.solicitante', ['id' => $solicitacao->solicitante->id]) }}" class="black-text hover-underline"><b>{{ Str::upper($solicitacao->solicitante->nome) }}</b></a> (<a href="mailto:{{ $solicitacao->solicitante->email }}" class="hover-underline">{{ $solicitacao->solicitante->email }}</a>)</td>
                     <td>{{ $solicitacao->tipo->nome }}</td>
                     <td>{{ $solicitacao->programa->nome }}</td>
+                    <td class="center-align">
+                        @if ($link_parecer)
+                            <a href="{{ $link_parecer }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $link_parecer }}"><i class="tiny material-icons black-text">open_in_new</i></a>
+                        @endif
+                    </td>
+                    <td class="center-align">
+                        @if ($link_orcamento)
+                            <a href="{{ $link_orcamento }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $link_orcamento }}"><i class="tiny material-icons black-text">open_in_new</i></a>
+                        @endif
+                    </td>
+                    <td class="center-align">
+                        @if ($link_artigo_copia)
+                            <a href="{{ $link_artigo_copia }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $link_artigo_copia }}"><i class="tiny material-icons black-text">open_in_new</i></a>
+                        @endif
+                    </td>
+                    <td class="center-align">
+                        @if ($link_artigo_aceite)
+                            <a href="{{ $link_artigo_aceite }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $link_artigo_aceite }}"><i class="tiny material-icons black-text">open_in_new</i></a>
+                        @endif
+                    </td>
                     <td>{{ $solicitacao->carimbo_data_hora }}</td>
                 </tr>
                 @endforeach

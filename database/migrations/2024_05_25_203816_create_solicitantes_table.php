@@ -16,6 +16,7 @@ return new class extends Migration
 
             $table->string('email');
             $table->string('nome');
+            $table->string('tipo_solicitante');
             $table->string('cpf');
             $table->string('rg');
             $table->string('rg_data_expedicao');

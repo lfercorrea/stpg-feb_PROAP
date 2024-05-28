@@ -18,6 +18,7 @@
                     <div class="row center">
                     <p>{{ $message }}</p>
                         <a href="{{ route('site.importacoes') }}" class="btn blue darken-2 waves-effect waves-light">Conferir importação</a>
+                        <a href="{{ route('site.solicitacoes') }}" class="btn black darken-2 waves-effect waves-light">Ver solicitações</a>
                     </div>
                 </div>
             </div>

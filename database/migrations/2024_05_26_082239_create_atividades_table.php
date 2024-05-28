@@ -24,6 +24,7 @@ return new class extends Migration
             $table->text('parecer_orientador')->nullable();
             $table->string('orcamento_passagens')->nullable();
             $table->string('nome_do_orientador')->nullable();
+            $table->string('carimbo_data_hora');
             $table->string('importacao_id');
 
             $table->timestamps();

@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('programa');
             $table->string('categoria');
             $table->string('nome');
+            $table->string('tipo_solicitante')->nullable();
             $table->string('cpf');
             $table->string('rg');
             $table->string('rg_data_expedicao');

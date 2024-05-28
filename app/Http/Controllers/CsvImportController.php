@@ -9,7 +9,6 @@ use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\Validators\ValidationException;
 use App\Imports\SolicitacoesDiscentesImport;
 use App\Imports\SolicitacoesDocentesImport;
-use App\Models\SolicitacaoTipo;
 use App\Models\Atividade;
 use App\Models\Evento;
 use App\Models\Material;
@@ -17,8 +16,9 @@ use App\Models\Servico;
 use App\Models\ImportacoesDiscentes;
 use App\Models\Programa;
 use App\Models\ProgramaCategoria;
-use App\Models\Solicitante;
 use App\Models\Solicitacao;
+use App\Models\SolicitacaoTipo;
+use App\Models\Solicitante;
 
 class CsvImportController extends Controller
 {
@@ -45,7 +45,8 @@ class CsvImportController extends Controller
              */
             ImportacoesDiscentes::truncate();
             Excel::import(new SolicitacoesDiscentesImport, $request->file('file'));
-            ImportacoesDiscentes::destroy(1); // remove a primeira linha do csv
+            ImportacoesDiscentes::destroy(1); // passa o rodo na linha do csv que contem os cabeçalhos
+            ImportacoesDiscentes::whereNull('tipo_solicitante')->update(['tipo_solicitante' => 'Discente']);
             $importacoes = ImportacoesDiscentes::all();
 
             /**
@@ -55,8 +56,7 @@ class CsvImportController extends Controller
                 ->select('programa')
                 ->distinct()
                 ->get();
-
-            // Programa::truncate();
+                
             foreach($programas_importados_distintos as $distinto) {
                 Programa::firstOrCreate([
                     'nome' => $distinto->programa,
@@ -82,19 +82,21 @@ class CsvImportController extends Controller
              * de acordo com email unico
              */
             $solicitantes_importados = DB::table('importacoes_discentes')
-                ->select('nome', 'email', 'programa', 'categoria', 'cpf', 'rg', 'rg_data_expedicao', 'rg_orgao_expedidor', 'nascimento', 'endereco_completo', 'telefone', 'banco', 'banco_agencia', 'banco_conta')
+                ->select('nome', 'tipo_solicitante', 'email', 'programa', 'categoria', 'cpf', 'rg', 'rg_data_expedicao', 'rg_orgao_expedidor', 'nascimento', 'endereco_completo', 'telefone', 'banco', 'banco_agencia', 'banco_conta')
                 ->get();
             $solicitantes_importados_distintos = $solicitantes_importados->unique('email');
+            /**
+             * garantir que apenas os itens com combinações únicas de 'email' e 'tipo_solicitante' sejam mantidos no resultado
+             */
+            // $solicitantes_importados_distintos = $solicitantes_importados->unique(['email', 'tipo_solicitante']);
 
-            // Solicitante::truncate();
             foreach($solicitantes_importados_distintos as $distinto) {
                 Solicitante::firstOrCreate([
                     'email' => $distinto->email,
                 ], [
                     'email' => $distinto->email,
-                    // 'programa' => $distinto->programa,
-                    // 'categoria' => $distinto->categoria,
                     'nome' => $distinto->nome,
+                    'tipo_solicitante' => $distinto->tipo_solicitante,
                     'cpf' => $distinto->cpf,
                     'rg' => $distinto->rg,
                     'rg_data_expedicao' => $distinto->rg_data_expedicao,
@@ -115,8 +117,7 @@ class CsvImportController extends Controller
                 ->select('tipo_solicitacao')
                 ->distinct('tipo_solicitacao')
                 ->get();
-
-            // Categoria::truncate();
+                
             foreach($tipos_solicitacao_distintos as $distinto) {
                 SolicitacaoTipo::firstOrCreate([
                     'nome' => $distinto->tipo_solicitacao,
@@ -126,10 +127,6 @@ class CsvImportController extends Controller
             /**
              * segmentar conforme tipo de evento
              */
-            // Evento::truncate();
-            // Atividade::truncate();
-            // Material::truncate();
-            // Servico::truncate();
             foreach($importacoes as $importacao) {
                 switch($importacao->tipo_solicitacao) {
                     case 'Auxílio para Participação em Evento':
@@ -152,6 +149,7 @@ class CsvImportController extends Controller
                                 'artigo_aceite' => $importacao->evento_artigo_aceite,
                                 'parecer_orientador' => $importacao->evento_parecer_orientador,
                                 'orcamento_passagens' => $importacao->evento_orcamento_passagens,
+                                'carimbo_data_hora' => $importacao->carimbo_data_hora,
                                 'importacao_id' => $importacao->id,
                             ]);
                         }
@@ -170,6 +168,7 @@ class CsvImportController extends Controller
                                 'carta_convite' => $importacao->atividade_carta_convite,
                                 'parecer_orientador' => $importacao->atividade_parecer_orientador,
                                 'orcamento_passagens' => $importacao->atividade_orcamento_passagens,
+                                'carimbo_data_hora' => $importacao->carimbo_data_hora,
                                 'importacao_id' => $importacao->id,
                             ]);
                         }
@@ -185,6 +184,7 @@ class CsvImportController extends Controller
                                 'ja_solicitou_recurso' => $importacao->material_ja_solicitou_recurso,
                                 'orcamento' => $importacao->material_orcamento,
                                 'parecer_orientador' => $importacao->material_parecer_orientador,
+                                'carimbo_data_hora' => $importacao->carimbo_data_hora,
                                 'importacao_id' => $importacao->id,
                             ]);
                         }
@@ -201,6 +201,7 @@ class CsvImportController extends Controller
                                 'artigo_a_traduzir' => $importacao->servico_artigo_a_traduzir,
                                 'orcamento' => $importacao->servico_orcamento,
                                 'parecer_orientador' => $importacao->servico_parecer_orientador,
+                                'carimbo_data_hora' => $importacao->carimbo_data_hora,
                                 'importacao_id' => $importacao->id,
                             ]);
                         }
@@ -211,7 +212,6 @@ class CsvImportController extends Controller
             /**
              * finalmente, a tabela de solicitacoes que também fornecerá os relacionamentos
              */
-
             foreach($importacoes as $importacao) {
                 $dados = [
                     'solicitante_id' => Solicitante::where('email', $importacao->email)->value('id'),
@@ -226,22 +226,30 @@ class CsvImportController extends Controller
                 switch($importacao->tipo_solicitacao) {
                     case 'Auxílio para Pesquisa de Campo':
                         if(!empty($importacao->atividade_descricao)) {
-                            $dados['atividade_id'] = Atividade::where('descricao', $importacao->atividade_descricao)->value('id');
+                            $dados['atividade_id'] = Atividade::where('carimbo_data_hora', $importacao->carimbo_data_hora)
+                                ->where('descricao', $importacao->atividade_descricao)
+                                ->value('id');
                         }
                         break;
                     case 'Auxílio para Participação em Evento':
                         if(!empty($importacao->evento_nome)) {
-                            $dados['evento_id'] = Evento::where('nome', $importacao->evento_nome)->value('id');
+                            $dados['evento_id'] = Evento::where('carimbo_data_hora', $importacao->carimbo_data_hora)
+                                ->where('nome', $importacao->evento_nome)
+                                ->value('id');
                         }
                         break;
                     case 'Aquisição de Material':
                         if(!empty($importacao->material_descricao)) {
-                            $dados['material_id'] = Material::where('descricao', $importacao->material_descricao)->value('id');
+                            $dados['material_id'] = Material::where('carimbo_data_hora', $importacao->carimbo_data_hora)
+                                ->where('descricao', $importacao->material_descricao)
+                                ->value('id');
                         }
                         break;
                     case 'Contratação de Serviço':
                         if(!empty($importacao->servico_tipo)) {
-                            $dados['servico_id'] = Servico::where('titulo_artigo', $importacao->servico_titulo_artigo)->value('id');
+                            $dados['servico_id'] = Servico::where('carimbo_data_hora', $importacao->carimbo_data_hora)
+                                ->where('titulo_artigo', $importacao->titulo_artigo)
+                                ->value('id');
                         }
                         break;
                     }
