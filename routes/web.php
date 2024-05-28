@@ -19,3 +19,4 @@ Route::get('importacoes', [SiteController::class, 'importacoes'])->name('site.im
 Route::post('importacoes/discentes/drop', [SiteController::class, 'drop_importacoes_discentes'])->name('site.drop_importacoes_discentes');
 
 Route::get('solicitacoes', [SolicitacaoController::class, 'index'])->name('site.solicitacoes');
+Route::get('solicitante/{id}', [SiteController::class, 'solicitante'])->name('site.solicitante');

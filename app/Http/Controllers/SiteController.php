@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\ImportacoesDiscentes;
 use App\Models\ImportacoesDocentes;
+use App\Models\Solicitante;
 
 class SiteController extends Controller
 {
@@ -29,6 +30,15 @@ class SiteController extends Controller
         ImportacoesDiscentes::truncate();
 
         return redirect()->route('site.index')->with('success', 'Tabela de importações foi para Caixa prego.');
+    }
+
+    /**
+     * mostra a página de visualização com dados do solicitante
+     */
+    public function solicitante(string $id) {
+        return view('solicitante', [
+            'solicitante' => Solicitante::where('id', $id)->first(),
+        ]);
     }
 
     /**

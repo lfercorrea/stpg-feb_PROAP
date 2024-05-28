@@ -102,7 +102,7 @@
     </div>
 
     @if (count($solicitacoes) > 0)
-        <table class="striped responsive-table highlight">
+        <table class="bordered striped responsive-table highlight">
             <thead>
                 <tr>
                     <th class="center-align">Ações</th>
@@ -117,14 +117,14 @@
                 @foreach ($solicitacoes as $solicitacao)
                 <tr>
                     <td class="center-align">
-                        <a href="/admin/alterar/solicitacao/{{ $solicitacao->id }}" class="btn-small waves-effect blue darken-1">
+                        <a href="{{ route('site.solicitante', ['id' => $solicitacao->solicitante->id]) }}" class="btn-small waves-effect blue darken-1">
                             <i class="material-icons center">edit</i>
                         </a>
                         <button class="btn-small waves-effect red darken-1 modal-trigger" data-target="confirm-delete-modal" data-target-url="/admin/excluir/solicitacao/" data-target-id="{{ $solicitacao->id }}">
                             <i class="material-icons center">delete</i>
                         </button>
                     </td>
-                    <td><a href="#" class="black-text hover"><b>{{ Str::upper($solicitacao->solicitante->nome) }}</b></a> ({{ $solicitacao->solicitante->email }})</td>
+                    <td><a href="{{ route('site.solicitante', ['id' => $solicitacao->solicitante->id]) }}" class="black-text hover"><b>{{ Str::upper($solicitacao->solicitante->nome) }}</b></a> ({{ $solicitacao->solicitante->email }})</td>
                     <td>{{ $solicitacao->tipo->nome }}</td>
                     <td>{{ $solicitacao->programa->nome }}</td>
                     <td>{{ $solicitacao->carimbo_data_hora }}</td>

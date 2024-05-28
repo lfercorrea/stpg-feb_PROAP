@@ -1,5 +1,4 @@
 @extends('layout')
-
 @section('content')
     @if (!$vazia)
         <div class="section-margins side-margins">
