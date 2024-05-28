@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('artigo_a_traduzir')->nullable();
             $table->string('orcamento')->nullable();
             $table->text('parecer_orientador')->nullable();
+            $table->string('nome_do_orientador')->nullable();
             $table->string('importacao_id');
 
             $table->timestamps();

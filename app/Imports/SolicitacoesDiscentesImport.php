@@ -69,7 +69,7 @@ class SolicitacoesDiscentesImport implements ToModel
             'atividade_carta_convite' => $row[51],
             'atividade_parecer_orientador' => $row[52],
             'atividade_orcamento_passagens' => $row[53],
-            'atividade_nome_orientador' => $row[54],
+            'nome_do_orientador' => $row[54],
         ]);
     }
 }

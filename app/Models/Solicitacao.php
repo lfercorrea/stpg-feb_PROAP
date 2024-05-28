@@ -21,6 +21,7 @@ class Solicitacao extends Model
         'material_id',
         'servico_id',
         'importacao_id',
+        'nome_do_orientador',
         'carimbo_data_hora',
     ];
 

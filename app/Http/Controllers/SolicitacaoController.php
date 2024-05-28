@@ -29,7 +29,9 @@ class SolicitacaoController extends Controller
         $count_solicitacoes = 0;
 
         if($request->has('search') OR $request->has('programa_id') OR $request->has('tipo_solicitacao_id')){
-            $solicitacoes = Solicitacao::search($request->search, $request->programa_id, $request->tipo_solicitacao_id)->paginate(30);
+            $solicitacoes = Solicitacao::search($request->search, $request->programa_id, $request->tipo_solicitacao_id)
+                ->orderByRaw("STR_TO_DATE(carimbo_data_hora, '%d/%m/%Y %H:%i:%s') DESC")
+                ->paginate(30);
             $count_solicitacoes = Solicitacao::search($request->search, $request->programa_id, $request->tipo_solicitacao_id)->count();
         }
         else{
@@ -43,7 +45,7 @@ class SolicitacaoController extends Controller
                 'material',
                 'servico',
             ])
-            ->orderByRaw(" STR_TO_DATE(carimbo_data_hora, '%d/%m/%Y %H:%i:%s') DESC ")
+            ->orderByRaw("STR_TO_DATE(carimbo_data_hora, '%d/%m/%Y %H:%i:%s') DESC")
             ->paginate(30);
             // $count_solicitacoes = Solicitacao::with([
             //     'tipo',

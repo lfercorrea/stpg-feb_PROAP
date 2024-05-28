@@ -12,4 +12,8 @@ class Servico extends Model
     protected $guarded = [
         //
     ];
+
+    public function solicitacoes() {
+        return $this->hasMany(Solicitacao::class);
+    }
 }

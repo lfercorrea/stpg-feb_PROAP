@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('carta_convite')->nullable();
             $table->text('parecer_orientador')->nullable();
             $table->string('orcamento_passagens')->nullable();
-            $table->string('nome_orientador')->nullable();
+            $table->string('nome_do_orientador')->nullable();
             $table->string('importacao_id');
 
             $table->timestamps();

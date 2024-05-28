@@ -68,7 +68,7 @@ return new class extends Migration
             $table->string('atividade_carta_convite')->nullable();
             $table->text('atividade_parecer_orientador')->nullable();
             $table->string('atividade_orcamento_passagens')->nullable();
-            $table->string('atividade_nome_orientador')->nullable();
+            $table->string('nome_do_orientador')->nullable();
 
             $table->timestamps();
         });

@@ -23,6 +23,7 @@ return new class extends Migration
             $table->unsignedBigInteger('material_id')->nullable();
             $table->unsignedBigInteger('servico_id')->nullable();
             $table->unsignedBigInteger('importacao_id');
+            $table->string('nome_do_orientador')->nullable();
             $table->string('carimbo_data_hora');
 
             $table->foreign('solicitante_id')->references('id')->on('solicitantes')->onDelete('cascade');

@@ -117,14 +117,11 @@
                 @foreach ($solicitacoes as $solicitacao)
                 <tr>
                     <td class="center-align">
-                        <a href="{{ route('site.solicitante', ['id' => $solicitacao->solicitante->id]) }}" class="btn-small waves-effect blue darken-1">
-                            <i class="material-icons center">edit</i>
+                        <a href="{{ route('site.solicitante', ['id' => $solicitacao->solicitante->id]) }}" class="btn-flat waves-effect">
+                            <i class="material-icons small blue-text darken-1 center">edit</i>
                         </a>
-                        <button class="btn-small waves-effect red darken-1 modal-trigger" data-target="confirm-delete-modal" data-target-url="/admin/excluir/solicitacao/" data-target-id="{{ $solicitacao->id }}">
-                            <i class="material-icons center">delete</i>
-                        </button>
                     </td>
-                    <td><a href="{{ route('site.solicitante', ['id' => $solicitacao->solicitante->id]) }}" class="black-text hover"><b>{{ Str::upper($solicitacao->solicitante->nome) }}</b></a> ({{ $solicitacao->solicitante->email }})</td>
+                    <td><a href="{{ route('site.solicitante', ['id' => $solicitacao->solicitante->id]) }}" class="black-text hover-underline"><b>{{ Str::upper($solicitacao->solicitante->nome) }}</b></a> (<a href="mailto:{{ $solicitacao->solicitante->email }}" class="hover-underline">{{ $solicitacao->solicitante->email }}</a>)</td>
                     <td>{{ $solicitacao->tipo->nome }}</td>
                     <td>{{ $solicitacao->programa->nome }}</td>
                     <td>{{ $solicitacao->carimbo_data_hora }}</td>

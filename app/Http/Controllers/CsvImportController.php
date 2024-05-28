@@ -170,7 +170,6 @@ class CsvImportController extends Controller
                                 'carta_convite' => $importacao->atividade_carta_convite,
                                 'parecer_orientador' => $importacao->atividade_parecer_orientador,
                                 'orcamento_passagens' => $importacao->atividade_orcamento_passagens,
-                                'nome_orientador' => $importacao->atividade_nome_orientador,
                                 'importacao_id' => $importacao->id,
                             ]);
                         }
@@ -210,8 +209,7 @@ class CsvImportController extends Controller
             }
 
             /**
-             * finalmente, construir o relacionamento de solicitacoes
-             * dinamicamente conforme o solicitante e tipo de solicitacao
+             * finalmente, a tabela de solicitacoes que também fornecerá os relacionamentos
              */
 
             foreach($importacoes as $importacao) {
@@ -220,6 +218,7 @@ class CsvImportController extends Controller
                     'programa_id' => Programa::where('nome', $importacao->programa)->value('id'),
                     'programa_categoria_id' => ProgramaCategoria::where('nome', $importacao->categoria)->value('id'),
                     'tipo_solicitacao_id' => SolicitacaoTipo::where('nome', $importacao->tipo_solicitacao)->value('id'),
+                    'nome_do_orientador' => $importacao->nome_do_orientador,
                     'carimbo_data_hora' => $importacao->carimbo_data_hora,
                     'importacao_id' => $importacao->id,
                 ];

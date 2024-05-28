@@ -25,7 +25,7 @@ a {
     color: inherit;
 }
 
-a:hover {
+.hover-underline:hover {
     text-decoration: underline;
 }
 
@@ -235,7 +235,7 @@ table.highlight tbody tr:hover {
 .compact-table td {
     border: none;
     padding: 8px;
-    text-align: left;
+    /* text-align: left; */
 }
 .no-border-table {
     width: 100%;
@@ -245,7 +245,7 @@ table.highlight tbody tr:hover {
 .no-border-table td {
     border: none !important;
     padding: 8px;
-    text-align: left;
+    /* text-align: left; */
 }
 .no-border-table th {
     margin-top: 10px;
@@ -263,7 +263,7 @@ table {
 .bordered th, .bordered td {
     border: 1px solid rgba(0, 0, 0, 0.233);
     padding: 8px;
-    text-align: left;
+    /* text-align: left; */
 }
 
 /** imagens */
