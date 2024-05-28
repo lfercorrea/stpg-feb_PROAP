@@ -248,7 +248,7 @@ class CsvImportController extends Controller
                     case 'Contratação de Serviço':
                         if(!empty($importacao->servico_tipo)) {
                             $dados['servico_id'] = Servico::where('carimbo_data_hora', $importacao->carimbo_data_hora)
-                                ->where('titulo_artigo', $importacao->titulo_artigo)
+                                ->where('titulo_artigo', $importacao->servico_titulo_artigo)
                                 ->value('id');
                         }
                         break;
