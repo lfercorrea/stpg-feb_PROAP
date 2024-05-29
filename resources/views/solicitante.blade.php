@@ -1,7 +1,6 @@
 @extends('layout')
 @section('content')
     <div class="side-margins">
-
         <div class="section-margins">
             <h5>{{ $solicitante->nome }} ({{ $solicitante->email }})</h5>
         </div>
@@ -43,7 +42,6 @@
                 <td>{{ $solicitante->banco_conta }}</td>
             </tr>
         </table>
-
         @if (count($solicitacoes) > 0)
             <div class="section-margins">
                 <h5>Solicitações</h5>
@@ -52,7 +50,6 @@
                 <table class="bordered striped responsive-table highlight">
                     <thead>
                         <tr>
-                            <th class="center-align">Ações</th>
                             <th>Solicitação</th>
                             <th>Programa</th>
                             <th>Orientador</th>
@@ -67,12 +64,10 @@
                         @foreach ($solicitacoes as $solicitacao)
                         <tr>
                             @php
-                                // resumo solicitacao
                                 $resumo_solicitacao = optional($solicitacao->evento)->nome
                                     ?? optional($solicitacao->atividade)->descricao
                                     ?? optional($solicitacao->material)->descricao
                                     ?? optional($solicitacao->servico)->titulo_artigo;
-                                // links
                                 $link_artigo_aceite = optional($solicitacao->evento)->artigo_aceite;
                                 $link_artigo_copia = optional($solicitacao->evento)->artigo_copia;
                                 $link_parecer = optional($solicitacao->evento)->parecer_orientador 
@@ -84,15 +79,7 @@
                                     ?? optional($solicitacao->material)->orcamento 
                                     ?? optional($solicitacao->servico)->orcamento;
                             @endphp
-                            <td class="center-align">
-                                <a href="{{ route('site.solicitacao', ['id' => $solicitacao->id]) }}" class="btn-flat waves-effect">
-                                    <i class="material-icons blue-text center">edit</i>
-                                </a>
-                                {{-- <button class="btn-flat waves-effect waves-red modal-trigger" data-target="confirm-delete-modal" data-target-url="/admin/excluir/solicitacao/" data-target-id="{{ $solicitacao->id }}">
-                                    <i class="material-icons red-text darken-1 center">delete</i>
-                                </button> --}}
-                            </td>
-                            <td><b>{{ $solicitacao->tipo->nome }}</b>: {{ $resumo_solicitacao }}</td>
+                            <td><a href="{{ route('site.solicitacao', ['id' => $solicitacao->id]) }}"><b>{{ $solicitacao->tipo->nome }}</b>: {{ $resumo_solicitacao }}</td>
                             <td>{{ $solicitacao->programa->nome }}</td>
                             <td>{{ $solicitacao->nome_do_orientador }}</td>
                             <td class="center-align">
@@ -122,10 +109,8 @@
                 </table>
             </div>
         @endif
-
         <div class="container center">
-            <a class="btn black waves-effect waves-black" onclick="history.back()">Voltar</a>
+            <a class="btn black waves-effect waves-black" href="{{ route('site.solicitacoes') }}">Voltar</a>
         </div>
-
     </div>
 @endsection

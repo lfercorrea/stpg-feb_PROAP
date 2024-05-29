@@ -19,12 +19,11 @@ use App\Models\ProgramaCategoria;
 use App\Models\Solicitante;
 use App\Models\Solicitacao;
 use App\Models\SolicitacaoTipo;
+use App\Models\FontePagadora;
+use App\Models\Nota;
 
 class SolicitacaoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request) {
         $count_solicitacoes = 0;
 
@@ -47,16 +46,6 @@ class SolicitacaoController extends Controller
             ])
             ->orderByRaw("STR_TO_DATE(carimbo_data_hora, '%d/%m/%Y %H:%i:%s') DESC")
             ->paginate(30);
-            // $count_solicitacoes = Solicitacao::with([
-            //     'tipo',
-            //     'solicitante',
-            //     'programa',
-            //     'programaCategoria',
-            //     'atividade',
-            //     'evento',
-            //     'material',
-            //     'servico',
-            // ])->count();
         }
 
         $vars = [
@@ -73,10 +62,8 @@ class SolicitacaoController extends Controller
         
         return view('solicitacoes', $vars);
     }
+    
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id) {
         $solicitacao = Solicitacao::where('id', $id)
             ->with([
@@ -88,46 +75,70 @@ class SolicitacaoController extends Controller
                 'evento',
                 'material',
                 'servico',
+                'nota',
             ])->first();
+            
+        $resumo_solicitacao = optional($solicitacao->evento)->nome
+            ?? optional($solicitacao->atividade)->descricao
+            ?? optional($solicitacao->material)->descricao
+            ?? optional($solicitacao->servico)->titulo_artigo;
+        $link_artigo_aceite = optional($solicitacao->evento)->artigo_aceite;
+        $link_artigo_copia = optional($solicitacao->evento)->artigo_copia;
+        $link_parecer = optional($solicitacao->evento)->parecer_orientador 
+            ?? optional($solicitacao->atividade)->parecer_orientador 
+            ?? optional($solicitacao->material)->parecer_orientador 
+            ?? optional($solicitacao->servico)->parecer_orientador;
+        $link_orcamento = optional($solicitacao->evento)->orcamento_passagens 
+            ?? optional($solicitacao->atividade)->orcamento_passagens 
+            ?? optional($solicitacao->material)->orcamento 
+            ?? optional($solicitacao->servico)->orcamento;
 
         return view('solicitacao', [
             'solicitacao' => $solicitacao,
+            'resumo_solicitacao' => $resumo_solicitacao,
+            'link_artigo_aceite' => $link_artigo_aceite,
+            'link_artigo_copia' => $link_artigo_copia,
+            'link_parecer' => $link_parecer,
+            'link_orcamento' => $link_orcamento,
+            'fontes_pagadoras' => FontePagadora::all(),
         ]);
     }
-    
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create() {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request) {
-        //
-    }
 
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id) {
-        //
-    }
+    public function lancar_nota(Request $request, $id) {
+        $nota = new Nota();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id) {
-        //
-    }
+        $request->validate([
+            'numero' => 'required|string|max:255',
+            'data' => 'required|string',
+            'descricao' => 'nullable|string',
+            // 'valor' => 'regex:/^\d+(\,\d{1,2})?$/',
+            'valor' => 'required|numeric',
+            'fonte_pagadora_id' => 'required|integer',
+        ], [
+            'numero.required' => 'Deve ser fornecido um número/código para a nota/recibo',
+            'numero.string' => 'O número ou código da nota/rebico deve ser uma string',
+            'numero.max' => 'O número/código da nota não pode passar de 255 caracteres',
+            'data.required' => 'A data da nota precisa ser informada',
+            'data.string' => 'A data da nota precisa ser uma string',
+            'descricao.string' => 'A descrição precisa ser uma string',
+            'valor.required' => 'O valor precisa ser informado',
+            'valor.numeric' => 'O valor precisa ser numérico',
+            'fonte_pagadora_id.required' => 'A fonte pagadora deve ser informada pelo campo',
+            'fonte_pagadora_id.integer' => 'A fonte pagadora deve ser do tipo INT',
+        ]);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id) {
-        //
+        $nota->numero = $request->numero;
+        $nota->data = $request->data;
+        $nota->descricao = $request->descricao;
+        $nota->valor = $request->valor;
+        $nota->fonte_pagadora_id = $request->fonte_pagadora_id;
+        $nota->solicitacao_id = $id;
+
+        $nota->save();
+        
+        return redirect()
+            ->route('site.solicitacao', ['id' => $id])
+            ->with('success', 'Nota lançada.');
     }
 }

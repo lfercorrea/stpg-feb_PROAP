@@ -84,29 +84,10 @@
         @endif
     </div>
 
-    <div id="confirm-delete-modal" class="modal">
-        <div class="modal-content">
-            <h5>Confirmar</h5>
-            <p>
-                Tem certeza? Depois disso já era... valeu?
-            </p>
-        </div>
-        <div class="modal-footer">
-            <form id="delete-form" action="#" method="POST">
-                @csrf
-                @method('DELETE')
-                <a href="#!" class="modal-close waves-effect waves-black btn-flat">Cancelar</a>
-                <button type="submit" class="btn waves-effect waves-light red darken-1">Excluir</button>
-            </form>
-        </div>
-    </div>
-
     @if (count($solicitacoes) > 0)
         <table class="bordered striped responsive-table highlight">
             <thead>
                 <tr>
-                    <th class="center-align">Ações</th>
-                    {{-- <th>Solicitação</th> --}}
                     <th>Solicitante</th>
                     <th>Tipo de solicitação</th>
                     <th>Programa</th>
@@ -133,12 +114,6 @@
                             ?? optional($solicitacao->material)->orcamento 
                             ?? optional($solicitacao->servico)->orcamento;
                     @endphp
-                    <td class="center-align">
-                        <a href="{{ route('site.solicitante', ['id' => $solicitacao->solicitante->id]) }}" class="btn-flat waves-effect">
-                            <i class="material-icons small blue-text darken-1 center">edit</i>
-                        </a>
-                    </td>
-                    {{-- <td>evento_id: {{ $solicitacao->evento_id }} <br> importacao_id: {{ $solicitacao->importacao_id }} <br> solicitante_id: {{ $solicitacao->solicitante_id }}</td> --}}
                     <td><div class="chip">{{ $solicitacao->solicitante->tipo_solicitante }}</div><a href="{{ route('site.solicitante', ['id' => $solicitacao->solicitante->id]) }}" class="black-text hover-underline"><b>{{ Str::upper($solicitacao->solicitante->nome) }}</b></a> (<a href="mailto:{{ $solicitacao->solicitante->email }}" class="hover-underline">{{ $solicitacao->solicitante->email }}</a>)</td>
                     <td>{{ $solicitacao->tipo->nome }}</td>
                     <td>{{ $solicitacao->programa->nome }}</td>

@@ -57,6 +57,10 @@ class Solicitacao extends Model
         return $this->belongsTo(Servico::class);
     }
 
+    public function nota() {
+        return $this->hasMany(Nota::class);
+    }
+
     public static function search($search, $programa_id = null, $tipo_solicitacao = null) {
         $query = self::query();
 
