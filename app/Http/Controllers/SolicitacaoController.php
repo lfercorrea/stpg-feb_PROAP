@@ -70,10 +70,31 @@ class SolicitacaoController extends Controller
             'programas' => Programa::orderBy('nome', 'asc')->pluck('nome', 'id')->toArray(),
             'solicitacoes' => $solicitacoes,
         ];
-
+        
         return view('solicitacoes', $vars);
     }
 
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id) {
+        $solicitacao = Solicitacao::where('id', $id)
+            ->with([
+                'tipo',
+                'solicitante',
+                'programa',
+                'programaCategoria',
+                'atividade',
+                'evento',
+                'material',
+                'servico',
+            ])->first();
+
+        return view('solicitacao', [
+            'solicitacao' => $solicitacao,
+        ]);
+    }
+    
     /**
      * Show the form for creating a new resource.
      */
@@ -88,12 +109,6 @@ class SolicitacaoController extends Controller
         //
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id) {
-        //
-    }
 
     /**
      * Show the form for editing the specified resource.

@@ -20,3 +20,4 @@ Route::post('importacoes/discentes/drop', [SiteController::class, 'drop_importac
 
 Route::get('solicitacoes', [SolicitacaoController::class, 'index'])->name('site.solicitacoes');
 Route::get('solicitante/{id}', [SiteController::class, 'solicitante'])->name('site.solicitante');
+Route::get('solicitacao/{id}', [SolicitacaoController::class, 'show'])->name('site.solicitacao');

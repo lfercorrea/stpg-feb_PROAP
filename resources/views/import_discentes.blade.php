@@ -6,9 +6,10 @@
         <div class="section-margins">
             <h5>Importar solicitações de discentes</h5>
             <p>
-                Gere o CSV diretamente do Google Sheets e importe por aqui. Cuidado, porque essa merda do
-                Google Shits transforma os emails em links e isso estraga o CSV. Faça a exportação do CSV
-                só depois de remover esses links e não me pergunte como fazer isso.
+                Gere o CSV diretamente do Google Sheets e importe por aqui.
+            </p>
+            <p>
+                Observação: se for abrir o CSV no excel primeiro e exportar por ele, verifique se as datas saíram no mesmo formato do google <del>shits</del> sheets. O site espera o formato dd/mm/aaaa com horas no padrão HH.
             </p>
         </div>
         
