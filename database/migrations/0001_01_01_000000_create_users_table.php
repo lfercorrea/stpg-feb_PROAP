@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -35,6 +36,12 @@ return new class extends Migration
             $table->longText('payload');
             $table->integer('last_activity')->index();
         });
+
+        $dados = [
+            ['name' => 'STPG-FEB', 'email' => 'stpg.feb@unesp.br', 'password' => bcrypt('123')],
+        ];
+
+        DB::table('users')->insert($dados);
     }
 
     /**
@@ -42,6 +49,7 @@ return new class extends Migration
      */
     public function down(): void
     {
+        // DB::table('users')->truncate();
         Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');

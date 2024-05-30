@@ -50,6 +50,7 @@
                 <table class="bordered striped responsive-table highlight">
                     <thead>
                         <tr>
+                            <th>Status</th>
                             <th>Solicitação</th>
                             <th>Programa</th>
                             <th>Orientador</th>
@@ -79,6 +80,7 @@
                                     ?? optional($solicitacao->material)->orcamento 
                                     ?? optional($solicitacao->servico)->orcamento;
                             @endphp
+                            <td>{{ $solicitacao->status->nome }}</td>
                             <td><a href="{{ route('site.solicitacao', ['id' => $solicitacao->id]) }}"><b>{{ $solicitacao->tipo->nome }}</b>: {{ $resumo_solicitacao }}</td>
                             <td>{{ $solicitacao->programa->nome }}</td>
                             <td>{{ $solicitacao->nome_do_orientador }}</td>
@@ -110,7 +112,7 @@
             </div>
         @endif
         <div class="container center">
-            <a class="btn black waves-effect waves-black" href="{{ route('site.solicitacoes') }}">Voltar</a>
+            <a class="btn black waves-effect waves-black" href="{{ route('site.solicitacoes') }}">Voltar para solicitações</a>
         </div>
     </div>
 @endsection

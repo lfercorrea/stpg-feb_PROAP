@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CsvImportController;
+use App\Http\Controllers\NotaController;
 use App\Http\Controllers\SiteController;
 use App\Http\Controllers\SolicitacaoController;
 use Illuminate\Support\Facades\Route;
@@ -21,4 +22,7 @@ Route::post('importacoes/discentes/drop', [SiteController::class, 'drop_importac
 Route::get('solicitacoes', [SolicitacaoController::class, 'index'])->name('site.solicitacoes');
 Route::get('solicitante/{id}', [SiteController::class, 'solicitante'])->name('site.solicitante');
 Route::get('solicitacao/{id}', [SolicitacaoController::class, 'show'])->name('site.solicitacao');
-Route::post('solicitacao/{id}', [SolicitacaoController::class, 'lancar_nota'])->name('site.lancar_nota');
+
+Route::post('solicitacao/{id}/update', [SolicitacaoController::class, 'update'])->name('site.solicitacao.update');
+Route::post('solicitacao/{id}', [NotaController::class, 'store'])->name('site.nota.store');
+Route::get('solicitacao/{solicitacao_id}/nota/{nota_id}', [NotaController::class, 'destroy'])->name('site.nota.destroy');

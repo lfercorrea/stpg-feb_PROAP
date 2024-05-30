@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
  * desde que seja especificada a roda válida 
  * e a id do recurso a ser excluído
  */
+/** Modal para form */
 document.addEventListener('DOMContentLoaded', function() {
   var elems = document.querySelectorAll('.modal');
   var instances = M.Modal.init(elems);
@@ -40,6 +41,24 @@ document.addEventListener('DOMContentLoaded', function() {
           var targetUrl = this.dataset.targetUrl;
           var form = document.getElementById('delete-form');
           form.action = targetUrl + targetId;
+      });
+  });
+});
+
+/** Modal para link */
+document.addEventListener('DOMContentLoaded', function() {
+  var elems = document.querySelectorAll('.modal');
+  var instances = M.Modal.init(elems);
+  
+  var confirmLinks = document.querySelectorAll('.confirm-link');
+  confirmLinks.forEach(function(link) {
+      link.addEventListener('click', function(e) {
+          e.preventDefault();
+          var modalInstance = M.Modal.getInstance(document.getElementById('confirmModal'));
+          var deleteUrl = this.getAttribute('href');
+          var confirmButton = document.getElementById('confirmDelete');
+          confirmButton.href = deleteUrl; // define o atributo href do botão de confirmação com o link de exclusão
+          modalInstance.open();
       });
   });
 });

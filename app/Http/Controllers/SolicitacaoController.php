@@ -19,22 +19,23 @@ use App\Models\ProgramaCategoria;
 use App\Models\Solicitante;
 use App\Models\Solicitacao;
 use App\Models\SolicitacaoTipo;
+use App\Models\Status;
 use App\Models\FontePagadora;
-use App\Models\Nota;
 
 class SolicitacaoController extends Controller
 {
     public function index(Request $request) {
         $count_solicitacoes = 0;
 
-        if($request->has('search') OR $request->has('programa_id') OR $request->has('tipo_solicitacao_id')){
-            $solicitacoes = Solicitacao::search($request->search, $request->programa_id, $request->tipo_solicitacao_id)
+        if($request->has('search') OR $request->has('programa_id') OR $request->has('tipo_solicitacao_id') OR $request->has('status_id')){
+            $solicitacoes = Solicitacao::search($request->search, $request->programa_id, $request->tipo_solicitacao_id, $request->status_id)
                 ->orderByRaw("STR_TO_DATE(carimbo_data_hora, '%d/%m/%Y %H:%i:%s') DESC")
                 ->paginate(30);
-            $count_solicitacoes = Solicitacao::search($request->search, $request->programa_id, $request->tipo_solicitacao_id)->count();
+            $count_solicitacoes = Solicitacao::search($request->search, $request->programa_id, $request->tipo_solicitacao_id, $request->status_id)->count();
         }
         else{
             $solicitacoes = Solicitacao::with([
+                'status',
                 'tipo',
                 'solicitante',
                 'programa',
@@ -55,18 +56,20 @@ class SolicitacaoController extends Controller
             'search_term' => $request->search,
             'search_programa_id' => $request->programa_id,
             'search_tipo_solicitacao_id' => $request->tipo_solicitacao_id,
+            'search_status_id' => $request->status_id,
             'tipos_solicitacao' => SolicitacaoTipo::orderBy('nome', 'asc')->pluck('nome', 'id')->toArray(),
             'programas' => Programa::orderBy('nome', 'asc')->pluck('nome', 'id')->toArray(),
+            'statuses' => Status::all(),
             'solicitacoes' => $solicitacoes,
         ];
         
         return view('solicitacoes', $vars);
     }
-    
 
     public function show(string $id) {
         $solicitacao = Solicitacao::where('id', $id)
             ->with([
+                'status',
                 'tipo',
                 'solicitante',
                 'programa',
@@ -101,44 +104,28 @@ class SolicitacaoController extends Controller
             'link_parecer' => $link_parecer,
             'link_orcamento' => $link_orcamento,
             'fontes_pagadoras' => FontePagadora::all(),
+            'statuses' => Status::all(),
+            'count_notas' => $solicitacao->nota->count(),
+            'valor_total' => number_format($solicitacao->nota->sum('valor'), 2, ',', '.'),
         ]);
     }
 
-
-    public function lancar_nota(Request $request, $id) {
-        $nota = new Nota();
-
+    public function update(Request $request, string $id) {
         $request->validate([
-            'numero' => 'required|string|max:255',
-            'data' => 'required|string',
-            'descricao' => 'nullable|string',
-            // 'valor' => 'regex:/^\d+(\,\d{1,2})?$/',
-            'valor' => 'required|numeric',
-            'fonte_pagadora_id' => 'required|integer',
+            'status_id' => 'required|numeric',
+            'observacao' => 'nullable|string',
         ], [
-            'numero.required' => 'Deve ser fornecido um número/código para a nota/recibo',
-            'numero.string' => 'O número ou código da nota/rebico deve ser uma string',
-            'numero.max' => 'O número/código da nota não pode passar de 255 caracteres',
-            'data.required' => 'A data da nota precisa ser informada',
-            'data.string' => 'A data da nota precisa ser uma string',
-            'descricao.string' => 'A descrição precisa ser uma string',
-            'valor.required' => 'O valor precisa ser informado',
-            'valor.numeric' => 'O valor precisa ser numérico',
-            'fonte_pagadora_id.required' => 'A fonte pagadora deve ser informada pelo campo',
-            'fonte_pagadora_id.integer' => 'A fonte pagadora deve ser do tipo INT',
+            'status_id.required' => 'Deve ser fornecido um status para a solicitação',
+            'status_id.numeric' => 'O status da solicitação deve ser do tipo INT',
+            'observacao.string' => 'O campo observação deve ser do tipo STRING',
         ]);
+        $solicitacao = Solicitacao::findOrFail($id);
+        $solicitacao->status_id = $request->status_id;
+        $solicitacao->observacao = $request->observacao;
+        $solicitacao->save();
 
-        $nota->numero = $request->numero;
-        $nota->data = $request->data;
-        $nota->descricao = $request->descricao;
-        $nota->valor = $request->valor;
-        $nota->fonte_pagadora_id = $request->fonte_pagadora_id;
-        $nota->solicitacao_id = $id;
-
-        $nota->save();
-        
         return redirect()
-            ->route('site.solicitacao', ['id' => $id])
-            ->with('success', 'Nota lançada.');
+            ->route('site.solicitacao', ['id' => $solicitacao->id])
+            ->with('success', 'Status da solicitação alterado.');
     }
 }

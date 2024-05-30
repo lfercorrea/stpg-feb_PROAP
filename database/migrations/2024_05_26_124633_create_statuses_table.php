@@ -12,20 +12,24 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('fontes_pagadoras', function (Blueprint $table) {
+        Schema::create('statuses', function (Blueprint $table) {
             $table->id();
 
             $table->string('nome');
 
             $table->timestamps();
         });
-        
-         $dados = [
-            ['nome' => 'PROAP/AUXPE', ],
-            ['nome' => 'Tesouro', ],
+
+        $dados = [
+            ['nome' => 'Aguardando pagamento'],
+            ['nome' => 'Cancelado'],
+            ['nome' => 'Deferido'],
+            ['nome' => 'Indeferido'],
+            ['nome' => 'Pago'],
+            ['nome' => 'Pendente'],
         ];
-        
-        DB::table('fontes_pagadoras')->insert($dados);
+
+        DB::table('statuses')->insert($dados);
     }
 
     /**
@@ -33,7 +37,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        // DB::table('fontes_pagadoras')->truncate();
-        Schema::dropIfExists('fontes_pagadoras');
+        Schema::dropIfExists('statuses');
     }
 };

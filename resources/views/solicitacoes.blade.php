@@ -6,13 +6,31 @@
         <hr>
     </div>
 
-    <div class="row">
-        <div class="col s12 m2 input-field">
-            <a href="{{ route('import_discentes_form') }}" class="btn green waves-effect waves-light">Importar</a>
-        </div>
-        <form action="#" method="GET">
+    <form action="#" method="GET">
+        <div class="row">
+            <div class="col s12 m2 input-field">
+                <a href="{{ route('import_discentes_form') }}" class="btn green waves-effect waves-light">Importar</a>
+            </div>
             <div class="col s12 m3 input-field">
                 <input type="text" name="search" placeholder="Buscar"> 
+            </div>
+            <div class="col s8 m2 input-field">
+                <select class="browser-default" name="tipo_solicitacao_id"><option value="">Tipo</option>
+                    
+                    @foreach ($tipos_solicitacao as $key => $value)
+                        <option value="{{ $key }}">{{ $value }}</option>
+                    @endforeach
+                    
+                </select>
+            </div>
+            <div class="col s8 m2 input-field">
+                <select class="browser-default" name="status_id"><option value="">Status</option>
+                    
+                    @foreach ($statuses as $status)
+                        <option value="{{ $status->id }}">{{ $status->nome }}</option>
+                    @endforeach
+                    
+                </select>
             </div>
             <div class="col s4 m3 input-field">
                 <select name="programa_id[]" id="programa_id" multiple="" tabindex="-1" style="display: none;">
@@ -25,20 +43,11 @@
                     </optgroup>
                 </select>
             </div>
-            <div class="col s8 m2 input-field">
-                <select class="browser-default" name="tipo_solicitacao_id"><option value="">Solicitação</option>
-                    
-                    @foreach ($tipos_solicitacao as $key => $value)
-                        <option value="{{ $key }}">{{ $value }}</option>
-                    @endforeach
-                    
-                </select>
-            </div>
-            <div class="col s12 m2 input-field">
-                <button class="btn waves-effect waves-light black" type="submit">Buscar</button> 
-            </div>
-        </form>
-    </div>
+        </div>
+        <div class="container center">
+            <button class="btn waves-effect waves-light black" type="submit">Buscar</button> 
+        </div>
+    </form>
 
     @if ($count_solicitacoes > 0)
         <div class="row">
@@ -46,11 +55,16 @@
                 $count_message = [];
 
                 if(!empty($search_term)) {
-                    $count_message[] = "Termo: <b><i>\"$search_term\"</i></b>";
+                    $count_message[] = "Termo buscado: <b><i>\"$search_term\"</i></b>";
                 }
-
+                
                 if (!empty($search_tipo_solicitacao_id)) {
-                    $count_message[] = "Solicitacão: <b><i>\"$tipos_solicitacao[$search_tipo_solicitacao_id]\"</i></b>";
+                    $count_message[] = "Tipo: <b><i>{$tipos_solicitacao[$search_tipo_solicitacao_id]}</i></b>";
+                }
+                
+                if (!empty($search_status_id)) {
+                    $status = $statuses->firstWhere('id', $search_status_id);
+                    $count_message[] = "Status: <b><i>{$status->nome}</i></b>";
                 }
 
                 if(!empty($search_programa_id)) {
@@ -61,7 +75,7 @@
                     }
 
                     $programas_selecionados = implode(', ', $arr_programas_selecionados);
-                    $count_message[] = "Programas: <b><i>\"$programas_selecionados\"</i></b>";
+                    $count_message[] = "Programas: <b><i>{$programas_selecionados}</i></b>";
                 }
 
                 $plural = ($count_solicitacoes > 1) ? 's' : '';
@@ -71,25 +85,18 @@
         </div>
     @endif
     
-    <div class="row">
-        @if (request()->input('search') OR request()->input('tipo_solicitacao_id') OR request()->input('programa_id'))
-            {{ $solicitacoes->appends([
-                'search' => request()->input('search'), 
-                'programa_id' => request()->input('programa_id'),
-                'tipo_solicitacao_id' => request()->input('tipo_solicitacao_id'),
-                ])
-                ->links('common/pagination') }}
-        @else
-            {{ $solicitacoes->links('common/pagination') }}
-        @endif
-    </div>
+    {{
+        $solicitacoes->appends(request()->only(['search', 'programa_id', 'tipo_solicitacao_id', 'status_id']))
+            ->links('common/pagination')
+    }}
 
     @if (count($solicitacoes) > 0)
         <table class="bordered striped responsive-table highlight">
             <thead>
                 <tr>
-                    <th>Solicitante</th>
+                    <th>Status</th>
                     <th>Tipo de solicitação</th>
+                    <th>Solicitante</th>
                     <th>Programa</th>
                     <th class="center-align">Parecer</th>
                     <th class="center-align">Orçamento</th>
@@ -114,8 +121,9 @@
                             ?? optional($solicitacao->material)->orcamento 
                             ?? optional($solicitacao->servico)->orcamento;
                     @endphp
+                    <td>{{ $solicitacao->status->nome }}</td>
+                    <td><a href="{{ route('site.solicitacao', ['id' => $solicitacao->id]) }}" class="hover-underline"><b>{{ $solicitacao->tipo->nome }}</b></a></td>
                     <td><div class="chip">{{ $solicitacao->solicitante->tipo_solicitante }}</div><a href="{{ route('site.solicitante', ['id' => $solicitacao->solicitante->id]) }}" class="black-text hover-underline"><b>{{ Str::upper($solicitacao->solicitante->nome) }}</b></a> (<a href="mailto:{{ $solicitacao->solicitante->email }}" class="hover-underline">{{ $solicitacao->solicitante->email }}</a>)</td>
-                    <td>{{ $solicitacao->tipo->nome }}</td>
                     <td>{{ $solicitacao->programa->nome }}</td>
                     <td class="center-align">
                         @if ($link_parecer)
@@ -145,22 +153,12 @@
     @else
         <div class="container center">
             <h5>Nenhuma solicitacão encontrada.</h5>
-            <br>
-            <a href="{{ route('site.index') }}" class="btn waves-effect waves-light black">Inicial</a>
         </div>
     @endif
 
-    <div class="row">
-        @if (request()->input('search') OR request()->input('tipo_solicitacao_id') OR request()->input('programa_id'))
-            {{ $solicitacoes->appends([
-                'search' => request()->input('search'), 
-                'programa_id' => request()->input('programa_id'),
-                'tipo_solicitacao_id' => request()->input('tipo_solicitacao_id'),
-                ])
-                ->links('common/pagination') }}
-        @else
-            {{ $solicitacoes->links('common/pagination') }}
-        @endif
-    </div>
+    {{
+        $solicitacoes->appends(request()->only(['search', 'programa_id', 'tipo_solicitacao_id', 'status_id']))
+            ->links('common/pagination')
+    }}
 
 @endsection

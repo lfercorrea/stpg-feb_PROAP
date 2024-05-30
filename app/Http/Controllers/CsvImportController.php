@@ -219,6 +219,8 @@ class CsvImportController extends Controller
                     'programa_categoria_id' => ProgramaCategoria::where('nome', $importacao->categoria)->value('id'),
                     'tipo_solicitacao_id' => SolicitacaoTipo::where('nome', $importacao->tipo_solicitacao)->value('id'),
                     'nome_do_orientador' => $importacao->nome_do_orientador,
+                    'status_id' => 6,
+                    'observacao' => $importacao->status,
                     'carimbo_data_hora' => $importacao->carimbo_data_hora,
                     'importacao_id' => $importacao->id,
                 ];

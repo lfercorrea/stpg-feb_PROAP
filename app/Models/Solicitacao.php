@@ -22,8 +22,14 @@ class Solicitacao extends Model
         'servico_id',
         'importacao_id',
         'nome_do_orientador',
+        'status_id',
+        'observacao',
         'carimbo_data_hora',
     ];
+
+    public function status() {
+        return $this->belongsTo(Status::class);
+    }
 
     public function tipo() {
         return $this->belongsTo(SolicitacaoTipo::class, 'tipo_solicitacao_id');
@@ -61,13 +67,19 @@ class Solicitacao extends Model
         return $this->hasMany(Nota::class);
     }
 
-    public static function search($search, $programa_id = null, $tipo_solicitacao = null) {
+    public static function search($search, $programa_id = null, $tipo_solicitacao = null, $status_id = null) {
         $query = self::query();
 
         if($search) {
             $query->whereHas('solicitante', function($query) use($search) {
                 $query->where('nome', 'like', '%' . $search . '%')
                     ->orWhere('email', 'like', '%' . $search . '%');
+            });
+        }
+        
+        if($programa_id) {
+            $query->whereHas('programa', function($query) use($programa_id) {
+                $query->whereIn('programa_id', $programa_id);
             });
         }
 
@@ -77,12 +89,12 @@ class Solicitacao extends Model
             });
         }
 
-        if($programa_id) {
-            $query->whereHas('programa', function($query) use($programa_id) {
-                $query->whereIn('programa_id', $programa_id);
+        if($status_id) {
+            $query->whereHas('status', function($query) use($status_id) {
+                $query->where('status_id', $status_id);
             });
         }
-
+        
         return $query;
     }
 }

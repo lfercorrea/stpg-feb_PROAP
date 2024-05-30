@@ -1,5 +1,15 @@
 @extends('layout')
 @section('content')
+    <div id="confirmModal" class="modal">
+        <div class="modal-content">
+            <h5>Confirmar</h5>
+            <p>Vai mesmo excluir esta nota?</p>
+        </div>
+        <div class="modal-footer">
+            <a class="modal-close waves-effect btn-flat">Cancelar</a>
+            <a href="#" id="confirmDelete" class="waves-effect waves-light btn red darken-1">Confirmar</a>
+        </div>
+    </div>
     <div class="side-margins">
         <div class="row">
             <table class="compact-table striped responsive-table">
@@ -63,71 +73,114 @@
                 </tr>
             </table>
         </div>
-        <div class="container">
-            @if ($solicitacao->nota->isNotEmpty())
-                <div class="section-margins">
-                    <h5>Notas/recibos</h5>
-                </div>
-                <table class="compact-table striped responsive-table">
-                    <tr>
-                        <th>Nº</th>
-                        <th>Data</th>
-                        <th>Descrição</th>
-                        <th>Fonte pagadora</th>
-                        <th>Valor</th>
-                    </tr>
-                    @foreach ($solicitacao->nota as $nota)
-                        <tr>
-                            <td>{{ $nota->numero }}</td>
-                            <td>{{ $nota->data }}</td>
-                            <td>{{ $nota->descricao }}</td>
-                            <td>{{ $nota->fonte_pagadora->nome }}</td>
-                            <td>{{ $nota->valor }}</td>
-                        </tr>
-                    @endforeach
-                </table>
-            @endif
-            <div class="section-margins">
-                <h5>Lançar nota/recibo</h5>
-            </div>
-            <div class="row">
-                <form class="col s12" action="{{ route('site.lancar_nota', ['id' => $solicitacao->id]) }}" method="POST">
+        <div class="row">
+            <form class="col s12" action="{{ route('site.solicitacao.update', ['id' => $solicitacao->id]) }}" method="POST">
+                <div class="input-field col s12 m3">
                     @csrf
-                    <div class="row">
-                        <div class="input-field col s7 m6">
-                            <input name="numero" id="numero" type="text" maxlength="255" class="validate" required>
-                            <label for="numero">Número</label>
-                        </div>
-                        <div class="input-field col s5 m2">
-                            <input name="data" id="data" type="date" class="validate" required>
-                            <label for="data">Data</label>
-                        </div>
-                        <div class="input-field col s12 m4">
-                            <select name="fonte_pagadora_id" required>
-                                <option value="" disabled selected>Selecione</option>
-                                @foreach ($fontes_pagadoras as $fonte_pagadora)
-                                    <option value="{{ $fonte_pagadora->id }}">{{ $fonte_pagadora->nome }}</option>
-                                @endforeach
-                            </select>
-                            <label>Fonte pagadora</label>
-                        </div>
-                        <div class="input-field col s12 m9">
-                            <input name="descricao" id="descricao" type="text" class="validate">
-                            <label for="descricao">Descrição/observação</label>
-                        </div>
-                        <div class="input-field col s8 m2">
-                            <input name="valor" id="valor" type="number" min="0" step="0.01" class="validate" required>
-                            <label for="valor">Valor</label>
-                        </div>
-                        <div class="input-field col s4 m1">
-                            <input type="submit" class="input-field btn-small green" value="OK">
-                        </div>
+                    <select name="status_id" required>
+                        <option value="{{ $solicitacao->status->id }}" selected>{{ $solicitacao->status->nome }}</option>
+                        @foreach ($statuses as $status)
+                            <option value="{{ $status->id }}">{{ $status->nome }}</option>
+                        @endforeach
+                    </select>
+                    <label>Status</label>
+                </div>
+                <div class="input-field col s12 m8">
+                    <input id="observacao" name="observacao" type="text" class="validate" value="{{ old('observacao', $solicitacao->observacao) }}">
+                    <label for="observacao">Observação</label>
+                </div>
+                <div class="input-field col s12 m1">
+                    <button class="btn-small green waves-effect waves-light" type="submit" name="action">OK</button>
+                </div>
+            </form>
+        </div>
+        <div class="row">
+            <div class="container">
+                @if ($solicitacao->nota->isNotEmpty())
+                    <div class="section-margins">
+                        <h5>Notas/recibos</h5>
                     </div>
-                </form>
+                    <table class="compact-table striped responsive-table">
+                        <tr>
+                            <th class="center-align"><i class="material-icons tiny">delete</i></th>
+                            <th>Nº</th>
+                            <th>Data</th>
+                            <th>Descrição</th>
+                            <th>Fonte pagadora</th>
+                            <th>Valor</th>
+                        </tr>
+                        @foreach ($solicitacao->nota as $nota)
+                            <tr>
+                                <td class="center-align"><a href="{{ route('site.nota.destroy', ['solicitacao_id' => $solicitacao->id, 'nota_id' => $nota->id]) }}" class="confirm-link"><i class="material-icons tiny red-text">delete</i></a></td>
+                                <td>{{ $nota->numero }}</td>
+                                <td>{{ \Carbon\Carbon::parse($nota->data)->format('d/m/Y') }}</td>
+                                <td>{{ $nota->descricao }}</td>
+                                <td>{{ $nota->fonte_pagadora->nome }}</td>
+                                <td>R$&nbsp;{{ number_format($nota->valor, 2, ',', '.') }}</td>
+                            </tr>
+                        @endforeach
+                    </table>
+                    <table class="compact-table striped responsive-table">
+                        <thead>
+                            <tr>
+                                <th colspan="2" class="center-align">Totais</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="right-align"><b>Notas:</b></td>
+                                <td class="right-align"><span class="red-text darken-4"><b>{{ $count_notas }}</b></span></td>
+                            </tr>
+                            <tr>
+                                <td class="right-align"><b>Valor:</b></td>
+                                <td class="right-align"><span class="red-text darken-4"><b>R$&nbsp;{{ $valor_total }}</b></span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                @endif
+                <div class="section-margins">
+                    <h5>Lançar nota/recibo</h5>
+                </div>
+                <div class="row">
+                    <form class="col s12" action="{{ route('site.nota.store', ['id' => $solicitacao->id]) }}" method="POST">
+                        @csrf
+                        <div class="row">
+                            <div class="input-field col s7 m6">
+                                <input name="numero" id="numero" type="text" maxlength="255" class="validate" required>
+                                <label for="numero">Número</label>
+                            </div>
+                            <div class="input-field col s5 m2">
+                                <input name="data" id="data" type="date" class="validate" required>
+                                <label for="data">Data</label>
+                            </div>
+                            <div class="input-field col s12 m4">
+                                <select name="fonte_pagadora_id" required>
+                                    <option value="" disabled selected>Selecione</option>
+                                    @foreach ($fontes_pagadoras as $fonte_pagadora)
+                                        <option value="{{ $fonte_pagadora->id }}">{{ $fonte_pagadora->nome }}</option>
+                                    @endforeach
+                                </select>
+                                <label>Fonte pagadora</label>
+                            </div>
+                            <div class="input-field col s12 m9">
+                                <input name="descricao" id="descricao" type="text" class="validate">
+                                <label for="descricao">Descrição/observação</label>
+                            </div>
+                            <div class="input-field col s8 m2">
+                                <input name="valor" id="valor" type="number" min="0" step="0.01" class="validate" required>
+                                <label for="valor">Valor</label>
+                            </div>
+                            <div class="input-field col s4 m1">
+                                <input type="submit" class="input-field btn-small green" value="OK">
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-        <div class="container center">
-            <a class="btn black waves-effect waves-black" href="{{ route('site.solicitante', ['id' => $solicitacao->solicitante->id]) }}">Voltar</a>
-        </div>
+    </div>
+    <div class="container center">
+        <a class="btn black waves-effect waves-black" href="{{ route('site.solicitacoes') }}">Voltar para solicitações</a>
+        <a class="btn black waves-effect waves-black" href="{{ route('site.solicitante', ['id' => $solicitacao->solicitante->id]) }}">Resumo do solicitante</a>
     </div>
 @endsection

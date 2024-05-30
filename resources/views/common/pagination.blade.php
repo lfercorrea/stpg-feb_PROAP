@@ -7,10 +7,10 @@
             {!! __('Mostrando de') !!}
             <b>{{ $paginator->firstItem() }}</b>
             {!! __('até') !!}
-            <b>{{ $paginator->lastItem() }}</b>
+            <b>{{ $paginator->lastItem() }},</b>
             {!! __('de') !!}
             <b>{{ $paginator->total() }}</b>
-            {!! __('resultados') !!}
+            {!! __('solicitações') !!}
         </p>
 
         <ul class="pagination">
