@@ -4,13 +4,8 @@
     <div class="container">
 
         <div class="section-margins">
-            <h5>Importar solicitações de discentes</h5>
-            <p>
-                Gere o CSV diretamente do Google Sheets e importe por aqui.
-            </p>
-            <p>
-                Observação: se for abrir o CSV no excel primeiro e exportar por ele, verifique se as datas saíram no mesmo formato do google <del>shits</del> sheets. O site espera o formato dd/mm/aaaa com horas no padrão HH.
-            </p>
+            <h5>Importar solicitações de {{ $solicitante }}</h5>
+            @include('common.aviso_importacao')
         </div>
         
         @if ($message = Session::get('success'))
@@ -25,7 +20,7 @@
             </div>
         @endif
 
-        <form action="{{ route('import_discentes_form') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('import_' . $solicitante . '_form') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="col s12 file-field input-field section-margins">
                 <div class="waves-effect waves-light btn red black">
@@ -34,7 +29,7 @@
                 </div>
                 <div class="file-path-wrapper">
                     <input class="file-path validate" type="text">
-                    <label for="file">Selecione o CSV (discentes) "Solicitação de Auxílio PROAP (respostas)"</label>
+                    <label for="file">Selecione o CSV gerado na aba ({{ $solicitante }}) "Solicitação de Auxílio PROAP (respostas)"</label>
                 </div>
             </div>
             <div class="center">

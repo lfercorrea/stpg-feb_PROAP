@@ -11,6 +11,7 @@ Route::get('/', [SiteController::class, 'index'])->name('site.index');
 /**
  * importar csv
  */
+Route::get('import/menu', [CsvImportController::class, 'import_menu'])->name('import_menu');
 Route::get('import/discentes', [CsvImportController::class, 'show_import_discentes_form'])->name('import_discentes_form');
 Route::post('import/discentes', [CsvImportController::class, 'import_discentes'])->name('import_discentes');
 Route::get('import/docentes', [CsvImportController::class, 'show_import_docentes_form'])->name('import_docentes_form');

@@ -49,21 +49,47 @@ class SolicitacaoController extends Controller
             ->paginate(30);
         }
 
-        $vars = [
+        $tipos_solicitacao = SolicitacaoTipo::orderBy('nome', 'asc')->pluck('nome', 'id')->toArray();
+        $programas = Programa::orderBy('nome', 'asc')->pluck('nome', 'id')->toArray();
+        $statuses = Status::all();
+        $count_message = [];
+
+        if(!empty($request->search)) {
+            $count_message[] = "Termo buscado: <b><i>\"$request->search\"</i></b>";
+        }
+        
+        if(!empty($request->tipo_solicitacao_id)) {
+            $count_message[] = "Tipo: <b><i>{$tipos_solicitacao[$request->tipo_solicitacao_id]}</i></b>";
+        }
+        
+        if(!empty($request->status_id)) {
+            $status = $statuses->firstWhere('id', $request->status_id);
+            $count_message[] = "Status: <b><i>{$status->nome}</i></b>";
+        }
+
+        if(!empty($request->programa_id)) {
+            $arr_programas_selecionados = [];
+            
+            foreach($request->programa_id as $selected_id) {
+                $arr_programas_selecionados[] = $programas[$selected_id];
+            }
+
+            $programas_selecionados = implode(', ', $arr_programas_selecionados);
+            $count_message[] = "Programas: <b><i>{$programas_selecionados}</i></b>";
+        }
+
+        $plural = ($count_solicitacoes > 1) ? 's' : '';
+        $search_message = implode("<br>", $count_message);
+        
+        return view('solicitacoes', [
             'page_title' => 'Estoque',
             'solicitacoes' => $solicitacoes,
             'count_solicitacoes' => $count_solicitacoes,
-            'search_term' => $request->search,
-            'search_programa_id' => $request->programa_id,
-            'search_tipo_solicitacao_id' => $request->tipo_solicitacao_id,
-            'search_status_id' => $request->status_id,
-            'tipos_solicitacao' => SolicitacaoTipo::orderBy('nome', 'asc')->pluck('nome', 'id')->toArray(),
-            'programas' => Programa::orderBy('nome', 'asc')->pluck('nome', 'id')->toArray(),
-            'statuses' => Status::all(),
-            'solicitacoes' => $solicitacoes,
-        ];
-        
-        return view('solicitacoes', $vars);
+            'search_message' => $search_message,
+            'tipos_solicitacao' => $tipos_solicitacao,
+            'programas' => $programas,
+            'statuses' => $statuses,
+        ]);
     }
 
     public function show(string $id) {
