@@ -11,4 +11,8 @@ class OutroServico extends Model
 
     protected $table = 'outros_servicos';
     protected $guarded = [];
+
+    public function solicitacoes() {
+        return $this->hasMany(Solicitacao::class);
+    }
 }

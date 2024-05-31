@@ -211,13 +211,13 @@ class CsvImportController extends Controller
                     case 'Contratação de Serviço': // corrigir esse case na importacao de discentes
                         if(!empty($importacao_discentes->servico_tipo)) {
                             // dd(ServicoTipo::firstWhere('nome', $importacao_discentes->servico_tipo)?->id);
-                            Servico::firstOrCreate([
-                                'importacao_discentes_id' => $importacao_discentes->id,
-                            ], [
-                                'servico_tipo_id' => ServicoTipo::firstWhere('nome', $importacao_discentes->servico_tipo)?->id,
-                                'carimbo_data_hora' => $importacao_discentes->carimbo_data_hora,
-                                'importacao_discentes_id' => $importacao_discentes->id,
-                            ]);
+                            // Servico::firstOrCreate([
+                            //     'importacao_discentes_id' => $importacao_discentes->id,
+                            // ], [
+                            //     'servico_tipo_id' => ServicoTipo::firstWhere('nome', $importacao_discentes->servico_tipo)?->id,
+                            //     'carimbo_data_hora' => $importacao_discentes->carimbo_data_hora,
+                            //     'importacao_discentes_id' => $importacao_discentes->id,
+                            // ]);
 
                             switch($importacao_discentes->servico_tipo) {
                                 case 'Tradução de Artigo':
@@ -229,6 +229,7 @@ class CsvImportController extends Controller
                                         'justificativa' => $importacao_discentes->servico_justificativa,
                                         'artigo_a_traduzir' => $importacao_discentes->servico_artigo_a_traduzir,
                                         'orcamento' => $importacao_discentes->servico_orcamento,
+                                        'parecer_orientador' => $importacao_discentes->servico_parecer_orientador,
                                         'carimbo_data_hora' => $importacao_discentes->carimbo_data_hora,
                                         'importacao_discentes_id' => $importacao_discentes->id,
                                     ]);
@@ -242,6 +243,7 @@ class CsvImportController extends Controller
                                         'valor' => $importacao_discentes->manutencao_valor,
                                         'justificativa' => $importacao_discentes->manutencao_justificativa,
                                         'orcamento' => $importacao_discentes->manutencao_orcamento,
+                                        // 'parecer_orientador' => $importacao->manutencao_parecer_orientador,
                                         'carimbo_data_hora' => $importacao_discentes->carimbo_data_hora,
                                         'importacao_discentes_id' => $importacao_discentes->id,
                                     ]);
@@ -321,12 +323,35 @@ class CsvImportController extends Controller
                         }
                         break;
                     case 'Contratação de Serviço':
-                        if(!empty($importacao_discentes->servico_tipo)) {
-                            $dados_discentes['servico_id'] = Servico::where('carimbo_data_hora', $importacao_discentes->carimbo_data_hora)
-                                ->where('servico_tipo_id', ServicoTipo::firstWhere('nome', $importacao_discentes->servico_tipo)?->id)
-                                ->value('id');
+                        // if(!empty($importacao_discentes->servico_tipo)) {
+                        //     $dados_discentes['servico_id'] = Servico::where('carimbo_data_hora', $importacao_discentes->carimbo_data_hora)
+                        //         ->where('servico_tipo_id', ServicoTipo::firstWhere('nome', $importacao_discentes->servico_tipo)?->id)
+                        //         ->value('id');
+                        // }
+                        // break;
+                        switch($importacao_discentes->servico_tipo) {
+                            case 'Tradução de Artigo':
+                                if(!empty($importacao_discentes->servico_titulo_artigo)) {
+                                    $dados_discentes['traducao_artigo_id'] = TraducaoArtigo::where('carimbo_data_hora', $importacao_discentes->carimbo_data_hora)
+                                        ->where('titulo_artigo', $importacao_discentes->servico_titulo_artigo)
+                                        ->value('id');
+                                }
+                                break;
+                            case 'Manutenção e Conservação de Máquinas e Equipamentos':
+                                if(!empty($importacao_discentes->manutencao_descricao)) {
+                                    $dados_discentes['manutencao_id'] = Manutencao::where('carimbo_data_hora', $importacao_discentes->carimbo_data_hora)
+                                        ->where('descricao', $importacao_discentes->manutencao_descricao)
+                                        ->value('id');
+                                }
+                                break;
+                            case 'Outros Serviços':
+                                if(!empty($importacao_discentes->outros_servicos_descricao)) {
+                                    $dados_discentes['outro_servico_id'] = OutroServico::where('carimbo_data_hora', $importacao_discentes->carimbo_data_hora)
+                                        ->where('descricao', $importacao_discentes->outros_servicos_descricao)
+                                        ->value('id');
+                                }
+                                break;
                         }
-                        break;
                     }
                     
                 Solicitacao::firstOrCreate(['importacao_discentes_id' => $importacao_discentes->id], $dados_discentes);
@@ -532,13 +557,13 @@ class CsvImportController extends Controller
                     case 'Contratação de Serviço': // corrigir esse case na importacao de discentes
                         if(!empty($importacao_docentes->servico_tipo)) {
                             // dd(ServicoTipo::firstWhere('nome', $importacao_docentes->servico_tipo)?->id);
-                            Servico::firstOrCreate([
-                                'importacao_docentes_id' => $importacao_docentes->id,
-                            ], [
-                                'servico_tipo_id' => ServicoTipo::firstWhere('nome', $importacao_docentes->servico_tipo)?->id,
-                                'carimbo_data_hora' => $importacao_docentes->carimbo_data_hora,
-                                'importacao_docentes_id' => $importacao_docentes->id,
-                            ]);
+                            // Servico::firstOrCreate([
+                            //     'importacao_docentes_id' => $importacao_docentes->id,
+                            // ], [
+                            //     'servico_tipo_id' => ServicoTipo::firstWhere('nome', $importacao_docentes->servico_tipo)?->id,
+                            //     'carimbo_data_hora' => $importacao_docentes->carimbo_data_hora,
+                            //     'importacao_docentes_id' => $importacao_docentes->id,
+                            // ]);
 
                             switch($importacao_docentes->servico_tipo) {
                                 case 'Tradução de Artigo':
@@ -624,12 +649,35 @@ class CsvImportController extends Controller
                         }
                         break;
                     case 'Contratação de Serviço':
-                        if(!empty($importacao_docentes->servico_tipo)) {
-                            $dados_docentes['servico_id'] = Servico::where('carimbo_data_hora', $importacao_docentes->carimbo_data_hora)
-                                ->where('servico_tipo_id', ServicoTipo::firstWhere('nome', $importacao_docentes->servico_tipo)?->id)
-                                ->value('id');
+                        switch($importacao_docentes->servico_tipo) {
+                            case 'Tradução de Artigo':
+                                if(!empty($importacao_docentes->servico_titulo_artigo)) {
+                                    $dados_docentes['traducao_artigo_id'] = TraducaoArtigo::where('carimbo_data_hora', $importacao_docentes->carimbo_data_hora)
+                                        ->where('titulo_artigo', $importacao_docentes->servico_titulo_artigo)
+                                        ->value('id');
+                                }
+                                break;
+                            case 'Manutenção e Conservação de Máquinas e Equipamentos':
+                                if(!empty($importacao_docentes->manutencao_descricao)) {
+                                    $dados_docentes['manutencao_id'] = Manutencao::where('carimbo_data_hora', $importacao_docentes->carimbo_data_hora)
+                                        ->where('descricao', $importacao_docentes->manutencao_descricao)
+                                        ->value('id');
+                                }
+                                break;
+                            case 'Outros Serviços':
+                                if(!empty($importacao_docentes->outros_servicos_descricao)) {
+                                    $dados_docentes['outro_servico_id'] = OutroServico::where('carimbo_data_hora', $importacao_docentes->carimbo_data_hora)
+                                        ->where('descricao', $importacao_docentes->outros_servicos_descricao)
+                                        ->value('id');
+                                }
+                                break;
                         }
-                        break;
+                        // if(!empty($importacao_docentes->servico_tipo)) {
+                        //     $dados_docentes['servico_id'] = Servico::where('carimbo_data_hora', $importacao_docentes->carimbo_data_hora)
+                        //         ->where('servico_tipo_id', ServicoTipo::firstWhere('nome', $importacao_docentes->servico_tipo)?->id)
+                        //         ->value('id');
+                        // }
+                        // break;
                     }
                     
                 Solicitacao::firstOrCreate(['importacao_docentes_id' => $importacao_docentes->id], $dados_docentes);

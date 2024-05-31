@@ -11,4 +11,8 @@ class Manutencao extends Model
 
     protected $table = 'manutencoes';
     protected $guarded = [];
+
+    public function solicitacoes() {
+        return $this->hasMany(Solicitacao::class);
+    }
 }

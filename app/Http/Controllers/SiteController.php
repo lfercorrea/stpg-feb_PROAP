@@ -18,12 +18,16 @@ class SiteController extends Controller
     }
 
     public function importacoes() {
-        $solicitacoes = ImportacoesDiscentes::orderBy('id', 'asc')->get();
-        $vazia = ImportacoesDiscentes::count() === 0;
+        $solicitacoes_discentes = ImportacoesDiscentes::orderBy('id', 'asc')->get();
+        $solicitacoes_docentes = ImportacoesDocentes::orderBy('id', 'asc')->get();
+        $discentes_vazia = ImportacoesDiscentes::count() === 0;
+        $docentes_vazia = ImportacoesDocentes::count() === 0;
 
         return view('importacoes', [
-            'solicitacoes' => $solicitacoes,
-            'vazia' => $vazia,
+            'solicitacoes_discentes' => $solicitacoes_discentes,
+            'solicitacoes_docentes' => $solicitacoes_docentes,
+            'discentes_vazia' => $discentes_vazia,
+            'docentes_vazia' => $docentes_vazia,
         ]);
     }
 
@@ -47,7 +51,9 @@ class SiteController extends Controller
                 'atividade',
                 'evento',
                 'material',
-                'servico',
+                'traducao_artigo',
+                'outro_servico',
+                'manutencao',
             ])
             ->where('solicitante_id', $id)
             ->orderByRaw(" STR_TO_DATE(carimbo_data_hora, '%d/%m/%Y %H:%i:%s') DESC ")

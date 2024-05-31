@@ -25,6 +25,7 @@ return new class extends Migration
             $table->unsignedBigInteger('servico_id')->nullable();
             $table->unsignedBigInteger('manutencao_id')->nullable();
             $table->unsignedBigInteger('outro_servico_id')->nullable();
+            $table->unsignedBigInteger('traducao_artigo_id')->nullable();
             $table->unsignedBigInteger('importacao_discentes_id')->nullable();
             $table->unsignedBigInteger('importacao_docentes_id')->nullable();
             $table->string('nome_do_orientador')->nullable();
@@ -42,6 +43,7 @@ return new class extends Migration
             $table->foreign('servico_id')->references('id')->on('servicos')->onDelete('cascade');
             $table->foreign('manutencao_id')->references('id')->on('manutencoes')->onDelete('cascade');
             $table->foreign('outro_servico_id')->references('id')->on('outros_servicos')->onDelete('cascade');
+            $table->foreign('traducao_artigo_id')->references('id')->on('traducao_artigos')->onDelete('cascade');
 
             $table->timestamps();
         });

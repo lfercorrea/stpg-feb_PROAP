@@ -74,11 +74,13 @@
                                 $link_parecer = optional($solicitacao->evento)->parecer_orientador 
                                     ?? optional($solicitacao->atividade)->parecer_orientador 
                                     ?? optional($solicitacao->material)->parecer_orientador 
-                                    ?? optional($solicitacao->servico)->parecer_orientador;
+                                    ?? optional($solicitacao->traducao_artigo)->parecer_orientador;
                                 $link_orcamento = optional($solicitacao->evento)->orcamento_passagens 
                                     ?? optional($solicitacao->atividade)->orcamento_passagens 
                                     ?? optional($solicitacao->material)->orcamento 
-                                    ?? optional($solicitacao->servico)->orcamento;
+                                    ?? optional($solicitacao->traducao_artigo)->orcamento
+                                    ?? optional($solicitacao->outro_servico)->orcamento
+                                    ?? optional($solicitacao->manutencao)->orcamento;
                             @endphp
                             <td>{{ $solicitacao->status->nome }}</td>
                             <td><a href="{{ route('site.solicitacao', ['id' => $solicitacao->id]) }}"><b>{{ $solicitacao->tipo->nome }}</b>: {{ $resumo_solicitacao }}</td>

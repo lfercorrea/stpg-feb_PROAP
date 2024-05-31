@@ -10,4 +10,8 @@ class TraducaoArtigo extends Model
     use HasFactory;
 
     protected $guarded = [];
+
+    public function solicitacoes() {
+        return $this->hasMany(Solicitacao::class);
+    }
 }
