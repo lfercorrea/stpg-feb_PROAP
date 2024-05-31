@@ -15,23 +15,24 @@ return new class extends Migration
             $table->id();
 
             $table->text('nome')->nullable();
-            $table->string('local')->nullable();
-            $table->string('periodo')->nullable();
-            $table->string('site_evento')->nullable();
+            $table->text('local')->nullable();
+            $table->text('periodo')->nullable();
+            $table->text('site_evento')->nullable();
             $table->text('titulo_trabalho')->nullable();
-            $table->string('forma_participacao')->nullable();
-            $table->string('valor_inscricao')->nullable();
-            $table->string('valor_passagens')->nullable();
-            $table->string('valor_diarias')->nullable();
+            $table->text('forma_participacao')->nullable();
+            $table->text('valor_inscricao')->nullable();
+            $table->text('valor_passagens')->nullable();
+            $table->text('valor_diarias')->nullable();
             $table->text('justificativa')->nullable();
-            $table->string('ja_solicitou_recurso')->nullable();
-            $table->string('artigo_copia')->nullable();
-            $table->string('artigo_aceite')->nullable();
+            $table->text('ja_solicitou_recurso')->nullable();
+            $table->text('artigo_copia')->nullable();
+            $table->text('artigo_aceite')->nullable();
             $table->text('parecer_orientador')->nullable();
-            $table->string('orcamento_passagens')->nullable();
-            $table->string('nome_do_orientador')->nullable();
-            $table->string('carimbo_data_hora');
-            $table->string('importacao_id');
+            $table->text('orcamento_passagens')->nullable();
+            $table->text('nome_do_orientador')->nullable();
+            $table->unsignedBigInteger('importacao_discentes_id')->nullable();
+            $table->unsignedBigInteger('importacao_docentes_id')->nullable();
+            $table->text('carimbo_data_hora');
 
             $table->timestamps();
         });

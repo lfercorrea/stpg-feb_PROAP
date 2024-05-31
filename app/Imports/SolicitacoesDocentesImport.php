@@ -4,6 +4,7 @@ namespace App\Imports;
 
 use App\Models\ImportacoesDocentes;
 use Maatwebsite\Excel\Concerns\ToModel;
+use Illuminate\Support\Facades\Log;
 
 class SolicitacoesDocentesImport implements ToModel
 {
@@ -14,6 +15,8 @@ class SolicitacoesDocentesImport implements ToModel
     */
     public function model(array $row)
     {
+        Log::info('Dados recebidos para inserção: ', $row);
+
         return new ImportacoesDocentes([
             'status' => $row[0],
             'carimbo_data_hora' => $row[1],

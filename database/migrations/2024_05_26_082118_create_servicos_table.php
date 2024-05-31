@@ -14,18 +14,14 @@ return new class extends Migration
         Schema::create('servicos', function (Blueprint $table) {
             $table->id();
 
-            $table->string('tipo')->nullable();
-            $table->text('titulo_artigo')->nullable();
-            $table->string('valor')->nullable();
-            $table->text('justificativa')->nullable();
-            $table->string('artigo_a_traduzir')->nullable();
-            $table->string('orcamento')->nullable();
-            $table->text('parecer_orientador')->nullable();
-            $table->string('nome_do_orientador')->nullable();
+            $table->unsignedBigInteger('servico_tipo_id')->nullable();
+            $table->unsignedBigInteger('importacao_discentes_id')->nullable();
+            $table->unsignedBigInteger('importacao_docentes_id')->nullable();
             $table->string('carimbo_data_hora');
-            $table->string('importacao_id');
 
             $table->timestamps();
+
+            $table->foreign('servico_tipo_id')->references('id')->on('servico_tipos')->onDelete('cascade');
         });
     }
 

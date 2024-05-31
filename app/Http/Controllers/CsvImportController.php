@@ -13,11 +13,16 @@ use App\Models\Atividade;
 use App\Models\Evento;
 use App\Models\Material;
 use App\Models\Servico;
+use App\Models\TraducaoArtigo;
+use App\Models\Manutencao;
+use App\Models\OutroServico;
 use App\Models\ImportacoesDiscentes;
 use App\Models\ImportacoesDocentes;
 use App\Models\Programa;
+use App\Models\DocenteCategoria;
 use App\Models\ProgramaCategoria;
 use App\Models\Solicitacao;
+use App\Models\ServicoTipo;
 use App\Models\SolicitacaoTipo;
 use App\Models\Solicitante;
 
@@ -47,6 +52,9 @@ class CsvImportController extends Controller
     public function import_discentes(Request $request) {
         $request->validate([
             'file' => 'required|mimes:csv,txt',
+        ], [
+            'file.required' => 'Você esqueceu de escolher a planilha',
+            'file.mimes' => 'A planilha deve estar no formato CSV',
         ]);
 
         try{
@@ -57,7 +65,8 @@ class CsvImportController extends Controller
             Excel::import(new SolicitacoesDiscentesImport, $request->file('file'));
             ImportacoesDiscentes::destroy(1); // passa o rodo na linha do csv que contem os cabeçalhos
             ImportacoesDiscentes::whereNull('tipo_solicitante')->update(['tipo_solicitante' => 'Discente']);
-            $importacoes = ImportacoesDiscentes::all();
+            $importacoes_discentes = ImportacoesDiscentes::all();
+            // dd($importacoes_discentes);
 
             /**
              * realimenta a tabela de programas conforme a planilha
@@ -137,136 +146,190 @@ class CsvImportController extends Controller
             /**
              * segmentar conforme tipo de evento
              */
-            foreach($importacoes as $importacao) {
-                switch($importacao->tipo_solicitacao) {
+            foreach($importacoes_discentes as $importacao_discentes) {
+                switch($importacao_discentes->tipo_solicitacao) {
                     case 'Auxílio para Participação em Evento':
-                        if(!empty($importacao->evento_nome)) {
+                        if(!empty($importacao_discentes->evento_nome)) {
                             Evento::firstOrCreate([
-                                'importacao_id' => $importacao->id,
+                                'importacao_discentes_id' => $importacao_discentes->id,
                             ], [
-                                'nome' => $importacao->evento_nome,
-                                'local' => $importacao->evento_local,
-                                'periodo' => $importacao->evento_periodo,
-                                'site_evento' => $importacao->evento_site_evento,
-                                'titulo_trabalho' => $importacao->evento_titulo_trabalho,
-                                'forma_participacao' => $importacao->evento_forma_participacao,
-                                'valor_inscricao' => $importacao->evento_valor_inscricao,
-                                'valor_passagens' => $importacao->evento_valor_passagens,
-                                'valor_diarias' => $importacao->evento_valor_diarias,
-                                'justificativa' => $importacao->evento_justificativa,
-                                'ja_solicitou_recurso' => $importacao->evento_ja_solicitou_recurso,
-                                'artigo_copia' => $importacao->evento_artigo_copia,
-                                'artigo_aceite' => $importacao->evento_artigo_aceite,
-                                'parecer_orientador' => $importacao->evento_parecer_orientador,
-                                'orcamento_passagens' => $importacao->evento_orcamento_passagens,
-                                'carimbo_data_hora' => $importacao->carimbo_data_hora,
-                                'importacao_id' => $importacao->id,
+                                'nome' => $importacao_discentes->evento_nome,
+                                'local' => $importacao_discentes->evento_local,
+                                'periodo' => $importacao_discentes->evento_periodo,
+                                'site_evento' => $importacao_discentes->evento_site_evento,
+                                'titulo_trabalho' => $importacao_discentes->evento_titulo_trabalho,
+                                'forma_participacao' => $importacao_discentes->evento_forma_participacao,
+                                'valor_inscricao' => $importacao_discentes->evento_valor_inscricao,
+                                'valor_passagens' => $importacao_discentes->evento_valor_passagens,
+                                'valor_diarias' => $importacao_discentes->evento_valor_diarias,
+                                'justificativa' => $importacao_discentes->evento_justificativa,
+                                'ja_solicitou_recurso' => $importacao_discentes->evento_ja_solicitou_recurso,
+                                'artigo_copia' => $importacao_discentes->evento_artigo_copia,
+                                'artigo_aceite' => $importacao_discentes->evento_artigo_aceite,
+                                'parecer_orientador' => $importacao_discentes->evento_parecer_orientador,
+                                'orcamento_passagens' => $importacao_discentes->evento_orcamento_passagens,
+                                'carimbo_data_hora' => $importacao_discentes->carimbo_data_hora,
+                                'importacao_discentes_id' => $importacao_discentes->id,
                             ]);
                         }
                         break;
                     case 'Auxílio para Pesquisa de Campo':
-                        if(!empty($importacao->atividade_descricao)) {
+                        if(!empty($importacao_discentes->atividade_descricao)) {
                             Atividade::firstOrCreate([
-                                'importacao_id' => $importacao->id,
+                                'importacao_discentes_id' => $importacao_discentes->id,
                             ], [
-                                'descricao' => $importacao->atividade_descricao,
-                                'local' => $importacao->atividade_local,
-                                'periodo' => $importacao->atividade_periodo,
-                                'valor_diarias' => $importacao->atividade_valor_diarias,
-                                'valor_passagens' => $importacao->atividade_valor_passagens,
-                                'justificativa' => $importacao->atividade_justificativa,
-                                'carta_convite' => $importacao->atividade_carta_convite,
-                                'parecer_orientador' => $importacao->atividade_parecer_orientador,
-                                'orcamento_passagens' => $importacao->atividade_orcamento_passagens,
-                                'carimbo_data_hora' => $importacao->carimbo_data_hora,
-                                'importacao_id' => $importacao->id,
+                                'descricao' => $importacao_discentes->atividade_descricao,
+                                'local' => $importacao_discentes->atividade_local,
+                                'periodo' => $importacao_discentes->atividade_periodo,
+                                'valor_diarias' => $importacao_discentes->atividade_valor_diarias,
+                                'valor_passagens' => $importacao_discentes->atividade_valor_passagens,
+                                'justificativa' => $importacao_discentes->atividade_justificativa,
+                                'carta_convite' => $importacao_discentes->atividade_carta_convite,
+                                'parecer_orientador' => $importacao_discentes->atividade_parecer_orientador,
+                                'orcamento_passagens' => $importacao_discentes->atividade_orcamento_passagens,
+                                'carimbo_data_hora' => $importacao_discentes->carimbo_data_hora,
+                                'importacao_discentes_id' => $importacao_discentes->id,
                             ]);
                         }
                         break;
                     case 'Aquisição de Material':
-                        if(!empty($importacao->material_descricao)) {
+                        if(!empty($importacao_discentes->material_descricao)) {
                             Material::firstOrCreate([
-                                'importacao_id' => $importacao->id,
+                                'importacao_discentes_id' => $importacao_discentes->id,
                             ], [
-                                'descricao' => $importacao->material_descricao,
-                                'valor' => $importacao->material_valor,
-                                'justificativa' => $importacao->material_justificativa,
-                                'ja_solicitou_recurso' => $importacao->material_ja_solicitou_recurso,
-                                'orcamento' => $importacao->material_orcamento,
-                                'parecer_orientador' => $importacao->material_parecer_orientador,
-                                'carimbo_data_hora' => $importacao->carimbo_data_hora,
-                                'importacao_id' => $importacao->id,
+                                'descricao' => $importacao_discentes->material_descricao,
+                                'valor' => $importacao_discentes->material_valor,
+                                'justificativa' => $importacao_discentes->material_justificativa,
+                                'ja_solicitou_recurso' => $importacao_discentes->material_ja_solicitou_recurso,
+                                'orcamento' => $importacao_discentes->material_orcamento,
+                                'parecer_orientador' => $importacao_discentes->material_parecer_orientador,
+                                'carimbo_data_hora' => $importacao_discentes->carimbo_data_hora,
+                                'importacao_discentes_id' => $importacao_discentes->id,
                             ]);
                         }
                         break;
-                    case 'Contratação de Serviço':
-                        if(!empty($importacao->servico_tipo)) {
+                    case 'Contratação de Serviço': // corrigir esse case na importacao de discentes
+                        if(!empty($importacao_discentes->servico_tipo)) {
+                            // dd(ServicoTipo::firstWhere('nome', $importacao_discentes->servico_tipo)?->id);
                             Servico::firstOrCreate([
-                                'importacao_id' => $importacao->id,
+                                'importacao_discentes_id' => $importacao_discentes->id,
                             ], [
-                                'tipo' => $importacao->servico_tipo,
-                                'titulo_artigo' => $importacao->servico_titulo_artigo,
-                                'valor' => $importacao->servico_valor,
-                                'justificativa' => $importacao->servico_justificativa,
-                                'artigo_a_traduzir' => $importacao->servico_artigo_a_traduzir,
-                                'orcamento' => $importacao->servico_orcamento,
-                                'parecer_orientador' => $importacao->servico_parecer_orientador,
-                                'carimbo_data_hora' => $importacao->carimbo_data_hora,
-                                'importacao_id' => $importacao->id,
+                                'servico_tipo_id' => ServicoTipo::firstWhere('nome', $importacao_discentes->servico_tipo)?->id,
+                                'carimbo_data_hora' => $importacao_discentes->carimbo_data_hora,
+                                'importacao_discentes_id' => $importacao_discentes->id,
                             ]);
+
+                            switch($importacao_discentes->servico_tipo) {
+                                case 'Tradução de Artigo':
+                                    TraducaoArtigo::firstOrCreate([
+                                        'importacao_discentes_id' => $importacao_discentes->id,
+                                    ], [
+                                        'titulo_artigo' => $importacao_discentes->servico_titulo_artigo,
+                                        'valor' => $importacao_discentes->servico_valor,
+                                        'justificativa' => $importacao_discentes->servico_justificativa,
+                                        'artigo_a_traduzir' => $importacao_discentes->servico_artigo_a_traduzir,
+                                        'orcamento' => $importacao_discentes->servico_orcamento,
+                                        'carimbo_data_hora' => $importacao_discentes->carimbo_data_hora,
+                                        'importacao_discentes_id' => $importacao_discentes->id,
+                                    ]);
+                                    break;
+                                case 'Manutenção e Conservação de Máquinas e Equipamentos':
+                                    Manutencao::firstOrCreate([
+                                        'importacao_discentes_id' => $importacao_discentes->id,
+                                    ], [
+                                        'descricao' => $importacao_discentes->manutencao_descricao,
+                                        'numero_patrimonio' => $importacao_discentes->manutencao_numero_patrimonio,
+                                        'valor' => $importacao_discentes->manutencao_valor,
+                                        'justificativa' => $importacao_discentes->manutencao_justificativa,
+                                        'orcamento' => $importacao_discentes->manutencao_orcamento,
+                                        'carimbo_data_hora' => $importacao_discentes->carimbo_data_hora,
+                                        'importacao_discentes_id' => $importacao_discentes->id,
+                                    ]);
+                                    break;
+                                case 'Outros Serviços':
+                                    OutroServico::firstOrCreate([
+                                        'importacao_discentes_id' => $importacao_discentes->id,
+                                    ], [
+                                        'descricao' => $importacao_discentes->outros_servicos_descricao,
+                                        'valor' => $importacao_discentes->outros_servicos_valor,
+                                        'justificativa' => $importacao_discentes->outros_servicos_justificativa,
+                                        'orcamento' => $importacao_discentes->outros_servicos_orcamento,
+                                        'carimbo_data_hora' => $importacao_discentes->carimbo_data_hora,
+                                        'importacao_discentes_id' => $importacao_discentes->id,
+                                    ]);
+                                    break;
+                            }
                         }
                         break;
+                    // case 'Contratação de Serviço':
+                    //     if(!empty($importacao_discentes->servico_tipo)) {
+                    //         Servico::firstOrCreate([
+                    //             'importacao_discentes_id' => $importacao_discentes->id,
+                    //         ], [
+                    //             'servico_tipo_id' => ServicoTipo::firstWhere('nome', $importacao_discentes->servico_tipo)?->id,
+                    //             'titulo_artigo' => $importacao_discentes->servico_titulo_artigo,
+                    //             'valor' => $importacao_discentes->servico_valor,
+                    //             'justificativa' => $importacao_discentes->servico_justificativa,
+                    //             'artigo_a_traduzir' => $importacao_discentes->servico_artigo_a_traduzir,
+                    //             'orcamento' => $importacao_discentes->servico_orcamento,
+                    //             'parecer_orientador' => $importacao_discentes->servico_parecer_orientador,
+                    //             'carimbo_data_hora' => $importacao_discentes->carimbo_data_hora,
+                    //             'importacao_discentes_id' => $importacao_discentes->id,
+                    //         ]);
+                    //     }
+                    //     break;
                 }
             }
 
             /**
              * finalmente, a tabela de solicitacoes que também fornecerá os relacionamentos
              */
-            foreach($importacoes as $importacao) {
-                $dados = [
-                    'solicitante_id' => Solicitante::where('email', $importacao->email)->value('id'),
-                    'programa_id' => Programa::where('nome', $importacao->programa)->value('id'),
-                    'programa_categoria_id' => ProgramaCategoria::where('nome', $importacao->categoria)->value('id'),
-                    'tipo_solicitacao_id' => SolicitacaoTipo::where('nome', $importacao->tipo_solicitacao)->value('id'),
-                    'nome_do_orientador' => $importacao->nome_do_orientador,
+            foreach($importacoes_discentes as $importacao_discentes) {
+                // dd($importacao_discentes->id);
+                $dados_discentes = [
+                    'solicitante_id' => Solicitante::where('email', $importacao_discentes->email)->value('id'),
+                    'programa_id' => Programa::where('nome', $importacao_discentes->programa)->value('id'),
+                    'programa_categoria_id' => ProgramaCategoria::where('nome', $importacao_discentes->categoria)->value('id'),
+                    'tipo_solicitacao_id' => SolicitacaoTipo::where('nome', $importacao_discentes->tipo_solicitacao)->value('id'),
+                    'nome_do_orientador' => $importacao_discentes->nome_do_orientador,
                     'status_id' => 6,
-                    'observacao' => $importacao->status,
-                    'carimbo_data_hora' => $importacao->carimbo_data_hora,
-                    'importacao_id' => $importacao->id,
+                    'observacao' => $importacao_discentes->status,
+                    'carimbo_data_hora' => $importacao_discentes->carimbo_data_hora,
+                    'importacao_discentes_id' => $importacao_discentes->id,
                 ];
 
-                switch($importacao->tipo_solicitacao) {
+                switch($importacao_discentes->tipo_solicitacao) {
                     case 'Auxílio para Pesquisa de Campo':
-                        if(!empty($importacao->atividade_descricao)) {
-                            $dados['atividade_id'] = Atividade::where('carimbo_data_hora', $importacao->carimbo_data_hora)
-                                ->where('descricao', $importacao->atividade_descricao)
+                        if(!empty($importacao_discentes->atividade_descricao)) {
+                            $dados_discentes['atividade_id'] = Atividade::where('carimbo_data_hora', $importacao_discentes->carimbo_data_hora)
+                                ->where('descricao', $importacao_discentes->atividade_descricao)
                                 ->value('id');
                         }
                         break;
                     case 'Auxílio para Participação em Evento':
-                        if(!empty($importacao->evento_nome)) {
-                            $dados['evento_id'] = Evento::where('carimbo_data_hora', $importacao->carimbo_data_hora)
-                                ->where('nome', $importacao->evento_nome)
+                        if(!empty($importacao_discentes->evento_nome)) {
+                            $dados_discentes['evento_id'] = Evento::where('carimbo_data_hora', $importacao_discentes->carimbo_data_hora)
+                                ->where('nome', $importacao_discentes->evento_nome)
                                 ->value('id');
                         }
                         break;
                     case 'Aquisição de Material':
-                        if(!empty($importacao->material_descricao)) {
-                            $dados['material_id'] = Material::where('carimbo_data_hora', $importacao->carimbo_data_hora)
-                                ->where('descricao', $importacao->material_descricao)
+                        if(!empty($importacao_discentes->material_descricao)) {
+                            $dados_discentes['material_id'] = Material::where('carimbo_data_hora', $importacao_discentes->carimbo_data_hora)
+                                ->where('descricao', $importacao_discentes->material_descricao)
                                 ->value('id');
                         }
                         break;
                     case 'Contratação de Serviço':
-                        if(!empty($importacao->servico_tipo)) {
-                            $dados['servico_id'] = Servico::where('carimbo_data_hora', $importacao->carimbo_data_hora)
-                                ->where('titulo_artigo', $importacao->servico_titulo_artigo)
+                        if(!empty($importacao_discentes->servico_tipo)) {
+                            $dados_discentes['servico_id'] = Servico::where('carimbo_data_hora', $importacao_discentes->carimbo_data_hora)
+                                ->where('servico_tipo_id', ServicoTipo::firstWhere('nome', $importacao_discentes->servico_tipo)?->id)
                                 ->value('id');
                         }
                         break;
                     }
                     
-                Solicitacao::firstOrCreate(['importacao_id' => $importacao->id], $dados);
+                Solicitacao::firstOrCreate(['importacao_discentes_id' => $importacao_discentes->id], $dados_discentes);
             }
 
             return back()->with('success', 'Arquivo importado.');
@@ -290,6 +353,9 @@ class CsvImportController extends Controller
     public function import_docentes(Request $request) {
         $request->validate([
             'file' => 'required|mimes:csv,txt',
+        ], [
+            'file.required' => 'Você esqueceu de escolher a planilha',
+            'file.mimes' => 'A planilha deve estar no formato CSV',
         ]);
 
         try{
@@ -299,8 +365,8 @@ class CsvImportController extends Controller
             ImportacoesDocentes::truncate();
             Excel::import(new SolicitacoesDocentesImport, $request->file('file'));
             ImportacoesDocentes::destroy(1); // passa o rodo na linha do csv que contem os cabeçalhos
-            ImportacoesDocentes::whereNull('tipo_solicitante')->update(['tipo_solicitante' => 'Docente']);
-            $importacoes = ImportacoesDocentes::all();
+            // ImportacoesDocentes::whereNull('tipo_solicitante')->update(['tipo_solicitante' => 'Docente']);
+            $importacoes_docentes = ImportacoesDocentes::all();
 
             /**
              * realimenta a tabela de programas conforme a planilha
@@ -311,23 +377,27 @@ class CsvImportController extends Controller
                 ->get();
                 
             foreach($programas_importados_distintos as $distinto) {
-                Programa::firstOrCreate([
-                    'nome' => $distinto->programa,
-                ]);
+                if(!empty($distinto->programa)) {
+                    Programa::firstOrCreate([
+                        'nome' => $distinto->programa,
+                    ]);
+                }
             }
 
             /**
              * realimenta a tabela de programa_categorias conforme a planilha
              */
-            $programa_categorias_importados_distintos = DB::table('importacoes_docentes')
+            $categorias_importadas_distintas = DB::table('importacoes_docentes')
                 ->select('categoria')
                 ->distinct()
                 ->get();
 
-            foreach($programa_categorias_importados_distintos as $distinto) {
-                ProgramaCategoria::firstOrCreate([
-                    'nome' => $distinto->categoria,
-                ]);
+            foreach($categorias_importadas_distintas as $distinta) {
+                if(!empty($distinta->categoria)) {
+                    DocenteCategoria::firstOrCreate([
+                        'categoria' => $distinta->categoria,
+                    ]);
+                }
             }
 
             /**
@@ -349,7 +419,7 @@ class CsvImportController extends Controller
                 ], [
                     'email' => $distinto->email,
                     'nome' => $distinto->nome,
-                    'tipo_solicitante' => $distinto->tipo_solicitante,
+                    'tipo_solicitante' => $distinto->categoria,
                     'cpf' => $distinto->cpf,
                     'rg' => $distinto->rg,
                     'rg_data_expedicao' => $distinto->rg_data_expedicao,
@@ -372,91 +442,144 @@ class CsvImportController extends Controller
                 ->get();
                 
             foreach($tipos_solicitacao_distintos as $distinto) {
-                SolicitacaoTipo::firstOrCreate([
-                    'nome' => $distinto->tipo_solicitacao,
-                ]);
+                if(!empty($distinto->tipo_solicitacao)) {
+                    SolicitacaoTipo::firstOrCreate([
+                        'nome' => $distinto->tipo_solicitacao,
+                    ]);
+                }
             }
 
             /**
-             * segmentar conforme tipo de evento
+             * realimenta a tabela de tipos de serviço e injeta na respectiva tabela
              */
-            foreach($importacoes as $importacao) {
-                switch($importacao->tipo_solicitacao) {
+            $tipos_servico_distintos = DB::table('importacoes_docentes')
+                ->select('servico_tipo')
+                ->distinct('servico_tipo')
+                ->get();
+                
+            foreach($tipos_servico_distintos as $distinto) {
+                if(!empty($distinto->servico_tipo)) {
+                    ServicoTipo::firstOrCreate([
+                        'nome' => $distinto->servico_tipo,
+                    ]);
+                }
+            }
+
+            $servico_tipos = ServicoTipo::all();
+
+            /**
+             * segmentar conforme tipo de solicitacao
+             */
+            foreach($importacoes_docentes as $importacao_docentes) {
+                switch($importacao_docentes->tipo_solicitacao) {
                     case 'Auxílio para Participação em Evento':
-                        if(!empty($importacao->evento_nome)) {
+                        if(!empty($importacao_docentes->evento_nome)) {
                             Evento::firstOrCreate([
-                                'importacao_id' => $importacao->id,
+                                'importacao_docentes_id' => $importacao_docentes->id,
                             ], [
-                                'nome' => $importacao->evento_nome,
-                                'local' => $importacao->evento_local,
-                                'periodo' => $importacao->evento_periodo,
-                                'site_evento' => $importacao->evento_site_evento,
-                                'titulo_trabalho' => $importacao->evento_titulo_trabalho,
-                                'forma_participacao' => $importacao->evento_forma_participacao,
-                                'valor_inscricao' => $importacao->evento_valor_inscricao,
-                                'valor_passagens' => $importacao->evento_valor_passagens,
-                                'valor_diarias' => $importacao->evento_valor_diarias,
-                                'justificativa' => $importacao->evento_justificativa,
-                                'ja_solicitou_recurso' => $importacao->evento_ja_solicitou_recurso,
-                                'artigo_copia' => $importacao->evento_artigo_copia,
-                                'artigo_aceite' => $importacao->evento_artigo_aceite,
-                                'parecer_orientador' => $importacao->evento_parecer_orientador,
-                                'orcamento_passagens' => $importacao->evento_orcamento_passagens,
-                                'carimbo_data_hora' => $importacao->carimbo_data_hora,
-                                'importacao_id' => $importacao->id,
+                                'nome' => $importacao_docentes->evento_nome,
+                                'local' => $importacao_docentes->evento_local,
+                                'periodo' => $importacao_docentes->evento_periodo,
+                                'site_evento' => $importacao_docentes->evento_site_evento,
+                                'titulo_trabalho' => $importacao_docentes->evento_titulo_trabalho,
+                                'forma_participacao' => $importacao_docentes->evento_forma_participacao,
+                                'valor_inscricao' => $importacao_docentes->evento_valor_inscricao,
+                                'valor_passagens' => $importacao_docentes->evento_valor_passagens,
+                                'valor_diarias' => $importacao_docentes->evento_valor_diarias,
+                                'justificativa' => $importacao_docentes->evento_justificativa,
+                                'ja_solicitou_recurso' => $importacao_docentes->evento_ja_solicitou_recurso,
+                                'artigo_copia' => $importacao_docentes->evento_artigo_copia,
+                                'artigo_aceite' => $importacao_docentes->evento_artigo_aceite,
+                                'orcamento_passagens' => $importacao_docentes->evento_orcamento_passagens,
+                                'carimbo_data_hora' => $importacao_docentes->carimbo_data_hora,
+                                'importacao_docentes_id' => $importacao_docentes->id,
                             ]);
                         }
                         break;
                     case 'Auxílio para Pesquisa de Campo':
-                        if(!empty($importacao->atividade_descricao)) {
+                        if(!empty($importacao_docentes->atividade_descricao)) {
                             Atividade::firstOrCreate([
-                                'importacao_id' => $importacao->id,
+                                'importacao_docentes_id' => $importacao_docentes->id,
                             ], [
-                                'descricao' => $importacao->atividade_descricao,
-                                'local' => $importacao->atividade_local,
-                                'periodo' => $importacao->atividade_periodo,
-                                'valor_diarias' => $importacao->atividade_valor_diarias,
-                                'valor_passagens' => $importacao->atividade_valor_passagens,
-                                'justificativa' => $importacao->atividade_justificativa,
-                                'carta_convite' => $importacao->atividade_carta_convite,
-                                'parecer_orientador' => $importacao->atividade_parecer_orientador,
-                                'orcamento_passagens' => $importacao->atividade_orcamento_passagens,
-                                'carimbo_data_hora' => $importacao->carimbo_data_hora,
-                                'importacao_id' => $importacao->id,
+                                'descricao' => $importacao_docentes->atividade_descricao,
+                                'local' => $importacao_docentes->atividade_local,
+                                'periodo' => $importacao_docentes->atividade_periodo,
+                                'valor_diarias' => $importacao_docentes->atividade_valor_diarias,
+                                'valor_passagens' => $importacao_docentes->atividade_valor_passagens,
+                                'justificativa' => $importacao_docentes->atividade_justificativa,
+                                'carta_convite' => $importacao_docentes->atividade_carta_convite,
+                                'orcamento_passagens' => $importacao_docentes->atividade_orcamento_passagens,
+                                'carimbo_data_hora' => $importacao_docentes->carimbo_data_hora,
+                                'importacao_docentes_id' => $importacao_docentes->id,
                             ]);
                         }
                         break;
                     case 'Aquisição de Material':
-                        if(!empty($importacao->material_descricao)) {
+                        if(!empty($importacao_docentes->material_descricao)) {
                             Material::firstOrCreate([
-                                'importacao_id' => $importacao->id,
+                                'importacao_docentes_id' => $importacao_docentes->id,
                             ], [
-                                'descricao' => $importacao->material_descricao,
-                                'valor' => $importacao->material_valor,
-                                'justificativa' => $importacao->material_justificativa,
-                                'ja_solicitou_recurso' => $importacao->material_ja_solicitou_recurso,
-                                'orcamento' => $importacao->material_orcamento,
-                                'parecer_orientador' => $importacao->material_parecer_orientador,
-                                'carimbo_data_hora' => $importacao->carimbo_data_hora,
-                                'importacao_id' => $importacao->id,
+                                'descricao' => $importacao_docentes->material_descricao,
+                                'valor' => $importacao_docentes->material_valor,
+                                'justificativa' => $importacao_docentes->material_justificativa,
+                                'ja_solicitou_recurso' => $importacao_docentes->material_ja_solicitou_recurso,
+                                'orcamento' => $importacao_docentes->material_orcamento,
+                                'carimbo_data_hora' => $importacao_docentes->carimbo_data_hora,
+                                'importacao_docentes_id' => $importacao_docentes->id,
                             ]);
                         }
                         break;
-                    case 'Contratação de Serviço':
-                        if(!empty($importacao->servico_tipo)) {
+                    case 'Contratação de Serviço': // corrigir esse case na importacao de discentes
+                        if(!empty($importacao_docentes->servico_tipo)) {
+                            // dd(ServicoTipo::firstWhere('nome', $importacao_docentes->servico_tipo)?->id);
                             Servico::firstOrCreate([
-                                'importacao_id' => $importacao->id,
+                                'importacao_docentes_id' => $importacao_docentes->id,
                             ], [
-                                'tipo' => $importacao->servico_tipo,
-                                'titulo_artigo' => $importacao->servico_titulo_artigo,
-                                'valor' => $importacao->servico_valor,
-                                'justificativa' => $importacao->servico_justificativa,
-                                'artigo_a_traduzir' => $importacao->servico_artigo_a_traduzir,
-                                'orcamento' => $importacao->servico_orcamento,
-                                'parecer_orientador' => $importacao->servico_parecer_orientador,
-                                'carimbo_data_hora' => $importacao->carimbo_data_hora,
-                                'importacao_id' => $importacao->id,
+                                'servico_tipo_id' => ServicoTipo::firstWhere('nome', $importacao_docentes->servico_tipo)?->id,
+                                'carimbo_data_hora' => $importacao_docentes->carimbo_data_hora,
+                                'importacao_docentes_id' => $importacao_docentes->id,
                             ]);
+
+                            switch($importacao_docentes->servico_tipo) {
+                                case 'Tradução de Artigo':
+                                    TraducaoArtigo::firstOrCreate([
+                                        'importacao_docentes_id' => $importacao_docentes->id,
+                                    ], [
+                                        'titulo_artigo' => $importacao_docentes->servico_titulo_artigo,
+                                        'valor' => $importacao_docentes->servico_valor,
+                                        'justificativa' => $importacao_docentes->servico_justificativa,
+                                        'artigo_a_traduzir' => $importacao_docentes->servico_artigo_a_traduzir,
+                                        'orcamento' => $importacao_docentes->servico_orcamento,
+                                        'carimbo_data_hora' => $importacao_docentes->carimbo_data_hora,
+                                        'importacao_docentes_id' => $importacao_docentes->id,
+                                    ]);
+                                    break;
+                                case 'Manutenção e Conservação de Máquinas e Equipamentos':
+                                    Manutencao::firstOrCreate([
+                                        'importacao_docentes_id' => $importacao_docentes->id,
+                                    ], [
+                                        'descricao' => $importacao_docentes->manutencao_descricao,
+                                        'numero_patrimonio' => $importacao_docentes->manutencao_numero_patrimonio,
+                                        'valor' => $importacao_docentes->manutencao_valor,
+                                        'justificativa' => $importacao_docentes->manutencao_justificativa,
+                                        'orcamento' => $importacao_docentes->manutencao_orcamento,
+                                        'carimbo_data_hora' => $importacao_docentes->carimbo_data_hora,
+                                        'importacao_docentes_id' => $importacao_docentes->id,
+                                    ]);
+                                    break;
+                                case 'Outros Serviços':
+                                    OutroServico::firstOrCreate([
+                                        'importacao_docentes_id' => $importacao_docentes->id,
+                                    ], [
+                                        'descricao' => $importacao_docentes->outros_servicos_descricao,
+                                        'valor' => $importacao_docentes->outros_servicos_valor,
+                                        'justificativa' => $importacao_docentes->outros_servicos_justificativa,
+                                        'orcamento' => $importacao_docentes->outros_servicos_orcamento,
+                                        'carimbo_data_hora' => $importacao_docentes->carimbo_data_hora,
+                                        'importacao_docentes_id' => $importacao_docentes->id,
+                                    ]);
+                                    break;
+                            }
                         }
                         break;
                 }
@@ -465,51 +588,51 @@ class CsvImportController extends Controller
             /**
              * finalmente, a tabela de solicitacoes que também fornecerá os relacionamentos
              */
-            foreach($importacoes as $importacao) {
-                $dados = [
-                    'solicitante_id' => Solicitante::where('email', $importacao->email)->value('id'),
-                    'programa_id' => Programa::where('nome', $importacao->programa)->value('id'),
-                    'programa_categoria_id' => ProgramaCategoria::where('nome', $importacao->categoria)->value('id'),
-                    'tipo_solicitacao_id' => SolicitacaoTipo::where('nome', $importacao->tipo_solicitacao)->value('id'),
-                    'nome_do_orientador' => $importacao->nome_do_orientador,
+            foreach($importacoes_docentes as $importacao_docentes) {
+                $dados_docentes = [
+                    'solicitante_id' => Solicitante::where('email', $importacao_docentes->email)->value('id'),
+                    'programa_id' => Programa::where('nome', $importacao_docentes->programa)->value('id'),
+                    'programa_categoria_id' => ProgramaCategoria::where('nome', $importacao_docentes->categoria)->value('id'),
+                    'tipo_solicitacao_id' => SolicitacaoTipo::where('nome', $importacao_docentes->tipo_solicitacao)->value('id'),
+                    'nome_do_orientador' => $importacao_docentes->nome_do_orientador,
                     'status_id' => 6,
-                    'observacao' => $importacao->status,
-                    'carimbo_data_hora' => $importacao->carimbo_data_hora,
-                    'importacao_id' => $importacao->id,
+                    'observacao' => $importacao_docentes->status,
+                    'carimbo_data_hora' => $importacao_docentes->carimbo_data_hora,
+                    'importacao_docentes_id' => $importacao_docentes->id,
                 ];
 
-                switch($importacao->tipo_solicitacao) {
+                switch($importacao_docentes->tipo_solicitacao) {
                     case 'Auxílio para Pesquisa de Campo':
-                        if(!empty($importacao->atividade_descricao)) {
-                            $dados['atividade_id'] = Atividade::where('carimbo_data_hora', $importacao->carimbo_data_hora)
-                                ->where('descricao', $importacao->atividade_descricao)
+                        if(!empty($importacao_docentes->atividade_descricao)) {
+                            $dados_docentes['atividade_id'] = Atividade::where('carimbo_data_hora', $importacao_docentes->carimbo_data_hora)
+                                ->where('descricao', $importacao_docentes->atividade_descricao)
                                 ->value('id');
                         }
                         break;
                     case 'Auxílio para Participação em Evento':
-                        if(!empty($importacao->evento_nome)) {
-                            $dados['evento_id'] = Evento::where('carimbo_data_hora', $importacao->carimbo_data_hora)
-                                ->where('nome', $importacao->evento_nome)
+                        if(!empty($importacao_docentes->evento_nome)) {
+                            $dados_docentes['evento_id'] = Evento::where('carimbo_data_hora', $importacao_docentes->carimbo_data_hora)
+                                ->where('nome', $importacao_docentes->evento_nome)
                                 ->value('id');
                         }
                         break;
                     case 'Aquisição de Material':
-                        if(!empty($importacao->material_descricao)) {
-                            $dados['material_id'] = Material::where('carimbo_data_hora', $importacao->carimbo_data_hora)
-                                ->where('descricao', $importacao->material_descricao)
+                        if(!empty($importacao_docentes->material_descricao)) {
+                            $dados_docentes['material_id'] = Material::where('carimbo_data_hora', $importacao_docentes->carimbo_data_hora)
+                                ->where('descricao', $importacao_docentes->material_descricao)
                                 ->value('id');
                         }
                         break;
                     case 'Contratação de Serviço':
-                        if(!empty($importacao->servico_tipo)) {
-                            $dados['servico_id'] = Servico::where('carimbo_data_hora', $importacao->carimbo_data_hora)
-                                ->where('titulo_artigo', $importacao->servico_titulo_artigo)
+                        if(!empty($importacao_docentes->servico_tipo)) {
+                            $dados_docentes['servico_id'] = Servico::where('carimbo_data_hora', $importacao_docentes->carimbo_data_hora)
+                                ->where('servico_tipo_id', ServicoTipo::firstWhere('nome', $importacao_docentes->servico_tipo)?->id)
                                 ->value('id');
                         }
                         break;
                     }
                     
-                Solicitacao::firstOrCreate(['importacao_id' => $importacao->id], $dados);
+                Solicitacao::firstOrCreate(['importacao_docentes_id' => $importacao_docentes->id], $dados_docentes);
             }
 
             return back()->with('success', 'Arquivo importado.');

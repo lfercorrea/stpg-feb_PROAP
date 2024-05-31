@@ -15,14 +15,15 @@ return new class extends Migration
             $table->id();
 
             $table->text('descricao')->nullable();
-            $table->string('valor')->nullable();
+            $table->text('valor')->nullable();
             $table->text('justificativa')->nullable();
-            $table->string('ja_solicitou_recurso')->nullable();
-            $table->string('orcamento')->nullable();
+            $table->text('ja_solicitou_recurso')->nullable();
+            $table->text('orcamento')->nullable();
             $table->text('parecer_orientador')->nullable();
-            $table->string('nome_do_orientador')->nullable();
-            $table->string('carimbo_data_hora');
-            $table->string('importacao_id');
+            $table->text('nome_do_orientador')->nullable();
+            $table->unsignedBigInteger('importacao_discentes_id')->nullable();
+            $table->unsignedBigInteger('importacao_docentes_id')->nullable();
+            $table->text('carimbo_data_hora');
 
             $table->timestamps();
         });

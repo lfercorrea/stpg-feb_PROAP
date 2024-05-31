@@ -29,7 +29,7 @@
                 </div>
                 <div class="file-path-wrapper">
                     <input class="file-path validate" type="text">
-                    <label for="file">Selecione o CSV gerado na aba ({{ $solicitante }}) "Solicitação de Auxílio PROAP (respostas)"</label>
+                    <label for="file">Selecione o CSV gerado a partir da aba de <b>{{ $solicitante }}</b> pelo Google Sheets da planilha "<b>Solicitação de Auxílio PROAP (respostas)</b>"</label>
                 </div>
             </div>
             <div class="center">

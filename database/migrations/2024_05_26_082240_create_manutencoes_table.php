@@ -11,19 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('atividades', function (Blueprint $table) {
+        Schema::create('manutencoes', function (Blueprint $table) {
             $table->id();
 
             $table->text('descricao')->nullable();
-            $table->text('local')->nullable();
-            $table->text('periodo')->nullable();
-            $table->text('valor_diarias')->nullable();
-            $table->text('valor_passagens')->nullable();
+            $table->text('numero_patrimonio')->nullable();
+            $table->text('valor')->nullable();
             $table->text('justificativa')->nullable();
-            $table->text('carta_convite')->nullable();
-            $table->text('parecer_orientador')->nullable();
-            $table->text('orcamento_passagens')->nullable();
-            $table->text('nome_do_orientador')->nullable();
+            $table->text('orcamento')->nullable();
             $table->unsignedBigInteger('importacao_discentes_id')->nullable();
             $table->unsignedBigInteger('importacao_docentes_id')->nullable();
             $table->text('carimbo_data_hora');
@@ -37,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('atividades');
+        Schema::dropIfExists('manutencoes');
     }
 };

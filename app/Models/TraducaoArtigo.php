@@ -5,11 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ProgramaCategoria extends Model
+class TraducaoArtigo extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'nome',
-    ];
+    protected $guarded = [];
 }

@@ -16,4 +16,8 @@ class Servico extends Model
     public function solicitacoes() {
         return $this->hasMany(Solicitacao::class);
     }
+
+    public function tipo() {
+        return $this->belongsTo(ServicoTipo::class, 'servico_tipo_id');
+    }
 }

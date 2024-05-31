@@ -5,11 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ProgramaCategoria extends Model
+class Manutencao extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'nome',
-    ];
+    protected $table = 'manutencoes';
+    protected $guarded = [];
 }

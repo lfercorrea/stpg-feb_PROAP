@@ -5,11 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ProgramaCategoria extends Model
+class ServicoTipo extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'nome',
     ];
+
+    public function servico() {
+        return $this->hasMany(Servico::class);
+    }
 }

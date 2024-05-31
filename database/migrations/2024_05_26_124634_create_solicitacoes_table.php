@@ -16,14 +16,17 @@ return new class extends Migration
 
             $table->unsignedBigInteger('solicitante_id');
             $table->unsignedBigInteger('programa_id');
-            $table->unsignedBigInteger('programa_categoria_id');
+            $table->unsignedBigInteger('programa_categoria_id')->nullable();
             $table->unsignedBigInteger('tipo_solicitacao_id');
             $table->unsignedBigInteger('status_id');
             $table->unsignedBigInteger('atividade_id')->nullable();
             $table->unsignedBigInteger('evento_id')->nullable();
             $table->unsignedBigInteger('material_id')->nullable();
             $table->unsignedBigInteger('servico_id')->nullable();
-            $table->unsignedBigInteger('importacao_id');
+            $table->unsignedBigInteger('manutencao_id')->nullable();
+            $table->unsignedBigInteger('outro_servico_id')->nullable();
+            $table->unsignedBigInteger('importacao_discentes_id')->nullable();
+            $table->unsignedBigInteger('importacao_docentes_id')->nullable();
             $table->string('nome_do_orientador')->nullable();
             $table->text('observacao')->nullable();
             $table->string('carimbo_data_hora');
@@ -37,6 +40,8 @@ return new class extends Migration
             $table->foreign('evento_id')->references('id')->on('eventos')->onDelete('cascade');
             $table->foreign('material_id')->references('id')->on('materials')->onDelete('cascade');
             $table->foreign('servico_id')->references('id')->on('servicos')->onDelete('cascade');
+            $table->foreign('manutencao_id')->references('id')->on('manutencoes')->onDelete('cascade');
+            $table->foreign('outro_servico_id')->references('id')->on('outros_servicos')->onDelete('cascade');
 
             $table->timestamps();
         });
