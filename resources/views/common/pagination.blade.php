@@ -22,7 +22,7 @@
                     </a>
                 </li>
             @else
-            <li class="waves-effect">
+                <li class="waves-effect">
                     <a href="{{ $paginator->previousPageUrl() }}"><i class="material-icons">chevron_left</i></a>
                 </li>
             @endif
