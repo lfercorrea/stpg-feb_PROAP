@@ -62,10 +62,10 @@ return new class extends Migration
             $table->string('servico_orcamento')->nullable();
 
             $table->text('manutencao_descricao  ')->nullable();
-            $table->text('manutencao_numero_patrimonio')->nullable();
-            $table->text('manutencao_valor')->nullable();
+            $table->string('manutencao_numero_patrimonio')->nullable();
+            $table->string('manutencao_valor')->nullable();
             $table->text('manutencao_justificativa')->nullable();
-            $table->text('manutencao_orcamento')->nullable();
+            $table->string('manutencao_orcamento')->nullable();
 
             $table->text('atividade_descricao')->nullable();            
             $table->string('atividade_local')->nullable();
@@ -76,9 +76,9 @@ return new class extends Migration
             $table->string('atividade_orcamento_passagens')->nullable();
             $table->string('atividade_carta_convite')->nullable();
             
-            $table->string('outros_servicos_descricao')->nullable();
+            $table->text('outros_servicos_descricao')->nullable();
             $table->string('outros_servicos_valor')->nullable();
-            $table->string('outros_servicos_justificativa')->nullable();
+            $table->text('outros_servicos_justificativa')->nullable();
             $table->string('outros_servicos_orcamento')->nullable();
 
             $table->string('nome_do_orientador')->nullable();
