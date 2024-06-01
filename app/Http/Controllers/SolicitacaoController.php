@@ -114,7 +114,7 @@ class SolicitacaoController extends Controller
         $resumo_solicitacao = optional($solicitacao->evento)->nome
             ?? optional($solicitacao->atividade)->descricao
             ?? optional($solicitacao->material)->descricao
-            ?? optional($solicitacao->traducao_artigo)->descricao
+            ?? optional($solicitacao->traducao_artigo)->titulo_artigo
             ?? optional($solicitacao->outro_servico)->descricao
             ?? optional($solicitacao->manutencao)->descricao;
         $link_artigo_aceite = optional($solicitacao->evento)->artigo_aceite;

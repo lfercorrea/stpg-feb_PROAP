@@ -22,6 +22,7 @@ return new class extends Migration
             $table->unsignedBigInteger('atividade_id')->nullable();
             $table->unsignedBigInteger('evento_id')->nullable();
             $table->unsignedBigInteger('material_id')->nullable();
+            $table->unsignedBigInteger('servico_tipo_id')->nullable();
             $table->unsignedBigInteger('manutencao_id')->nullable();
             $table->unsignedBigInteger('outro_servico_id')->nullable();
             $table->unsignedBigInteger('traducao_artigo_id')->nullable();
@@ -39,6 +40,7 @@ return new class extends Migration
             $table->foreign('atividade_id')->references('id')->on('atividades')->onDelete('cascade');
             $table->foreign('evento_id')->references('id')->on('eventos')->onDelete('cascade');
             $table->foreign('material_id')->references('id')->on('materials')->onDelete('cascade');
+            $table->foreign('servico_tipo_id')->references('id')->on('servico_tipos')->onDelete('cascade');
             $table->foreign('manutencao_id')->references('id')->on('manutencoes')->onDelete('cascade');
             $table->foreign('outro_servico_id')->references('id')->on('outros_servicos')->onDelete('cascade');
             $table->foreign('traducao_artigo_id')->references('id')->on('traducao_artigos')->onDelete('cascade');

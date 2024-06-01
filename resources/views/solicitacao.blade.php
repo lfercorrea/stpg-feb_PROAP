@@ -23,7 +23,8 @@
                     <th class="center-align">Aceite</th>
                 </tr>
                 <tr>
-                    <td><i>{{ $solicitacao->tipo->nome }}</i>: {{ $resumo_solicitacao }}</td>
+                    {{-- {{dd($solicitacao->servico_tipo)}} --}}
+                    <td><i>{{ optional($solicitacao->servico_tipo)->nome ?? $solicitacao->tipo->nome }}</i>: {{ $resumo_solicitacao }}</td>
                     <td>{{ $solicitacao->carimbo_data_hora }}</td>
                     <td>{{ $solicitacao->nome_do_orientador }}</td>
                     <td class="center-align">

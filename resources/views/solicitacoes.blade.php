@@ -55,7 +55,7 @@
             <thead>
                 <tr>
                     <th>Status</th>
-                    <th>Tipo de solicitação</th>
+                    <th>Solicitação</th>
                     <th>Solicitante</th>
                     <th>Programa</th>
                     <th class="center-align">Parecer</th>
@@ -84,7 +84,7 @@
                             ?? optional($solicitacao->traducao_artigo)->orcamento;
                     @endphp
                     <td>{{ $solicitacao->status->nome }}</td>
-                    <td><a href="{{ route('site.solicitacao', ['id' => $solicitacao->id]) }}" class="hover-underline"><b>{{ $solicitacao->tipo->nome }}</b></a></td>
+                    <td><a href="{{ route('site.solicitacao', ['id' => $solicitacao->id]) }}" class="hover-underline"><b>{{ optional($solicitacao->servico_tipo)->nome ?? $solicitacao->tipo->nome }}</b></a></td>
                     <td><div class="chip">{{ $solicitacao->solicitante->tipo_solicitante }}</div><a href="{{ route('site.solicitante', ['id' => $solicitacao->solicitante->id]) }}" class="black-text hover-underline"><b>{{ Str::upper($solicitacao->solicitante->nome) }}</b></a> (<a href="mailto:{{ $solicitacao->solicitante->email }}" class="hover-underline">{{ $solicitacao->solicitante->email }}</a>)</td>
                     <td>{{ $solicitacao->programa->nome }}</td>
                     <td class="center-align">

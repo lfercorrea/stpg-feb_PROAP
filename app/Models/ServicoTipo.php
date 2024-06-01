@@ -16,4 +16,8 @@ class ServicoTipo extends Model
     public function servico() {
         return $this->hasMany(Servico::class);
     }
+
+    public function solicitacao() {
+        return $this->hasMany(Solicitacao::class);
+    }
 }

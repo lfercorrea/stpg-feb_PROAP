@@ -99,10 +99,26 @@ class CsvImportController extends Controller
              * de acordo com email unico
              */
             foreach($importacoes_discentes as $discente) {
-                Solicitante::updateOrCreate([
+                // Solicitante::updateOrCreate([
+                //     'email' => $discente->email,
+                // ], [
+                //     'email' => $discente->email,
+                //     'nome' => $discente->nome,
+                //     'tipo_solicitante' => $discente->tipo_solicitante,
+                //     'cpf' => $discente->cpf,
+                //     'rg' => $discente->rg,
+                //     'rg_data_expedicao' => $discente->rg_data_expedicao,
+                //     'rg_orgao_expedidor' => $discente->rg_orgao_expedidor,
+                //     'nascimento' => $discente->nascimento,
+                //     'endereco_completo' => $discente->endereco_completo,
+                //     'telefone' => $discente->telefone,
+                //     'banco' => $discente->banco,
+                //     'banco_agencia' => $discente->banco_agencia,
+                //     'banco_conta' => $discente->banco_conta,
+                // ]);
+                $solicitante = Solicitante::firstOrCreate([
                     'email' => $discente->email,
                 ], [
-                    'email' => $discente->email,
                     'nome' => $discente->nome,
                     'tipo_solicitante' => $discente->tipo_solicitante,
                     'cpf' => $discente->cpf,
@@ -110,6 +126,18 @@ class CsvImportController extends Controller
                     'rg_data_expedicao' => $discente->rg_data_expedicao,
                     'rg_orgao_expedidor' => $discente->rg_orgao_expedidor,
                     'nascimento' => $discente->nascimento,
+                    'endereco_completo' => $discente->endereco_completo,
+                    'telefone' => $discente->telefone,
+                    'banco' => $discente->banco,
+                    'banco_agencia' => $discente->banco_agencia,
+                    'banco_conta' => $discente->banco_conta,
+                ]);
+
+                // deixando de atualizar coisas que não fazem sentido
+                $solicitante->update([
+                    'tipo_solicitante' => $discente->tipo_solicitante,
+                    'rg_data_expedicao' => $discente->rg_data_expedicao,
+                    'rg_orgao_expedidor' => $discente->rg_orgao_expedidor,
                     'endereco_completo' => $discente->endereco_completo,
                     'telefone' => $discente->telefone,
                     'banco' => $discente->banco,
@@ -130,6 +158,22 @@ class CsvImportController extends Controller
                 SolicitacaoTipo::firstOrCreate([
                     'nome' => $distinto->tipo_solicitacao,
                 ]);
+            }
+
+            /**
+             * realimenta a tabela de tipos de serviço e injeta na respectiva tabela
+             */
+            $tipos_servico_distintos = DB::table('importacoes_discentes')
+                ->select('servico_tipo')
+                ->distinct('servico_tipo')
+                ->get();
+                
+            foreach($tipos_servico_distintos as $distinto) {
+                if(!empty($distinto->servico_tipo)) {
+                    ServicoTipo::firstOrCreate([
+                        'nome' => $distinto->servico_tipo,
+                    ]);
+                }
             }
 
             /**
@@ -286,6 +330,10 @@ class CsvImportController extends Controller
                         }
                         break;
                     case 'Contratação de Serviço':
+                        if(!empty($importacao_discentes->servico_tipo)) {
+                            $dados_discentes['servico_tipo_id'] = ServicoTipo::where('nome', $importacao_discentes->servico_tipo)
+                                ->value('id');
+                        }
                         switch($importacao_discentes->servico_tipo) {
                             case 'Tradução de Artigo':
                                 if(!empty($importacao_discentes->servico_titulo_artigo)) {
@@ -388,17 +436,28 @@ class CsvImportController extends Controller
              * de acordo com email unico
              */
             foreach($importacoes_docentes as $docente) {
-                Solicitante::updateOrCreate([
-                    'email' => $docente->email,
-                ], [
-                    'email' => $docente->email,
-                    'nome' => $docente->nome,
+                $solicitante = Solicitante::firstOrCreate([
+                        'email' => $docente->email,
+                    ], [
+                        'nome' => $docente->nome,
+                        'tipo_solicitante' => $docente->categoria,
+                        'cpf' => $docente->cpf,
+                        'rg' => $docente->rg,
+                        'rg_data_expedicao' => $docente->rg_data_expedicao,
+                        'rg_orgao_expedidor' => $docente->rg_orgao_expedidor,
+                        'nascimento' => $docente->nascimento,
+                        'endereco_completo' => $docente->endereco_completo,
+                        'telefone' => $docente->telefone,
+                        'banco' => $docente->banco,
+                        'banco_agencia' => $docente->banco_agencia,
+                        'banco_conta' => $docente->banco_conta,
+                    ]);
+
+                // deixando de atualizar coisas que não fazem sentido
+                $solicitante->update([
                     'tipo_solicitante' => $docente->categoria,
-                    'cpf' => $docente->cpf,
-                    'rg' => $docente->rg,
                     'rg_data_expedicao' => $docente->rg_data_expedicao,
                     'rg_orgao_expedidor' => $docente->rg_orgao_expedidor,
-                    'nascimento' => $docente->nascimento,
                     'endereco_completo' => $docente->endereco_completo,
                     'telefone' => $docente->telefone,
                     'banco' => $docente->banco,
@@ -588,6 +647,10 @@ class CsvImportController extends Controller
                         }
                         break;
                     case 'Contratação de Serviço':
+                        if(!empty($importacao_docentes->servico_tipo)) {
+                            $dados_docentes['servico_tipo_id'] = ServicoTipo::where('nome', $importacao_docentes->servico_tipo)
+                                ->value('id');
+                        }
                         switch($importacao_docentes->servico_tipo) {
                             case 'Tradução de Artigo':
                                 if(!empty($importacao_docentes->servico_titulo_artigo)) {

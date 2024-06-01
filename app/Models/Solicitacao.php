@@ -20,6 +20,7 @@ class Solicitacao extends Model
         'evento_id',
         'material_id',
         'servico_id',
+        'servico_tipo_id',
         'manutencao_id',
         'outro_servico_id',
         'traducao_artigo_id',
@@ -75,9 +76,9 @@ class Solicitacao extends Model
         return $this->belongsTo(Manutencao::class);
     }
 
-    // public function servico() {
-    //     return $this->belongsTo(Servico::class);
-    // }
+    public function servico_tipo() {
+        return $this->belongsTo(ServicoTipo::class);
+    }
 
     public function nota() {
         return $this->hasMany(Nota::class);
