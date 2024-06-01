@@ -84,6 +84,10 @@ class Solicitacao extends Model
         return $this->hasMany(Nota::class);
     }
 
+    public function soma_notas() {
+        return $this->nota()->sum('valor');
+    }
+
     public static function search($search, $programa_id = null, $tipo_solicitacao = null, $status_id = null) {
         $query = self::query();
 

@@ -16,33 +16,33 @@
                 <tr>
                     <th>Solicitacão</th>
                     <th>Data</th>
-                    <th>Orientador</th>
-                    <th class="center-align">Parecer</th>
-                    <th class="center-align">Orçamento</th>
-                    <th class="center-align">Artigo</th>
-                    <th class="center-align">Aceite</th>
+                    <th class="print-hidden">Orientador</th>
+                    <th class="center-align print-hidden">Parecer</th>
+                    <th class="center-align print-hidden">Orçamento</th>
+                    <th class="center-align print-hidden">Artigo</th>
+                    <th class="center-align print-hidden">Aceite</th>
                 </tr>
                 <tr>
                     {{-- {{dd($solicitacao->servico_tipo)}} --}}
                     <td><i>{{ optional($solicitacao->servico_tipo)->nome ?? $solicitacao->tipo->nome }}</i>: {{ $resumo_solicitacao }}</td>
                     <td>{{ $solicitacao->carimbo_data_hora }}</td>
-                    <td>{{ $solicitacao->nome_do_orientador }}</td>
-                    <td class="center-align">
+                    <td class="print-hidden">{{ $solicitacao->nome_do_orientador }}</td>
+                    <td class="center-align print-hidden">
                         @if ($link_parecer)
                             <a href="{{ $link_parecer }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $link_parecer }}"><i class="tiny material-icons black-text">open_in_new</i></a>
                         @endif
                     </td>
-                    <td class="center-align">
+                    <td class="center-align print-hidden">
                         @if ($link_orcamento)
                             <a href="{{ $link_orcamento }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $link_orcamento }}"><i class="tiny material-icons black-text">open_in_new</i></a>
                         @endif
                     </td>
-                    <td class="center-align">
+                    <td class="center-align print-hidden">
                         @if ($link_artigo_copia)
                             <a href="{{ $link_artigo_copia }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $link_artigo_copia }}"><i class="tiny material-icons black-text">open_in_new</i></a>
                         @endif
                     </td>
-                    <td class="center-align">
+                    <td class="center-align print-hidden">
                         @if ($link_artigo_aceite)
                             <a href="{{ $link_artigo_aceite }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $link_artigo_aceite }}"><i class="tiny material-icons black-text">open_in_new</i></a>
                         @endif
@@ -53,28 +53,28 @@
                 <tr>
                     <th>Solicitante</th>
                     <th>Telefone</th>
-                    <th>CPF</th>
-                    <th>RG</th>
-                    <th>Órgão emissor</th>
-                    <th>Data de emissão</th>
+                    <th class="print-hidden">CPF</th>
+                    <th class="print-hidden">RG</th>
+                    <th class="print-hidden">Órgão emissor</th>
+                    <th class="print-hidden">Data de emissão</th>
                     <th>Banco</th>
                     <th>Agência</th>
                     <th>Conta</th>
                 </tr>
                 <tr>
-                    <td>{{ $solicitacao->solicitante->nome }} (<a href="mailto:{{ $solicitacao->solicitante->email }}" class="hover-underline">{{ $solicitacao->solicitante->email }}</a>)</td>
+                    <td><a href="{{ route('site.solicitante', ['id' => $solicitacao->solicitante->id]) }}" class="hover-underline">{{ $solicitacao->solicitante->nome }}</a> (<a href="mailto:{{ $solicitacao->solicitante->email }}" class="hover-underline">{{ $solicitacao->solicitante->email }}</a>)</td>
                     <td>{{ $solicitacao->solicitante->telefone }}</td>
-                    <td>{{ $solicitacao->solicitante->cpf }}</td>
-                    <td>{{ $solicitacao->solicitante->rg }}</td>
-                    <td>{{ $solicitacao->solicitante->rg_orgao_expedidor }}</td>
-                    <td>{{ $solicitacao->solicitante->rg_data_expedicao }}</td>
+                    <td class="print-hidden">{{ $solicitacao->solicitante->cpf }}</td>
+                    <td class="print-hidden">{{ $solicitacao->solicitante->rg }}</td>
+                    <td class="print-hidden">{{ $solicitacao->solicitante->rg_orgao_expedidor }}</td>
+                    <td class="print-hidden">{{ $solicitacao->solicitante->rg_data_expedicao }}</td>
                     <td>{{ $solicitacao->solicitante->banco }}</td>
                     <td>{{ $solicitacao->solicitante->banco_agencia }}</td>
                     <td>{{ $solicitacao->solicitante->banco_conta }}</td>
                 </tr>
             </table>
         </div>
-        <div class="row">
+        <div class="row print-hidden">
             <form class="col s12" action="{{ route('site.solicitacao.update', ['id' => $solicitacao->id]) }}" method="POST">
                 <div class="input-field col s12 m3">
                     @csrf
@@ -103,7 +103,7 @@
                     </div>
                     <table class="compact-table striped responsive-table">
                         <tr>
-                            <th class="center-align"><i class="material-icons tiny">delete</i></th>
+                            <th class="center-align print-hidden"><i class="material-icons tiny">delete</i></th>
                             <th>Nº</th>
                             <th>Data</th>
                             <th>Descrição</th>
@@ -112,7 +112,7 @@
                         </tr>
                         @foreach ($solicitacao->nota as $nota)
                             <tr>
-                                <td class="center-align"><a href="{{ route('site.nota.destroy', ['solicitacao_id' => $solicitacao->id, 'nota_id' => $nota->id]) }}" class="confirm-link"><i class="material-icons tiny red-text">delete</i></a></td>
+                                <td class="center-align print-hidden"><a href="{{ route('site.nota.destroy', ['solicitacao_id' => $solicitacao->id, 'nota_id' => $nota->id]) }}" class="confirm-link"><i class="material-icons tiny red-text">delete</i></a></td>
                                 <td>{{ $nota->numero }}</td>
                                 <td>{{ \Carbon\Carbon::parse($nota->data)->format('d/m/Y') }}</td>
                                 <td>{{ $nota->descricao }}</td>
@@ -139,10 +139,10 @@
                         </tbody>
                     </table>
                 @endif
-                <div class="section-margins">
+                <div class="section-margins print-hidden">
                     <h5>Lançar nota/recibo</h5>
                 </div>
-                <div class="row">
+                <div class="row print-hidden">
                     <form class="col s12" action="{{ route('site.nota.store', ['id' => $solicitacao->id]) }}" method="POST">
                         @csrf
                         <div class="row">
@@ -180,7 +180,7 @@
             </div>
         </div>
     </div>
-    <div class="container center">
+    <div class="container center print-hidden">
         <a class="btn black waves-effect waves-black" href="{{ route('site.solicitacoes') }}">Voltar para solicitações</a>
         <a class="btn black waves-effect waves-black" href="{{ route('site.solicitante', ['id' => $solicitacao->solicitante->id]) }}">Resumo do solicitante</a>
     </div>

@@ -5,7 +5,7 @@
         <h5>Solicitações</h5>
         <hr>
     </div>
-    <form action="#" method="GET">
+    <form action="#" method="GET" class="print-hidden">
         <div class="row">
             <div class="col s12 m2 input-field">
                 <a href="{{ route('import_menu') }}" class="btn green darken-2 waves-effect waves-light">Importar CSV</a>
@@ -42,26 +42,28 @@
         </div>
     </form>
     @if ($count_solicitacoes > 0)
-        <div class="row">
+        <div class="row print-hidden">
             {!! $search_message !!}
         </div>
     @endif
-    {{
-        $solicitacoes->appends(request()->only(['search', 'programa_id', 'tipo_solicitacao_id', 'status_id']))
-            ->links('common/pagination')
-    }}
+    <div class="print-hidden">
+        {{
+            $solicitacoes->appends(request()->only(['search', 'programa_id', 'tipo_solicitacao_id', 'status_id']))
+                ->links('common/pagination')
+        }}
+    </div>
     @if (count($solicitacoes) > 0)
         <table class="bordered striped responsive-table highlight">
             <thead>
                 <tr>
-                    <th>Status</th>
+                    <th class="print-hidden">Status</th>
                     <th>Solicitação</th>
                     <th>Solicitante</th>
                     <th>Programa</th>
-                    <th class="center-align">Parecer</th>
-                    <th class="center-align">Orçamento</th>
-                    <th class="center-align">Artigo</th>
-                    <th class="center-align">Aceite</th>
+                    <th class="center-align print-hidden">Parecer</th>
+                    <th class="center-align print-hidden">Orçamento</th>
+                    <th class="center-align print-hidden">Artigo</th>
+                    <th class="center-align print-hidden">Aceite</th>
                     <th>Data</th>
                 </tr>
             </thead>
@@ -83,26 +85,26 @@
                             ?? optional($solicitacao->outro_servico)->orcamento 
                             ?? optional($solicitacao->traducao_artigo)->orcamento;
                     @endphp
-                    <td>{{ $solicitacao->status->nome }}</td>
+                    <td class="print-hidden">{{ $solicitacao->status->nome }}</td>
                     <td><a href="{{ route('site.solicitacao', ['id' => $solicitacao->id]) }}" class="hover-underline"><b>{{ optional($solicitacao->servico_tipo)->nome ?? $solicitacao->tipo->nome }}</b></a></td>
-                    <td><div class="chip">{{ $solicitacao->solicitante->tipo_solicitante }}</div><a href="{{ route('site.solicitante', ['id' => $solicitacao->solicitante->id]) }}" class="black-text hover-underline"><b>{{ Str::upper($solicitacao->solicitante->nome) }}</b></a> (<a href="mailto:{{ $solicitacao->solicitante->email }}" class="hover-underline">{{ $solicitacao->solicitante->email }}</a>)</td>
+                    <td><div class="chip print-hidden">{{ $solicitacao->solicitante->tipo_solicitante }}</div><a href="{{ route('site.solicitante', ['id' => $solicitacao->solicitante->id]) }}" class="black-text hover-underline"><b>{{ Str::upper($solicitacao->solicitante->nome) }}</b></a> <span class="print-hidden">(<a href="mailto:{{ $solicitacao->solicitante->email }}" class="hover-underline">{{ $solicitacao->solicitante->email }}</a>)</span></td>
                     <td>{{ $solicitacao->programa->nome }}</td>
-                    <td class="center-align">
+                    <td class="center-align print-hidden">
                         @if ($link_parecer)
                             <a href="{{ $link_parecer }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $link_parecer }}"><i class="tiny material-icons black-text">open_in_new</i></a>
                         @endif
                     </td>
-                    <td class="center-align">
+                    <td class="center-align print-hidden">
                         @if ($link_orcamento)
                             <a href="{{ $link_orcamento }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $link_orcamento }}"><i class="tiny material-icons black-text">open_in_new</i></a>
                         @endif
                     </td>
-                    <td class="center-align">
+                    <td class="center-align print-hidden">
                         @if ($link_artigo_copia)
                             <a href="{{ $link_artigo_copia }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $link_artigo_copia }}"><i class="tiny material-icons black-text">open_in_new</i></a>
                         @endif
                     </td>
-                    <td class="center-align">
+                    <td class="center-align print-hidden">
                         @if ($link_artigo_aceite)
                             <a href="{{ $link_artigo_aceite }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $link_artigo_aceite }}"><i class="tiny material-icons black-text">open_in_new</i></a>
                         @endif
@@ -117,8 +119,10 @@
             <h6><p>Nenhuma solicitacão encontrada.</p></h6>
         </div>
     @endif
-    {{
-        $solicitacoes->appends(request()->only(['search', 'programa_id', 'tipo_solicitacao_id', 'status_id']))
-            ->links('common/pagination')
-    }}
+    <div class="print-hidden">
+        {{
+            $solicitacoes->appends(request()->only(['search', 'programa_id', 'tipo_solicitacao_id', 'status_id']))
+                ->links('common/pagination')
+        }}
+    </div>
 @endsection

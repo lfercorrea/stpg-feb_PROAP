@@ -84,7 +84,6 @@ class SolicitacaoController extends Controller
         $search_message = implode("<br>", $count_message);
         
         return view('solicitacoes', [
-            'page_title' => 'Estoque',
             'solicitacoes' => $solicitacoes,
             'count_solicitacoes' => $count_solicitacoes,
             'search_message' => $search_message,

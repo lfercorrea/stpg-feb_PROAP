@@ -50,14 +50,15 @@
                 <table class="bordered striped responsive-table highlight">
                     <thead>
                         <tr>
-                            <th>Status</th>
+                            <th class=" print-hidden">Status</th>
                             <th>Solicitação</th>
                             <th>Programa</th>
-                            <th>Orientador</th>
-                            <th class="center-align">Parecer</th>
-                            <th class="center-align">Orçamento</th>
-                            <th class="center-align">Artigo</th>
-                            <th class="center-align">Aceite</th>
+                            <th>Valor pago</th>
+                            <th class="print-hidden">Orientador</th>
+                            <th class="center-align print-hidden">Parecer</th>
+                            <th class="center-align print-hidden">Orçamento</th>
+                            <th class="center-align print-hidden">Artigo</th>
+                            <th class="center-align print-hidden">Aceite</th>
                             <th>Data</th>
                         </tr>
                     </thead>
@@ -65,6 +66,7 @@
                         @foreach ($solicitacoes as $solicitacao)
                         <tr>
                             @php
+                                $total_valor_pago =+ $solicitacao->soma_notas();
                                 $resumo_solicitacao = optional($solicitacao->evento)->nome
                                     ?? optional($solicitacao->atividade)->descricao
                                     ?? optional($solicitacao->material)->descricao
@@ -85,26 +87,27 @@
                                     ?? optional($solicitacao->outro_servico)->orcamento 
                                     ?? optional($solicitacao->traducao_artigo)->orcamento;
                             @endphp
-                            <td>{{ $solicitacao->status->nome }}</td>
+                            <td class=" print-hidden">{{ $solicitacao->status->nome }}</td>
                             <td><a href="{{ route('site.solicitacao', ['id' => $solicitacao->id]) }}"><b>{{ $solicitacao->tipo->nome }}</b>: {{ $resumo_solicitacao }}</td>
                             <td>{{ $solicitacao->programa->nome }}</td>
-                            <td>{{ $solicitacao->nome_do_orientador }}</td>
-                            <td class="center-align">
+                            <td>R$&nbsp;{{ number_format($solicitacao->soma_notas(), 2, ',', '.') }}</td>
+                            <td class="print-hidden">{{ $solicitacao->nome_do_orientador }}</td>
+                            <td class="center-align print-hidden">
                                 @if ($link_parecer)
                                     <a href="{{ $link_parecer }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $link_parecer }}"><i class="tiny material-icons black-text">open_in_new</i></a>
                                 @endif
                             </td>
-                            <td class="center-align">
+                            <td class="center-align print-hidden">
                                 @if ($link_orcamento)
                                     <a href="{{ $link_orcamento }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $link_orcamento }}"><i class="tiny material-icons black-text">open_in_new</i></a>
                                 @endif
                             </td>
-                            <td class="center-align">
+                            <td class="center-align print-hidden">
                                 @if ($link_artigo_copia)
                                     <a href="{{ $link_artigo_copia }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $link_artigo_copia }}"><i class="tiny material-icons black-text">open_in_new</i></a>
                                 @endif
                             </td>
-                            <td class="center-align">
+                            <td class="center-align print-hidden">
                                 @if ($link_artigo_aceite)
                                     <a href="{{ $link_artigo_aceite }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $link_artigo_aceite }}"><i class="tiny material-icons black-text">open_in_new</i></a>
                                 @endif
@@ -114,9 +117,14 @@
                         @endforeach
                     </tbody>
                 </table>
+                <table class="bordered compact-table striped responsive-table">
+                    <tr>
+                        <th class="center-align"><span class="blue-text darken-4">Total pago:&nbsp;R$&nbsp;{{ number_format($total_valor_pago, 2, ',', '.') }}</span></th>
+                    </tr>
+                </table>
             </div>
         @endif
-        <div class="container center">
+        <div class="container center print-hidden">
             <a class="btn black waves-effect waves-black" href="{{ route('site.solicitacoes') }}">Voltar para solicitações</a>
         </div>
     </div>

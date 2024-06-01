@@ -44,6 +44,7 @@ class SiteController extends Controller
         return view('solicitante', [
             'solicitante' => Solicitante::where('id', $id)->first(),
             'solicitacoes' => Solicitacao::with([
+                'nota',
                 'tipo',
                 'solicitante',
                 'programa',
@@ -55,9 +56,10 @@ class SiteController extends Controller
                 'outro_servico',
                 'manutencao',
             ])
-            ->where('solicitante_id', $id)
-            ->orderByRaw(" STR_TO_DATE(carimbo_data_hora, '%d/%m/%Y %H:%i:%s') DESC ")
-            ->get(),
+                ->where('solicitante_id', $id)
+                ->orderByRaw(" STR_TO_DATE(carimbo_data_hora, '%d/%m/%Y %H:%i:%s') DESC ")
+                ->get(),
+            'total_valor_pago' => 0,
         ]);
     }
 }

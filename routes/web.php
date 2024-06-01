@@ -4,6 +4,7 @@ use App\Http\Controllers\CsvImportController;
 use App\Http\Controllers\NotaController;
 use App\Http\Controllers\SiteController;
 use App\Http\Controllers\SolicitacaoController;
+use App\Http\Controllers\RelatorioController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [SiteController::class, 'index'])->name('site.index');
@@ -27,3 +28,6 @@ Route::get('solicitacao/{id}', [SolicitacaoController::class, 'show'])->name('si
 Route::post('solicitacao/{id}/update', [SolicitacaoController::class, 'update'])->name('site.solicitacao.update');
 Route::post('solicitacao/{id}', [NotaController::class, 'store'])->name('site.nota.store');
 Route::get('solicitacao/{solicitacao_id}/nota/{nota_id}', [NotaController::class, 'destroy'])->name('site.nota.destroy');
+
+Route::get('relatorio', [RelatorioController::class, 'index'])->name('site.relatorio.index');
+// Route::post('relatorio/create', [RelatorioController::class, 'create'])->name('site.relatorio.create');

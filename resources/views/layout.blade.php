@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>STPG-FEB</title>
+    <title>STPG-FEB - PROAP</title>
     <link rel="stylesheet" href="{{ asset('css/materialize.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
     <link rel="icon" type="image/x-icon" href="{{ asset('storage/static/images/favicon.ico') }}">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
-    <header>
+    <header class="print-hidden">
         <nav>
             <div class="nav-wrapper black">
               <a href="{{ route('site.index') }}" class="brand-logo waves-effect waves-light">
@@ -18,6 +18,7 @@
               </a>
               <ul id="nav-mobile" class="right hide-on-med-and-down">
                 <li class="waves-effect waves-light"><a href="{{ route('site.solicitacoes') }}">Solicitações</a></li>
+                <li class="waves-effect waves-light"><a href="{{ route('site.relatorio.index') }}">Relatório</a></li>
                 <li class="waves-effect waves-light"><a href="{{ route('import_menu') }}">Importação</a></li>
               </ul>
             </div>
@@ -36,7 +37,7 @@
         @include('messages.success')
     @endif
 
-    <footer class="page-footer blue lighten-2">
+    <footer class="page-footer blue lighten-2 print-hidden">
       <div class="container">
         <div class="row">
           <div class="col l6 s12">
