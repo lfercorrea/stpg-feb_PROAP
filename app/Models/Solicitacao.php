@@ -89,7 +89,8 @@ class Solicitacao extends Model
         if($search) {
             $query->whereHas('solicitante', function($query) use($search) {
                 $query->where('nome', 'like', '%' . $search . '%')
-                    ->orWhere('email', 'like', '%' . $search . '%');
+                    ->orWhere('email', 'like', '%' . $search . '%')
+                    ->orWhere('tipo_solicitante', 'like', '%' . $search . '%');
             });
         }
         

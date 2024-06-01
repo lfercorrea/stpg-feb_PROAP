@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Exception;
@@ -66,7 +65,6 @@ class CsvImportController extends Controller
             ImportacoesDiscentes::destroy(1); // passa o rodo na linha do csv que contem os cabeçalhos
             ImportacoesDiscentes::whereNull('tipo_solicitante')->update(['tipo_solicitante' => 'Discente']);
             $importacoes_discentes = ImportacoesDiscentes::all();
-            // dd($importacoes_discentes);
 
             /**
              * realimenta a tabela de programas conforme a planilha
@@ -100,32 +98,23 @@ class CsvImportController extends Controller
              * realimenta a tabela de solicitantes, ignorando duplicidades
              * de acordo com email unico
              */
-            $solicitantes_importados = DB::table('importacoes_discentes')
-                ->select('nome', 'tipo_solicitante', 'email', 'programa', 'categoria', 'cpf', 'rg', 'rg_data_expedicao', 'rg_orgao_expedidor', 'nascimento', 'endereco_completo', 'telefone', 'banco', 'banco_agencia', 'banco_conta')
-                ->get();
-            $solicitantes_importados_distintos = $solicitantes_importados->unique('email');
-            /**
-             * garantir que apenas os itens com combinações únicas de 'email' e 'tipo_solicitante' sejam mantidos no resultado
-             */
-            // $solicitantes_importados_distintos = $solicitantes_importados->unique(['email', 'tipo_solicitante']);
-
-            foreach($solicitantes_importados_distintos as $distinto) {
-                Solicitante::firstOrCreate([
-                    'email' => $distinto->email,
+            foreach($importacoes_discentes as $discente) {
+                Solicitante::updateOrCreate([
+                    'email' => $discente->email,
                 ], [
-                    'email' => $distinto->email,
-                    'nome' => $distinto->nome,
-                    'tipo_solicitante' => $distinto->tipo_solicitante,
-                    'cpf' => $distinto->cpf,
-                    'rg' => $distinto->rg,
-                    'rg_data_expedicao' => $distinto->rg_data_expedicao,
-                    'rg_orgao_expedidor' => $distinto->rg_orgao_expedidor,
-                    'nascimento' => $distinto->nascimento,
-                    'endereco_completo' => $distinto->endereco_completo,
-                    'telefone' => $distinto->telefone,
-                    'banco' => $distinto->banco,
-                    'banco_agencia' => $distinto->banco_agencia,
-                    'banco_conta' => $distinto->banco_conta,
+                    'email' => $discente->email,
+                    'nome' => $discente->nome,
+                    'tipo_solicitante' => $discente->tipo_solicitante,
+                    'cpf' => $discente->cpf,
+                    'rg' => $discente->rg,
+                    'rg_data_expedicao' => $discente->rg_data_expedicao,
+                    'rg_orgao_expedidor' => $discente->rg_orgao_expedidor,
+                    'nascimento' => $discente->nascimento,
+                    'endereco_completo' => $discente->endereco_completo,
+                    'telefone' => $discente->telefone,
+                    'banco' => $discente->banco,
+                    'banco_agencia' => $discente->banco_agencia,
+                    'banco_conta' => $discente->banco_conta,
                 ]);
             }
 
@@ -208,17 +197,8 @@ class CsvImportController extends Controller
                             ]);
                         }
                         break;
-                    case 'Contratação de Serviço': // corrigir esse case na importacao de discentes
+                    case 'Contratação de Serviço':
                         if(!empty($importacao_discentes->servico_tipo)) {
-                            // dd(ServicoTipo::firstWhere('nome', $importacao_discentes->servico_tipo)?->id);
-                            // Servico::firstOrCreate([
-                            //     'importacao_discentes_id' => $importacao_discentes->id,
-                            // ], [
-                            //     'servico_tipo_id' => ServicoTipo::firstWhere('nome', $importacao_discentes->servico_tipo)?->id,
-                            //     'carimbo_data_hora' => $importacao_discentes->carimbo_data_hora,
-                            //     'importacao_discentes_id' => $importacao_discentes->id,
-                            // ]);
-
                             switch($importacao_discentes->servico_tipo) {
                                 case 'Tradução de Artigo':
                                     TraducaoArtigo::firstOrCreate([
@@ -234,6 +214,7 @@ class CsvImportController extends Controller
                                         'importacao_discentes_id' => $importacao_discentes->id,
                                     ]);
                                     break;
+                                // esse case é morto, pois discentes só pedem tradução de artigo. mesmo assim, vou deixar aqui
                                 case 'Manutenção e Conservação de Máquinas e Equipamentos':
                                     Manutencao::firstOrCreate([
                                         'importacao_discentes_id' => $importacao_discentes->id,
@@ -243,11 +224,11 @@ class CsvImportController extends Controller
                                         'valor' => $importacao_discentes->manutencao_valor,
                                         'justificativa' => $importacao_discentes->manutencao_justificativa,
                                         'orcamento' => $importacao_discentes->manutencao_orcamento,
-                                        // 'parecer_orientador' => $importacao->manutencao_parecer_orientador,
                                         'carimbo_data_hora' => $importacao_discentes->carimbo_data_hora,
                                         'importacao_discentes_id' => $importacao_discentes->id,
                                     ]);
                                     break;
+                                // esse case é morto, pois discentes só pedem tradução de artigo. mesmo assim, vou deixar aqui
                                 case 'Outros Serviços':
                                     OutroServico::firstOrCreate([
                                         'importacao_discentes_id' => $importacao_discentes->id,
@@ -263,23 +244,6 @@ class CsvImportController extends Controller
                             }
                         }
                         break;
-                    // case 'Contratação de Serviço':
-                    //     if(!empty($importacao_discentes->servico_tipo)) {
-                    //         Servico::firstOrCreate([
-                    //             'importacao_discentes_id' => $importacao_discentes->id,
-                    //         ], [
-                    //             'servico_tipo_id' => ServicoTipo::firstWhere('nome', $importacao_discentes->servico_tipo)?->id,
-                    //             'titulo_artigo' => $importacao_discentes->servico_titulo_artigo,
-                    //             'valor' => $importacao_discentes->servico_valor,
-                    //             'justificativa' => $importacao_discentes->servico_justificativa,
-                    //             'artigo_a_traduzir' => $importacao_discentes->servico_artigo_a_traduzir,
-                    //             'orcamento' => $importacao_discentes->servico_orcamento,
-                    //             'parecer_orientador' => $importacao_discentes->servico_parecer_orientador,
-                    //             'carimbo_data_hora' => $importacao_discentes->carimbo_data_hora,
-                    //             'importacao_discentes_id' => $importacao_discentes->id,
-                    //         ]);
-                    //     }
-                    //     break;
                 }
             }
 
@@ -287,7 +251,6 @@ class CsvImportController extends Controller
              * finalmente, a tabela de solicitacoes que também fornecerá os relacionamentos
              */
             foreach($importacoes_discentes as $importacao_discentes) {
-                // dd($importacao_discentes->id);
                 $dados_discentes = [
                     'solicitante_id' => Solicitante::where('email', $importacao_discentes->email)->value('id'),
                     'programa_id' => Programa::where('nome', $importacao_discentes->programa)->value('id'),
@@ -323,12 +286,6 @@ class CsvImportController extends Controller
                         }
                         break;
                     case 'Contratação de Serviço':
-                        // if(!empty($importacao_discentes->servico_tipo)) {
-                        //     $dados_discentes['servico_id'] = Servico::where('carimbo_data_hora', $importacao_discentes->carimbo_data_hora)
-                        //         ->where('servico_tipo_id', ServicoTipo::firstWhere('nome', $importacao_discentes->servico_tipo)?->id)
-                        //         ->value('id');
-                        // }
-                        // break;
                         switch($importacao_discentes->servico_tipo) {
                             case 'Tradução de Artigo':
                                 if(!empty($importacao_discentes->servico_titulo_artigo)) {
@@ -337,6 +294,7 @@ class CsvImportController extends Controller
                                         ->value('id');
                                 }
                                 break;
+                            // esse case é morto, pois discentes só pedem tradução de artigo. mesmo assim, vou deixar aqui
                             case 'Manutenção e Conservação de Máquinas e Equipamentos':
                                 if(!empty($importacao_discentes->manutencao_descricao)) {
                                     $dados_discentes['manutencao_id'] = Manutencao::where('carimbo_data_hora', $importacao_discentes->carimbo_data_hora)
@@ -344,6 +302,7 @@ class CsvImportController extends Controller
                                         ->value('id');
                                 }
                                 break;
+                            // esse case é morto, pois discentes só pedem tradução de artigo. mesmo assim, vou deixar aqui
                             case 'Outros Serviços':
                                 if(!empty($importacao_discentes->outros_servicos_descricao)) {
                                     $dados_discentes['outro_servico_id'] = OutroServico::where('carimbo_data_hora', $importacao_discentes->carimbo_data_hora)
@@ -390,7 +349,6 @@ class CsvImportController extends Controller
             ImportacoesDocentes::truncate();
             Excel::import(new SolicitacoesDocentesImport, $request->file('file'));
             ImportacoesDocentes::destroy(1); // passa o rodo na linha do csv que contem os cabeçalhos
-            // ImportacoesDocentes::whereNull('tipo_solicitante')->update(['tipo_solicitante' => 'Docente']);
             $importacoes_docentes = ImportacoesDocentes::all();
 
             /**
@@ -429,32 +387,23 @@ class CsvImportController extends Controller
              * realimenta a tabela de solicitantes, ignorando duplicidades
              * de acordo com email unico
              */
-            $solicitantes_importados = DB::table('importacoes_docentes')
-                ->select('nome', 'tipo_solicitante', 'email', 'programa', 'categoria', 'cpf', 'rg', 'rg_data_expedicao', 'rg_orgao_expedidor', 'nascimento', 'endereco_completo', 'telefone', 'banco', 'banco_agencia', 'banco_conta')
-                ->get();
-            $solicitantes_importados_distintos = $solicitantes_importados->unique('email');
-            /**
-             * garantir que apenas os itens com combinações únicas de 'email' e 'tipo_solicitante' sejam mantidos no resultado
-             */
-            // $solicitantes_importados_distintos = $solicitantes_importados->unique(['email', 'tipo_solicitante']);
-
-            foreach($solicitantes_importados_distintos as $distinto) {
-                Solicitante::firstOrCreate([
-                    'email' => $distinto->email,
+            foreach($importacoes_docentes as $docente) {
+                Solicitante::updateOrCreate([
+                    'email' => $docente->email,
                 ], [
-                    'email' => $distinto->email,
-                    'nome' => $distinto->nome,
-                    'tipo_solicitante' => $distinto->categoria,
-                    'cpf' => $distinto->cpf,
-                    'rg' => $distinto->rg,
-                    'rg_data_expedicao' => $distinto->rg_data_expedicao,
-                    'rg_orgao_expedidor' => $distinto->rg_orgao_expedidor,
-                    'nascimento' => $distinto->nascimento,
-                    'endereco_completo' => $distinto->endereco_completo,
-                    'telefone' => $distinto->telefone,
-                    'banco' => $distinto->banco,
-                    'banco_agencia' => $distinto->banco_agencia,
-                    'banco_conta' => $distinto->banco_conta,
+                    'email' => $docente->email,
+                    'nome' => $docente->nome,
+                    'tipo_solicitante' => $docente->categoria,
+                    'cpf' => $docente->cpf,
+                    'rg' => $docente->rg,
+                    'rg_data_expedicao' => $docente->rg_data_expedicao,
+                    'rg_orgao_expedidor' => $docente->rg_orgao_expedidor,
+                    'nascimento' => $docente->nascimento,
+                    'endereco_completo' => $docente->endereco_completo,
+                    'telefone' => $docente->telefone,
+                    'banco' => $docente->banco,
+                    'banco_agencia' => $docente->banco_agencia,
+                    'banco_conta' => $docente->banco_conta,
                 ]);
             }
 
@@ -489,8 +438,6 @@ class CsvImportController extends Controller
                     ]);
                 }
             }
-
-            $servico_tipos = ServicoTipo::all();
 
             /**
              * segmentar conforme tipo de solicitacao
@@ -554,16 +501,8 @@ class CsvImportController extends Controller
                             ]);
                         }
                         break;
-                    case 'Contratação de Serviço': // corrigir esse case na importacao de discentes
+                    case 'Contratação de Serviço':
                         if(!empty($importacao_docentes->servico_tipo)) {
-                            // dd(ServicoTipo::firstWhere('nome', $importacao_docentes->servico_tipo)?->id);
-                            // Servico::firstOrCreate([
-                            //     'importacao_docentes_id' => $importacao_docentes->id,
-                            // ], [
-                            //     'servico_tipo_id' => ServicoTipo::firstWhere('nome', $importacao_docentes->servico_tipo)?->id,
-                            //     'carimbo_data_hora' => $importacao_docentes->carimbo_data_hora,
-                            //     'importacao_docentes_id' => $importacao_docentes->id,
-                            // ]);
 
                             switch($importacao_docentes->servico_tipo) {
                                 case 'Tradução de Artigo':
@@ -672,12 +611,6 @@ class CsvImportController extends Controller
                                 }
                                 break;
                         }
-                        // if(!empty($importacao_docentes->servico_tipo)) {
-                        //     $dados_docentes['servico_id'] = Servico::where('carimbo_data_hora', $importacao_docentes->carimbo_data_hora)
-                        //         ->where('servico_tipo_id', ServicoTipo::firstWhere('nome', $importacao_docentes->servico_tipo)?->id)
-                        //         ->value('id');
-                        // }
-                        // break;
                     }
                     
                 Solicitacao::firstOrCreate(['importacao_docentes_id' => $importacao_docentes->id], $dados_docentes);

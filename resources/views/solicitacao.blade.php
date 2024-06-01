@@ -23,7 +23,7 @@
                     <th class="center-align">Aceite</th>
                 </tr>
                 <tr>
-                    <td>{{ $solicitacao->tipo->nome }}: {{ $resumo_solicitacao }}</td>
+                    <td><i>{{ $solicitacao->tipo->nome }}</i>: {{ $resumo_solicitacao }}</td>
                     <td>{{ $solicitacao->carimbo_data_hora }}</td>
                     <td>{{ $solicitacao->nome_do_orientador }}</td>
                     <td class="center-align">
@@ -90,7 +90,7 @@
                     <label for="observacao">Observação</label>
                 </div>
                 <div class="input-field col s12 m1">
-                    <button class="btn-small green waves-effect waves-light" type="submit" name="action">OK</button>
+                    <button class="btn-small green waves-effect waves-light" type="submit" name="action">Salvar</button>
                 </div>
             </form>
         </div>
@@ -129,11 +129,11 @@
                         <tbody>
                             <tr>
                                 <td class="right-align"><b>Notas:</b></td>
-                                <td class="right-align"><span class="red-text darken-4"><b>{{ $count_notas }}</b></span></td>
+                                <td class="right-align"><span class="blue-text darken-4"><b>{{ $count_notas }}</b></span></td>
                             </tr>
                             <tr>
                                 <td class="right-align"><b>Valor:</b></td>
-                                <td class="right-align"><span class="red-text darken-4"><b>R$&nbsp;{{ $valor_total }}</b></span></td>
+                                <td class="right-align"><span class="blue-text darken-4"><b>R$&nbsp;{{ $valor_total }}</b></span></td>
                             </tr>
                         </tbody>
                     </table>
@@ -171,7 +171,7 @@
                                 <label for="valor">Valor</label>
                             </div>
                             <div class="input-field col s4 m1">
-                                <input type="submit" class="input-field btn-small green" value="OK">
+                                <input type="submit" class="input-field btn-small green" value="Salvar">
                             </div>
                         </div>
                     </form>

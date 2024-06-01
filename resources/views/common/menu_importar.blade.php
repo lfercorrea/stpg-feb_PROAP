@@ -22,7 +22,7 @@
         <div class="col s6 m3 center waves-effect">
             <i class="material-icons medium black-text">repartition</i>
             <div class="container">
-                Dados importados
+                Dados da última importação
             </div>
         </div>
     </a>

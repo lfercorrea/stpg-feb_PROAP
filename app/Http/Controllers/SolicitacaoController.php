@@ -46,7 +46,6 @@ class SolicitacaoController extends Controller
                 'traducao_artigo',
                 'outro_servico',
                 'manutencao',
-                // 'servico',
             ])
             ->orderByRaw("STR_TO_DATE(carimbo_data_hora, '%d/%m/%Y %H:%i:%s') DESC")
             ->paginate(30);
@@ -115,9 +114,12 @@ class SolicitacaoController extends Controller
         $resumo_solicitacao = optional($solicitacao->evento)->nome
             ?? optional($solicitacao->atividade)->descricao
             ?? optional($solicitacao->material)->descricao
-            ?? optional($solicitacao->traducao_artigo)->titulo_artigo;
+            ?? optional($solicitacao->traducao_artigo)->descricao
+            ?? optional($solicitacao->outro_servico)->descricao
+            ?? optional($solicitacao->manutencao)->descricao;
         $link_artigo_aceite = optional($solicitacao->evento)->artigo_aceite;
-        $link_artigo_copia = optional($solicitacao->evento)->artigo_copia;
+        $link_artigo_copia = optional($solicitacao->evento)->artigo_copia
+            ?? optional($solicitacao->traducao_artigo)->artigo_a_traduzir;
         $link_parecer = optional($solicitacao->evento)->parecer_orientador 
             ?? optional($solicitacao->atividade)->parecer_orientador 
             ?? optional($solicitacao->material)->parecer_orientador 
@@ -125,6 +127,8 @@ class SolicitacaoController extends Controller
         $link_orcamento = optional($solicitacao->evento)->orcamento_passagens 
             ?? optional($solicitacao->atividade)->orcamento_passagens 
             ?? optional($solicitacao->material)->orcamento 
+            ?? optional($solicitacao->manutencao)->orcamento 
+            ?? optional($solicitacao->outro_servico)->orcamento 
             ?? optional($solicitacao->traducao_artigo)->orcamento;
 
         return view('solicitacao', [

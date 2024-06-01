@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('solicitantes', function (Blueprint $table) {
             $table->id();
 
-            $table->string('email');
+            $table->string('email')->unique();
             $table->string('nome');
             $table->string('tipo_solicitante');
             $table->string('cpf');

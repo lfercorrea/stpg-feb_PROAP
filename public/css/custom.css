@@ -76,7 +76,7 @@ table.highlight tbody tr:hover {
 }
 
 #success-message {
-    animation: fadeOut 1s ease-in-out 4s forwards; /* após 4 segundos, começa a esmaecer. após mais 1 segundo, esmaeceu completamente */
+    animation: fadeOut 1s ease-in-out 2s forwards; /* após 2 segundos, começa a esmaecer. após mais 1 segundo, esmaeceu completamente */
 }
 
 /** aplica o efeito popup às divs, mesmo rolando a página elas permanecem estáticas */

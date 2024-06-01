@@ -1,15 +1,17 @@
 @extends('layout')
 @section('content')
-    @if (!$discentes_vazia OR !$docentes_vazia)
+    {{-- @if (!$discentes_vazia OR !$docentes_vazia)
         <div class="section-margins side-margins">
             <h5>Solicitações importadas via CSV</h5>
         </div>
-    @endif
+    @endif --}}
     @if (!$discentes_vazia)
-        <div class="row center scrollable-table">
+        <div class="container center">
             <p>
-                <h6><b>Última importação de discentes</b></h6>
+                <h5>Última importação - planilha discentes</h5>
             </p>
+        </div>
+        <div class="row center scrollable-table">
             <table class="striped responsive-table">
                 <thead>
                     <tr>
@@ -144,11 +146,12 @@
         </div> --}}
     @endif
     @if (!$docentes_vazia)
-        
-        <div class="row center scrollable-table">
+        <div class="container center">
             <p>
-                <h6><b>Última importação de docentes</b></h6>
+                <h5>Última importação - planilha docentes</h5>
             </p>
+        </div>
+        <div class="row center scrollable-table">
             <table class="striped responsive-table">
                 <thead>
                     <tr>
@@ -276,10 +279,10 @@
     @endif
     @if ($discentes_vazia + $docentes_vazia = 0)
         <div class="row center section-margins side-margins">
-            <h5>Nenhuma importação da planilha de discentes.</h5>
+            <h6>Nenhuma importação foi feita.</h6>
+        </div>
+        <div class="row center section-margins side-margins">
+            <a href="{{ route('import_menu') }}" class="btn green darken-2 waves-effect waves-light">Importar</a>
         </div>
     @endif
-    <div class="row center section-margins side-margins">
-        <a href="{{ route('site.index') }}" class="btn black waves-effect waves-light">Inicial</a>
-    </div>
 @endsection

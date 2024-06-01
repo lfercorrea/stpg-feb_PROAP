@@ -4,6 +4,7 @@ namespace App\Imports;
 
 use App\Models\ImportacoesDiscentes;
 use Maatwebsite\Excel\Concerns\ToModel;
+use Illuminate\Support\Facades\Log;
 
 class SolicitacoesDiscentesImport implements ToModel
 {
@@ -14,6 +15,8 @@ class SolicitacoesDiscentesImport implements ToModel
     */
     public function model(array $row)
     {
+        Log::info('Dados da planilha discentes: ', $row);
+
         return new ImportacoesDiscentes([
             'status' => $row[0],
             'carimbo_data_hora' => $row[1],

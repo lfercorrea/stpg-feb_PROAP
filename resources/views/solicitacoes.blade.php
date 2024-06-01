@@ -8,7 +8,7 @@
     <form action="#" method="GET">
         <div class="row">
             <div class="col s12 m2 input-field">
-                <a href="{{ route('import_menu') }}" class="btn green waves-effect waves-light">Importar CSV</a>
+                <a href="{{ route('import_menu') }}" class="btn green darken-2 waves-effect waves-light">Importar CSV</a>
             </div>
             <div class="col s12 m3 input-field">
                 <input type="text" name="search" placeholder="Buscar"> 
@@ -70,7 +70,8 @@
                 <tr>
                     @php
                         $link_artigo_aceite = optional($solicitacao->evento)->artigo_aceite;
-                        $link_artigo_copia = optional($solicitacao->evento)->artigo_copia;
+                        $link_artigo_copia = optional($solicitacao->evento)->artigo_copia
+                            ?? optional($solicitacao->traducao_artigo)->artigo_a_traduzir;
                         $link_parecer = optional($solicitacao->evento)->parecer_orientador 
                             ?? optional($solicitacao->atividade)->parecer_orientador 
                             ?? optional($solicitacao->material)->parecer_orientador 
@@ -78,9 +79,9 @@
                         $link_orcamento = optional($solicitacao->evento)->orcamento_passagens 
                             ?? optional($solicitacao->atividade)->orcamento_passagens 
                             ?? optional($solicitacao->material)->orcamento 
-                            ?? optional($solicitacao->traducao_artigo)->orcamento
-                            ?? optional($solicitacao->outro_servico)->orcamento
-                            ?? optional($solicitacao->manutencao)->orcamento;
+                            ?? optional($solicitacao->manutencao)->orcamento 
+                            ?? optional($solicitacao->outro_servico)->orcamento 
+                            ?? optional($solicitacao->traducao_artigo)->orcamento;
                     @endphp
                     <td>{{ $solicitacao->status->nome }}</td>
                     <td><a href="{{ route('site.solicitacao', ['id' => $solicitacao->id]) }}" class="hover-underline"><b>{{ $solicitacao->tipo->nome }}</b></a></td>
