@@ -43,26 +43,7 @@ class NotaController extends Controller
             ->route('site.solicitacao', ['id' => $id])
             ->with('success', 'Nota lançada.');
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
+    
     public function destroy(string $solicitacao_id, $nota_id) {
         $nota = Nota::FindOrFail($nota_id);
         $nota->delete();

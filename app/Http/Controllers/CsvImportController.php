@@ -1,10 +1,11 @@
 <?php
 namespace App\Http\Controllers;
-
+// marker
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Validators\ValidationException;
 use App\Imports\SolicitacoesDiscentesImport;
 use App\Imports\SolicitacoesDocentesImport;
@@ -52,11 +53,24 @@ class CsvImportController extends Controller
         $request->validate([
             'file' => 'required|mimes:csv,txt',
         ], [
-            'file.required' => 'Você esqueceu de escolher a planilha',
+            'file.required' => 'Você esqueceu de selecionar a planilha.',
             'file.mimes' => 'A planilha deve estar no formato CSV',
         ]);
 
         try{
+            /**
+             * teste para ver se a planilha é a correta
+             */
+            $csv_modelo = asset('storage/static/csv/header_discente.csv');
+            $csv_modelo = fopen($csv_modelo, 'r');
+            $csv_modelo = fgetcsv($csv_modelo);
+            $file = $request->file('file');
+            $file = fopen($file, 'r');
+            $file = fgetcsv($file);
+
+            if($csv_modelo !== $file){
+                return redirect()->route('import_discentes_form')->with('fail', 'O CSV escolhido não está no formato esperado, confira se é mesmo o CSV da planilha de discentes exportada diretamente pelo Google Sheets.');
+            }
             /**
              * realimenta a tabela importacoes
              */
@@ -75,9 +89,16 @@ class CsvImportController extends Controller
                 ->get();
                 
             foreach($programas_importados_distintos as $distinto) {
-                Programa::firstOrCreate([
+                $programa = Programa::firstOrCreate([
                     'nome' => $distinto->programa,
                 ]);
+
+                if($programa->wasRecentlyCreated) {
+                    Log::info('Novo programa criado no banco de dados: ' . $distinto->programa);
+                }
+                else{
+                    Log::info('Programa já existente no banco de dados: ' . $distinto->programa);
+                }
             }
 
             /**
@@ -89,9 +110,16 @@ class CsvImportController extends Controller
                 ->get();
 
             foreach($programa_categorias_importados_distintos as $distinto) {
-                ProgramaCategoria::firstOrCreate([
+                $programa_categoria = ProgramaCategoria::firstOrCreate([
                     'nome' => $distinto->categoria,
                 ]);
+
+                if($programa_categoria->wasRecentlyCreated) {
+                    Log::info('Nova categoria de programa criada no banco de dados: ' . $distinto->categoria);
+                }
+                else{
+                    Log::info('Categoria de programa já existente no banco de dados: ' . $distinto->categoria);
+                }
             }
 
             /**
@@ -99,23 +127,6 @@ class CsvImportController extends Controller
              * de acordo com email unico
              */
             foreach($importacoes_discentes as $discente) {
-                // Solicitante::updateOrCreate([
-                //     'email' => $discente->email,
-                // ], [
-                //     'email' => $discente->email,
-                //     'nome' => $discente->nome,
-                //     'tipo_solicitante' => $discente->tipo_solicitante,
-                //     'cpf' => $discente->cpf,
-                //     'rg' => $discente->rg,
-                //     'rg_data_expedicao' => $discente->rg_data_expedicao,
-                //     'rg_orgao_expedidor' => $discente->rg_orgao_expedidor,
-                //     'nascimento' => $discente->nascimento,
-                //     'endereco_completo' => $discente->endereco_completo,
-                //     'telefone' => $discente->telefone,
-                //     'banco' => $discente->banco,
-                //     'banco_agencia' => $discente->banco_agencia,
-                //     'banco_conta' => $discente->banco_conta,
-                // ]);
                 $solicitante = Solicitante::firstOrCreate([
                     'email' => $discente->email,
                 ], [
@@ -133,7 +144,7 @@ class CsvImportController extends Controller
                     'banco_conta' => $discente->banco_conta,
                 ]);
 
-                // deixando de atualizar coisas que não fazem sentido
+                // atualizando as coisas que fazem sentido
                 $solicitante->update([
                     'tipo_solicitante' => $discente->tipo_solicitante,
                     'rg_data_expedicao' => $discente->rg_data_expedicao,
@@ -144,6 +155,13 @@ class CsvImportController extends Controller
                     'banco_agencia' => $discente->banco_agencia,
                     'banco_conta' => $discente->banco_conta,
                 ]);
+
+                if($solicitante->wasRecentlyCreated) {
+                    Log::info('Novo discente criado no banco de dados: ' . $solicitante->email);
+                }
+                else{
+                    Log::info('Discente já existente no banco de dados: ' . $solicitante->email);
+                }
             }
 
             /**
@@ -155,9 +173,16 @@ class CsvImportController extends Controller
                 ->get();
                 
             foreach($tipos_solicitacao_distintos as $distinto) {
-                SolicitacaoTipo::firstOrCreate([
+                $solicitacao_tipo = SolicitacaoTipo::firstOrCreate([
                     'nome' => $distinto->tipo_solicitacao,
                 ]);
+
+                if($solicitacao_tipo->wasRecentlyCreated) {
+                    Log::info('Novo tipo de solicitacão criado no banco de dados: ' . $distinto->tipo_solicitacao);
+                }
+                else{
+                    Log::info('Tipo de solicitação já existente no banco de dados: ' . $distinto->tipo_solicitacao);
+                }
             }
 
             /**
@@ -170,9 +195,16 @@ class CsvImportController extends Controller
                 
             foreach($tipos_servico_distintos as $distinto) {
                 if(!empty($distinto->servico_tipo)) {
-                    ServicoTipo::firstOrCreate([
+                    $tipo_servico = ServicoTipo::firstOrCreate([
                         'nome' => $distinto->servico_tipo,
                     ]);
+
+                    if($tipo_servico->wasRecentlyCreated) {
+                        Log::info('Novo tipo de serviço criado no banco de dados: ' . $distinto->servico_tipo);
+                    }
+                    else{
+                        Log::info('Tipo de serviço já existente no banco de dados: ' . $distinto->servico_tipo);
+                    }
                 }
             }
 
@@ -183,7 +215,7 @@ class CsvImportController extends Controller
                 switch($importacao_discentes->tipo_solicitacao) {
                     case 'Auxílio para Participação em Evento':
                         if(!empty($importacao_discentes->evento_nome)) {
-                            Evento::firstOrCreate([
+                            $evento = Evento::firstOrCreate([
                                 'importacao_discentes_id' => $importacao_discentes->id,
                             ], [
                                 'nome' => $importacao_discentes->evento_nome,
@@ -204,11 +236,18 @@ class CsvImportController extends Controller
                                 'carimbo_data_hora' => $importacao_discentes->carimbo_data_hora,
                                 'importacao_discentes_id' => $importacao_discentes->id,
                             ]);
+
+                            if($evento->wasRecentlyCreated) {
+                                Log::info('Novo evento criado no banco de dados: ' . $importacao_discentes->evento_nome);
+                            }
+                            else{
+                                Log::info('Evento já existente no banco de dados: ' . $importacao_discentes->evento_nome);
+                            }
                         }
                         break;
                     case 'Auxílio para Pesquisa de Campo':
                         if(!empty($importacao_discentes->atividade_descricao)) {
-                            Atividade::firstOrCreate([
+                            $atividade = Atividade::firstOrCreate([
                                 'importacao_discentes_id' => $importacao_discentes->id,
                             ], [
                                 'descricao' => $importacao_discentes->atividade_descricao,
@@ -223,11 +262,18 @@ class CsvImportController extends Controller
                                 'carimbo_data_hora' => $importacao_discentes->carimbo_data_hora,
                                 'importacao_discentes_id' => $importacao_discentes->id,
                             ]);
+
+                            if($atividade->wasRecentlyCreated) {
+                                Log::info('Nova atividade criada no banco de dados: ' . $importacao_discentes->atividade_descricao);
+                            }
+                            else{
+                                Log::info('Atividade já existente no banco de dados: ' . $importacao_discentes->atividade_descricao);
+                            }
                         }
                         break;
                     case 'Aquisição de Material':
                         if(!empty($importacao_discentes->material_descricao)) {
-                            Material::firstOrCreate([
+                            $material = Material::firstOrCreate([
                                 'importacao_discentes_id' => $importacao_discentes->id,
                             ], [
                                 'descricao' => $importacao_discentes->material_descricao,
@@ -239,13 +285,20 @@ class CsvImportController extends Controller
                                 'carimbo_data_hora' => $importacao_discentes->carimbo_data_hora,
                                 'importacao_discentes_id' => $importacao_discentes->id,
                             ]);
+
+                            if($material->wasRecentlyCreated) {
+                                Log::info('Novo material criado no banco de dados: ' . $importacao_discentes->material_descricao);
+                            }
+                            else{
+                                Log::info('Material já existente no banco de dados: ' . $importacao_discentes->material_descricao);
+                            }
                         }
                         break;
                     case 'Contratação de Serviço':
                         if(!empty($importacao_discentes->servico_tipo)) {
                             switch($importacao_discentes->servico_tipo) {
                                 case 'Tradução de Artigo':
-                                    TraducaoArtigo::firstOrCreate([
+                                    $traducao_artigo = TraducaoArtigo::firstOrCreate([
                                         'importacao_discentes_id' => $importacao_discentes->id,
                                     ], [
                                         'titulo_artigo' => $importacao_discentes->servico_titulo_artigo,
@@ -257,6 +310,13 @@ class CsvImportController extends Controller
                                         'carimbo_data_hora' => $importacao_discentes->carimbo_data_hora,
                                         'importacao_discentes_id' => $importacao_discentes->id,
                                     ]);
+
+                                    if($traducao_artigo->wasRecentlyCreated) {
+                                        Log::info('Nova tradução de artigo criada no banco de dados: ' . $importacao_discentes->servico_titulo_artigo);
+                                    }
+                                    else{
+                                        Log::info('Tradução de artigo já existente no banco de dados: ' . $importacao_discentes->servico_titulo_artigo);
+                                    }
                                     break;
                                 // esse case é morto, pois discentes só pedem tradução de artigo. mesmo assim, vou deixar aqui
                                 case 'Manutenção e Conservação de Máquinas e Equipamentos':
@@ -361,7 +421,14 @@ class CsvImportController extends Controller
                         }
                     }
                     
-                Solicitacao::firstOrCreate(['importacao_discentes_id' => $importacao_discentes->id], $dados_discentes);
+                $solicitacao = Solicitacao::firstOrCreate(['importacao_discentes_id' => $importacao_discentes->id], $dados_discentes);
+
+                if($solicitacao->wasRecentlyCreated) {
+                    Log::info('Nova solicitação criada no banco de dados: ' . $importacao_discentes->carimbo_data_hora);
+                }
+                else{
+                    Log::info('Solicitação já existente no banco de dados: ' . $importacao_discentes->carimbo_data_hora);
+                }
             }
 
             return back()->with('success', 'Arquivo importado.');
@@ -386,11 +453,24 @@ class CsvImportController extends Controller
         $request->validate([
             'file' => 'required|mimes:csv,txt',
         ], [
-            'file.required' => 'Você esqueceu de escolher a planilha',
+            'file.required' => 'Você esqueceu de selecionar a planilha.',
             'file.mimes' => 'A planilha deve estar no formato CSV',
         ]);
 
         try{
+            /**
+             * teste para ver se a planilha é a correta
+             */
+            $csv_modelo = asset('storage/static/csv/header_docente.csv');
+            $csv_modelo = fopen($csv_modelo, 'r');
+            $csv_modelo = fgetcsv($csv_modelo);
+            $file = $request->file('file');
+            $file = fopen($file, 'r');
+            $file = fgetcsv($file);
+            
+            if($csv_modelo !== $file){
+                return redirect()->route('import_docentes_form')->with('fail', 'O CSV escolhido não está no formato esperado, confira se é mesmo o CSV da planilha de docentes exportada diretamente pelo Google Sheets.');
+            }
             /**
              * realimenta a tabela importacoes
              */
@@ -409,9 +489,16 @@ class CsvImportController extends Controller
                 
             foreach($programas_importados_distintos as $distinto) {
                 if(!empty($distinto->programa)) {
-                    Programa::firstOrCreate([
+                    $programa = Programa::firstOrCreate([
                         'nome' => $distinto->programa,
                     ]);
+
+                    if($programa->wasRecentlyCreated) {
+                        Log::info('Novo programa criado no banco de dados: ' . $distinto->programa);
+                    }
+                    else{
+                        Log::info('Programa já existente no banco de dados: ' . $distinto->programa);
+                    }
                 }
             }
 
@@ -425,9 +512,16 @@ class CsvImportController extends Controller
 
             foreach($categorias_importadas_distintas as $distinta) {
                 if(!empty($distinta->categoria)) {
-                    DocenteCategoria::firstOrCreate([
+                    $docente_categoria = DocenteCategoria::firstOrCreate([
                         'categoria' => $distinta->categoria,
                     ]);
+
+                    if($docente_categoria->wasRecentlyCreated) {
+                        Log::info('Nova categoria de docente criada no banco de dados: ' . $distinta->categoria);
+                    }
+                    else{
+                        Log::info('Categoria de docente já existente no banco de dados: ' . $distinta->categoria);
+                    }
                 }
             }
 
@@ -453,7 +547,7 @@ class CsvImportController extends Controller
                         'banco_conta' => $docente->banco_conta,
                     ]);
 
-                // deixando de atualizar coisas que não fazem sentido
+                // atualizar somente o que faz sentido
                 $solicitante->update([
                     'tipo_solicitante' => $docente->categoria,
                     'rg_data_expedicao' => $docente->rg_data_expedicao,
@@ -464,6 +558,13 @@ class CsvImportController extends Controller
                     'banco_agencia' => $docente->banco_agencia,
                     'banco_conta' => $docente->banco_conta,
                 ]);
+
+                if($solicitante->wasRecentlyCreated) {
+                    Log::info('Novo docente criado no banco de dados: ' . $solicitante->email);
+                }
+                else{
+                    Log::info('Docente já existente no banco de dados: ' . $solicitante->email);
+                }
             }
 
             /**
@@ -476,9 +577,16 @@ class CsvImportController extends Controller
                 
             foreach($tipos_solicitacao_distintos as $distinto) {
                 if(!empty($distinto->tipo_solicitacao)) {
-                    SolicitacaoTipo::firstOrCreate([
+                    $solicitacao_tipo = SolicitacaoTipo::firstOrCreate([
                         'nome' => $distinto->tipo_solicitacao,
                     ]);
+
+                    if($solicitacao_tipo->wasRecentlyCreated) {
+                        Log::info('Novo tipo de solicitacão criado no banco de dados: ' . $distinto->tipo_solicitacao);
+                    }
+                    else{
+                        Log::info('Tipo de solicitação já existente no banco de dados: ' . $distinto->tipo_solicitacao);
+                    }
                 }
             }
 
@@ -492,9 +600,16 @@ class CsvImportController extends Controller
                 
             foreach($tipos_servico_distintos as $distinto) {
                 if(!empty($distinto->servico_tipo)) {
-                    ServicoTipo::firstOrCreate([
+                    $tipo_servico = ServicoTipo::firstOrCreate([
                         'nome' => $distinto->servico_tipo,
                     ]);
+
+                    if($tipo_servico->wasRecentlyCreated) {
+                        Log::info('Novo tipo de serviço criado no banco de dados: ' . $distinto->servico_tipo);
+                    }
+                    else{
+                        Log::info('Tipo de serviço já existente no banco de dados: ' . $distinto->servico_tipo);
+                    }
                 }
             }
 
@@ -505,7 +620,7 @@ class CsvImportController extends Controller
                 switch($importacao_docentes->tipo_solicitacao) {
                     case 'Auxílio para Participação em Evento':
                         if(!empty($importacao_docentes->evento_nome)) {
-                            Evento::firstOrCreate([
+                            $evento = Evento::firstOrCreate([
                                 'importacao_docentes_id' => $importacao_docentes->id,
                             ], [
                                 'nome' => $importacao_docentes->evento_nome,
@@ -525,11 +640,18 @@ class CsvImportController extends Controller
                                 'carimbo_data_hora' => $importacao_docentes->carimbo_data_hora,
                                 'importacao_docentes_id' => $importacao_docentes->id,
                             ]);
+
+                            if($evento->wasRecentlyCreated) {
+                                Log::info('Novo evento criado no banco de dados: ' . $importacao_docentes->evento_nome);
+                            }
+                            else{
+                                Log::info('Evento já existente no banco de dados: ' . $importacao_docentes->evento_nome);
+                            }
                         }
                         break;
                     case 'Auxílio para Pesquisa de Campo':
                         if(!empty($importacao_docentes->atividade_descricao)) {
-                            Atividade::firstOrCreate([
+                            $atividade = Atividade::firstOrCreate([
                                 'importacao_docentes_id' => $importacao_docentes->id,
                             ], [
                                 'descricao' => $importacao_docentes->atividade_descricao,
@@ -543,11 +665,18 @@ class CsvImportController extends Controller
                                 'carimbo_data_hora' => $importacao_docentes->carimbo_data_hora,
                                 'importacao_docentes_id' => $importacao_docentes->id,
                             ]);
+
+                            if($atividade->wasRecentlyCreated) {
+                                Log::info('Nova atividade criada no banco de dados: ' . $importacao_docentes->atividade_descricao);
+                            }
+                            else{
+                                Log::info('Atividade já existente no banco de dados: ' . $importacao_docentes->atividade_descricao);
+                            }
                         }
                         break;
                     case 'Aquisição de Material':
                         if(!empty($importacao_docentes->material_descricao)) {
-                            Material::firstOrCreate([
+                            $material = Material::firstOrCreate([
                                 'importacao_docentes_id' => $importacao_docentes->id,
                             ], [
                                 'descricao' => $importacao_docentes->material_descricao,
@@ -558,6 +687,13 @@ class CsvImportController extends Controller
                                 'carimbo_data_hora' => $importacao_docentes->carimbo_data_hora,
                                 'importacao_docentes_id' => $importacao_docentes->id,
                             ]);
+
+                            if($material->wasRecentlyCreated) {
+                                Log::info('Novo material criado no banco de dados: ' . $importacao_docentes->material_descricao);
+                            }
+                            else{
+                                Log::info('Material já existente no banco de dados: ' . $importacao_docentes->material_descricao);
+                            }
                         }
                         break;
                     case 'Contratação de Serviço':
@@ -565,7 +701,7 @@ class CsvImportController extends Controller
 
                             switch($importacao_docentes->servico_tipo) {
                                 case 'Tradução de Artigo':
-                                    TraducaoArtigo::firstOrCreate([
+                                    $traducao_artigo = TraducaoArtigo::firstOrCreate([
                                         'importacao_docentes_id' => $importacao_docentes->id,
                                     ], [
                                         'titulo_artigo' => $importacao_docentes->servico_titulo_artigo,
@@ -576,9 +712,16 @@ class CsvImportController extends Controller
                                         'carimbo_data_hora' => $importacao_docentes->carimbo_data_hora,
                                         'importacao_docentes_id' => $importacao_docentes->id,
                                     ]);
+
+                                    if($traducao_artigo->wasRecentlyCreated) {
+                                        Log::info('Nova tradução de artigo criada no banco de dados: ' . $importacao_docentes->servico_titulo_artigo);
+                                    }
+                                    else{
+                                        Log::info('Tradução de artigo já existente no banco de dados: ' . $importacao_docentes->servico_titulo_artigo);
+                                    }
                                     break;
                                 case 'Manutenção e Conservação de Máquinas e Equipamentos':
-                                    Manutencao::firstOrCreate([
+                                    $manutencao = Manutencao::firstOrCreate([
                                         'importacao_docentes_id' => $importacao_docentes->id,
                                     ], [
                                         'descricao' => $importacao_docentes->manutencao_descricao,
@@ -589,9 +732,16 @@ class CsvImportController extends Controller
                                         'carimbo_data_hora' => $importacao_docentes->carimbo_data_hora,
                                         'importacao_docentes_id' => $importacao_docentes->id,
                                     ]);
+
+                                    if($manutencao->wasRecentlyCreated) {
+                                        Log::info('Nova manutenção de artigo criada no banco de dados: ' . $importacao_docentes->manutencao_descricao);
+                                    }
+                                    else{
+                                        Log::info('Manutenção já existente no banco de dados: ' . $importacao_docentes->manutencao_descricao);
+                                    }
                                     break;
                                 case 'Outros Serviços':
-                                    OutroServico::firstOrCreate([
+                                    $outro_servico = OutroServico::firstOrCreate([
                                         'importacao_docentes_id' => $importacao_docentes->id,
                                     ], [
                                         'descricao' => $importacao_docentes->outros_servicos_descricao,
@@ -601,6 +751,13 @@ class CsvImportController extends Controller
                                         'carimbo_data_hora' => $importacao_docentes->carimbo_data_hora,
                                         'importacao_docentes_id' => $importacao_docentes->id,
                                     ]);
+
+                                    if($outro_servico->wasRecentlyCreated) {
+                                        Log::info('Outro serviço criado no banco de dados: ' . $importacao_docentes->outros_servicos_descricao);
+                                    }
+                                    else{
+                                        Log::info('Outro serviço já existente no banco de dados: ' . $importacao_docentes->outros_servicos_descricao);
+                                    }
                                     break;
                             }
                         }
@@ -676,7 +833,14 @@ class CsvImportController extends Controller
                         }
                     }
                     
-                Solicitacao::firstOrCreate(['importacao_docentes_id' => $importacao_docentes->id], $dados_docentes);
+                $solicitacao = Solicitacao::firstOrCreate(['importacao_docentes_id' => $importacao_docentes->id], $dados_docentes);
+                
+                if($solicitacao->wasRecentlyCreated) {
+                    Log::info('Nova solicitação criada no banco de dados: ' . $importacao_docentes->carimbo_data_hora);
+                }
+                else{
+                    Log::info('Solicitação já existente no banco de dados: ' . $importacao_docentes->carimbo_data_hora);
+                }
             }
 
             return back()->with('success', 'Arquivo importado.');

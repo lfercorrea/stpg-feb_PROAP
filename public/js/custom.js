@@ -114,3 +114,8 @@ document.addEventListener('DOMContentLoaded', function() {
     transitionMovement: 10
   });
 });
+
+/** botão imprimir */
+document.getElementById('print-button').addEventListener('click', function() {
+  window.print();
+});

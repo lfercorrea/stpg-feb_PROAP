@@ -31,12 +31,6 @@ class SiteController extends Controller
         ]);
     }
 
-    // public function drop_importacoes_discentes() {
-    //     ImportacoesDiscentes::truncate();
-
-    //     return redirect()->route('site.index')->with('success', 'Já era. Tabela de importações foi para Caixa prego.');
-    // }
-
     /**
      * mostra a página de visualização com dados do solicitante
      */

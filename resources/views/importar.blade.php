@@ -1,9 +1,9 @@
 @extends('layout')
 @section('content')
     <div class="row section-margin-bottom">
-        @include('common.menu_importar')
+        @include('common.import_menu')
     </div>
     <div class="row center section-margins side-margins">
-        <a href="{{ route('site.solicitacoes') }}" class="btn black waves-effect waves-light">Voltar para solicitações</a>
+        <a class="btn-small black waves-effect waves-black" onclick="history.back()">Voltar</a>
     </div>
 @endsection

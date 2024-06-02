@@ -15,7 +15,7 @@ class SolicitacoesDocentesImport implements ToModel
     */
     public function model(array $row)
     {
-        Log::info('Dados da planilha docentes: ', $row);
+        // Log::info('Dados lidos no CSV (docentes): ', $row);
 
         return new ImportacoesDocentes([
             'status' => $row[0],

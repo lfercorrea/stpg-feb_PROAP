@@ -130,10 +130,46 @@ table.highlight tbody tr:hover {
 }
 
 /* Estilo para impressão */
+.logo-doc-header {
+    max-width: 100%;
+}
+.print-only {
+    display: none;
+}
 @media print {
     .print-hidden {
-        /* visibility: hidden; */
         display: none;
+    }
+    .print-only {
+        display: block;
+    }
+    .footer-container {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 10px;
+        background: white;
+        z-index: 9999; /* garante que o footer-container fique acima do conteúdo */
+    }
+    .logo-doc-footer {
+        position: fixed;
+        bottom: 10px;
+        left: 10px;
+        max-width: 150px;
+        max-height: auto;
+    }
+    .text-footer {
+        font-size: 12px;
+        text-align: center;
+        line-height: 18px;
+        position: fixed;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    body {
+        margin-bottom: 60mm;
     }
 }
 
@@ -219,7 +255,7 @@ table.highlight tbody tr:hover {
     margin-top: 50px;
 }
 .section-margin-bottom {
-    margin-bottom: 50px;
+    margin-bottom: 20px;
 }
 .side-margins{
     margin-left: 15px;

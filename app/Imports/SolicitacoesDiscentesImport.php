@@ -15,7 +15,7 @@ class SolicitacoesDiscentesImport implements ToModel
     */
     public function model(array $row)
     {
-        Log::info('Dados da planilha discentes: ', $row);
+        // Log::info('Dados lidos no CSV (discentes): ', $row);
 
         return new ImportacoesDiscentes([
             'status' => $row[0],

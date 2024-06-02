@@ -2,21 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Maatwebsite\Excel\Facades\Excel;
-use Maatwebsite\Excel\Validators\ValidationException;
-use App\Imports\SolicitacoesDiscentesImport;
-use App\Imports\SolicitacoesDocentesImport;
-use App\Models\Atividade;
-use App\Models\Evento;
-use App\Models\Material;
-use App\Models\Servico;
-use App\Models\ImportacoesDiscentes;
 use App\Models\Programa;
-use App\Models\ProgramaCategoria;
-use App\Models\Solicitante;
 use App\Models\Solicitacao;
 use App\Models\SolicitacaoTipo;
 use App\Models\Status;

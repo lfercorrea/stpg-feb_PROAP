@@ -1,9 +1,12 @@
 
 @extends('layout')
 @section('content')
-    <div class='center'>
-        <h5>Solicitações</h5>
+    <div class='center print-hidden'>
+        <h6>Solicitações</h6>
         <hr>
+    </div>
+    <div class="print-only section-margins">
+        <h6><b>Resumo das solicitações</b></h6>
     </div>
     <form action="#" method="GET" class="print-hidden">
         <div class="row">
@@ -38,7 +41,11 @@
             </div>
         </div>
         <div class="container center">
-            <button class="btn waves-effect waves-light black" type="submit">Buscar</button> 
+            <button class="btn waves-effect waves-light black" type="submit">Buscar</button>
+            <button id="print-button" class="btn-flat waves-effect waves-light">
+                Imprimir
+                <i class="material-icons right">print</i>
+            </button>
         </div>
     </form>
     @if ($count_solicitacoes > 0)
@@ -124,5 +131,8 @@
             $solicitacoes->appends(request()->only(['search', 'programa_id', 'tipo_solicitacao_id', 'status_id']))
                 ->links('common/pagination')
         }}
+    </div>
+    <div class="row center section-margins side-margins print-hidden">
+        <a class="btn-small black waves-effect waves-black" onclick="history.back()">Voltar</a>
     </div>
 @endsection

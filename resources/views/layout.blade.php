@@ -18,14 +18,17 @@
               </a>
               <ul id="nav-mobile" class="right hide-on-med-and-down">
                 <li class="waves-effect waves-light"><a href="{{ route('site.solicitacoes') }}">Solicitações</a></li>
-                <li class="waves-effect waves-light"><a href="{{ route('site.relatorio.index') }}">Relatório</a></li>
                 <li class="waves-effect waves-light"><a href="{{ route('import_menu') }}">Importação</a></li>
+                <li class="waves-effect waves-light"><a href="{{ route('site.relatorio.index') }}">Relatório por programa</a></li>
               </ul>
             </div>
         </nav>
     </header>
 
     <main>
+      <div class="print-only">
+        <img src="{{ asset('storage/static/images/logo_doc_header.jpg') }}" class="logo-doc-header">
+      </div>
       <div class="section-margin-bottom side-margins">
         <p>@yield('content')</p>
       </div>
@@ -36,7 +39,7 @@
     @elseif ( $msg = Session::get('success') )
         @include('messages.success')
     @endif
-
+    
     <footer class="page-footer blue lighten-2 print-hidden">
       <div class="container">
         <div class="row">
@@ -57,6 +60,22 @@
         </div>
       </div>
     </footer>
+    {{-- <div class="print-only footer-container">
+      <div class="container">
+        <div class="row">
+          <div class="col s6 left">
+            <img src="{{ asset('storage/static/images/logo_doc_footer.jpg') }}" class="logo-doc-footer">
+          </div>
+          <div class="col s6">
+            <div class="text-footer">
+              Faculdade de Engenharia de Bauru – Pós-graduação<br>
+              Av. Eng. Luiz Edmundo Carrijo Coube, 14-01  17033-360  Bauru - SP<br>
+              tel. (14) 3103-6108  spg@feb.unesp.br   www.feb.unesp.br
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> --}}
     <script src="{{ asset('js/materialize.min.js') }}"></script>
     <script src="{{ asset('js/custom.js') }}"></script>
     <script src="{{ asset('js/jquery.js') }}"></script>

@@ -1,8 +1,19 @@
 @extends('layout')
 @section('content')
     <div class="side-margins">
-        <div class="section-margins">
-            <h5>{{ $solicitante->nome }} ({{ $solicitante->email }})</h5>
+        <div class="row section-margins">
+            <div class="print-only section-margins">
+                <h6><b>Detalhamento do solicitante</b></h6>
+            </div>
+            <div class="col s12 m6">
+                <h6>{{ $solicitante->nome }} ({{ $solicitante->email }})</h6>
+            </div>
+            <div class="col s12 m6 right-align">
+            <button id="print-button" class="btn-flat waves-effect waves-light print-hidden">
+                Imprimir
+                <i class="material-icons right">print</i>
+            </button>
+        </div>
         </div>
         <table class="compact-table striped responsive-table">
             <tr>
@@ -44,7 +55,7 @@
         </table>
         @if (count($solicitacoes) > 0)
             <div class="section-margins">
-                <h5>Solicitações</h5>
+                <h6>Solicitações</h6>
             </div>
             <div class="row">
                 <table class="bordered striped responsive-table highlight">
@@ -119,13 +130,14 @@
                 </table>
                 <table class="bordered compact-table striped responsive-table">
                     <tr>
-                        <th class="center-align"><span class="blue-text darken-4">Total pago:&nbsp;R$&nbsp;{{ number_format($total_valor_pago, 2, ',', '.') }}</span></th>
+                        <th class="center-align"><span class="blue-text text-darken-2">Total pago:&nbsp;R$&nbsp;{{ number_format($total_valor_pago, 2, ',', '.') }}</span></th>
                     </tr>
                 </table>
             </div>
         @endif
         <div class="container center print-hidden">
-            <a class="btn black waves-effect waves-black" href="{{ route('site.solicitacoes') }}">Voltar para solicitações</a>
+            <a class="btn-flat waves-effect waves-black" onclick="history.back()">Voltar</a>
+            <a class="btn black waves-effect waves-black" href="{{ route('site.solicitacoes') }}">Todas as solicitações</a>
         </div>
     </div>
 @endsection

@@ -2,7 +2,7 @@
 @section('content')
     <div id="confirmModal" class="modal">
         <div class="modal-content">
-            <h5>Confirmar</h5>
+            <h6>Confirmar</h6>
             <p>Vai mesmo excluir esta nota?</p>
         </div>
         <div class="modal-footer">
@@ -10,8 +10,35 @@
             <a href="#" id="confirmDelete" class="waves-effect waves-light btn red darken-1">Confirmar</a>
         </div>
     </div>
+    <div class="print-only section-margins">
+        <h6><b>Detalhes da solicitação</b></h6>
+    </div>
     <div class="side-margins">
         <div class="row">
+            <table class="compact-table striped responsive-table">
+                <tr>
+                    <th>Solicitante</th>
+                    <th>Telefone</th>
+                    <th class="print-hidden">CPF</th>
+                    <th class="print-hidden">RG</th>
+                    <th class="print-hidden">Órgão emissor</th>
+                    <th class="print-hidden">Data de emissão</th>
+                    <th>Banco</th>
+                    <th>Agência</th>
+                    <th>Conta</th>
+                </tr>
+                <tr>
+                    <td><a href="{{ route('site.solicitante', ['id' => $solicitacao->solicitante->id]) }}" class="hover-underline">{{ $solicitacao->solicitante->nome }}</a> (<a href="mailto:{{ $solicitacao->solicitante->email }}" class="hover-underline">{{ $solicitacao->solicitante->email }}</a>)</td>
+                    <td>{{ $solicitacao->solicitante->telefone }}</td>
+                    <td class="print-hidden">{{ $solicitacao->solicitante->cpf }}</td>
+                    <td class="print-hidden">{{ $solicitacao->solicitante->rg }}</td>
+                    <td class="print-hidden">{{ $solicitacao->solicitante->rg_orgao_expedidor }}</td>
+                    <td class="print-hidden">{{ $solicitacao->solicitante->rg_data_expedicao }}</td>
+                    <td>{{ $solicitacao->solicitante->banco }}</td>
+                    <td>{{ $solicitacao->solicitante->banco_agencia }}</td>
+                    <td>{{ $solicitacao->solicitante->banco_conta }}</td>
+                </tr>
+            </table>
             <table class="compact-table striped responsive-table">
                 <tr>
                     <th>Solicitacão</th>
@@ -49,30 +76,6 @@
                     </td>
                 </tr>
             </table>
-            <table class="compact-table striped responsive-table">
-                <tr>
-                    <th>Solicitante</th>
-                    <th>Telefone</th>
-                    <th class="print-hidden">CPF</th>
-                    <th class="print-hidden">RG</th>
-                    <th class="print-hidden">Órgão emissor</th>
-                    <th class="print-hidden">Data de emissão</th>
-                    <th>Banco</th>
-                    <th>Agência</th>
-                    <th>Conta</th>
-                </tr>
-                <tr>
-                    <td><a href="{{ route('site.solicitante', ['id' => $solicitacao->solicitante->id]) }}" class="hover-underline">{{ $solicitacao->solicitante->nome }}</a> (<a href="mailto:{{ $solicitacao->solicitante->email }}" class="hover-underline">{{ $solicitacao->solicitante->email }}</a>)</td>
-                    <td>{{ $solicitacao->solicitante->telefone }}</td>
-                    <td class="print-hidden">{{ $solicitacao->solicitante->cpf }}</td>
-                    <td class="print-hidden">{{ $solicitacao->solicitante->rg }}</td>
-                    <td class="print-hidden">{{ $solicitacao->solicitante->rg_orgao_expedidor }}</td>
-                    <td class="print-hidden">{{ $solicitacao->solicitante->rg_data_expedicao }}</td>
-                    <td>{{ $solicitacao->solicitante->banco }}</td>
-                    <td>{{ $solicitacao->solicitante->banco_agencia }}</td>
-                    <td>{{ $solicitacao->solicitante->banco_conta }}</td>
-                </tr>
-            </table>
         </div>
         <div class="row print-hidden">
             <form class="col s12" action="{{ route('site.solicitacao.update', ['id' => $solicitacao->id]) }}" method="POST">
@@ -91,7 +94,7 @@
                     <label for="observacao">Observação</label>
                 </div>
                 <div class="input-field col s12 m1">
-                    <button class="btn-small green waves-effect waves-light" type="submit" name="action">Salvar</button>
+                    <button class="btn-small green darken-2 waves-effect waves-light" type="submit" name="action">Salvar</button>
                 </div>
             </form>
         </div>
@@ -99,7 +102,7 @@
             <div class="container">
                 @if ($solicitacao->nota->isNotEmpty())
                     <div class="section-margins">
-                        <h5>Notas/recibos</h5>
+                        <h6>Notas/recibos</h6>
                     </div>
                     <table class="compact-table striped responsive-table">
                         <tr>
@@ -130,17 +133,17 @@
                         <tbody>
                             <tr>
                                 <td class="right-align"><b>Notas:</b></td>
-                                <td class="right-align"><span class="blue-text darken-4"><b>{{ $count_notas }}</b></span></td>
+                                <td class="right-align"><span class="blue-text text-darken-2"><b>{{ $count_notas }}</b></span></td>
                             </tr>
                             <tr>
                                 <td class="right-align"><b>Valor:</b></td>
-                                <td class="right-align"><span class="blue-text darken-4"><b>R$&nbsp;{{ $valor_total }}</b></span></td>
+                                <td class="right-align"><span class="blue-text text-darken-2"><b>R$&nbsp;{{ $valor_total }}</b></span></td>
                             </tr>
                         </tbody>
                     </table>
                 @endif
                 <div class="section-margins print-hidden">
-                    <h5>Lançar nota/recibo</h5>
+                    <h6>Lançar nota/recibo</h6>
                 </div>
                 <div class="row print-hidden">
                     <form class="col s12" action="{{ route('site.nota.store', ['id' => $solicitacao->id]) }}" method="POST">
@@ -172,7 +175,7 @@
                                 <label for="valor">Valor</label>
                             </div>
                             <div class="input-field col s4 m1">
-                                <input type="submit" class="input-field btn-small green" value="Salvar">
+                                <input type="submit" class="input-field btn-small green darken-2" value="Salvar">
                             </div>
                         </div>
                     </form>
@@ -181,7 +184,11 @@
         </div>
     </div>
     <div class="container center print-hidden">
-        <a class="btn black waves-effect waves-black" href="{{ route('site.solicitacoes') }}">Voltar para solicitações</a>
+        <a class="btn-flat waves-effect waves-black" onclick="history.back()">Voltar</a>
         <a class="btn black waves-effect waves-black" href="{{ route('site.solicitante', ['id' => $solicitacao->solicitante->id]) }}">Resumo do solicitante</a>
+        <button id="print-button" class="btn-flat waves-effect waves-light">
+            Imprimir
+            <i class="material-icons right">print</i>
+        </button>
     </div>
 @endsection
