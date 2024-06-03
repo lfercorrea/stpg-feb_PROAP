@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Nota;
+use App\Models\Solicitacao;
 
 class NotaController extends Controller
 {
@@ -30,12 +31,16 @@ class NotaController extends Controller
             'fonte_pagadora_id.integer' => 'A fonte pagadora deve ser do tipo INT',
         ]);
 
+        $solicitante_id = Solicitacao::where('id', $id)
+            ->value('solicitante_id');
+
         $nota->numero = $request->numero;
         $nota->data = $request->data;
         $nota->descricao = $request->descricao;
         $nota->valor = $request->valor;
         $nota->fonte_pagadora_id = $request->fonte_pagadora_id;
         $nota->solicitacao_id = $id;
+        $nota->solicitante_id = $solicitante_id;
 
         $nota->save();
         

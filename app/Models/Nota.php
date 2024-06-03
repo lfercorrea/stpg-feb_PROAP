@@ -24,4 +24,8 @@ class Nota extends Model
     public function solicitacao() {
         return $this->belongsTo(Solicitacao::class);
     }
+
+    public function solicitante() {
+        return $this->belongsTo(Solicitante::class, 'solicitante_id');
+    }
 }

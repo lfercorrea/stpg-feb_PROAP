@@ -17,6 +17,10 @@ class Solicitante extends Model
         return $this->hasMany(Solicitacao::class);
     }
 
+    public function nota() {
+        return $this->hasMany(Nota::class);
+    }
+
     public function programas() {
         return $this->belongsToMany(Programa::class, 'solicitacoes');
     }
