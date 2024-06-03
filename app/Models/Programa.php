@@ -12,4 +12,8 @@ class Programa extends Model
     protected $fillable = [
         'nome',
     ];
+
+    public function solicitantes() {
+        return $this->belongsToMany(Solicitante::class, 'solicitacoes');
+    }
 }

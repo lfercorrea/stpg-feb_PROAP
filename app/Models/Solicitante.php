@@ -17,6 +17,10 @@ class Solicitante extends Model
         return $this->hasMany(Solicitacao::class);
     }
 
+    public function programas() {
+        return $this->belongsToMany(Programa::class, 'solicitacoes');
+    }
+
     // calcular o total de solicitações de um solitiante
     public function total_solicitacoes() {
         return $this->solicitacoes()
