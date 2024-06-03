@@ -37,56 +37,52 @@
             </div>
         </div>
     </form>
-        @foreach ($solicitantes_por_programa as $programa => $solicitantes)
-            <h6 class="blue-text text-darken-2"><b>{{ $programa }}</b> ({{ $solicitantes->count() }})</h6>
-            <table class="compact-table striped responsive-table">
-                <thead>
+    @foreach ($solicitantes_por_programa as $programa => $solicitantes)
+        <h6 class="blue-text text-darken-2"><b>{{ $programa }}</b> ({{ $solicitantes->count() }})</h6>
+        <table class="compact-table striped responsive-table">
+            <thead>
+                <tr>
+                    <th>Solicitante</th>
+                    <th>Valor gasto</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($solicitantes as $solicitante)
+                    @if ($solicitante->soma_notas() > 0)
+                    @php
+                        $total_programa += $solicitante->soma_notas()
+                    @endphp
                     <tr>
-                        <th>Solicitante</th>
-                        <th>Valor gasto</th>
-                        {{-- <th>Programa</th> --}}
-                        {{-- <th>Data</th> --}}
+                        <td><a href="{{ route('site.solicitante', ['id' => $solicitante->id]) }}" class="hover-underline"><b>{{ Str::upper($solicitante->nome) }}</b></a>{{ ($solicitante->tipo_solicitante) ? ' (' . $solicitante->tipo_solicitante . ')' : '' }}</td>
+                        <td>R$&nbsp;{{ number_format($solicitante->soma_notas(), 2, ',', '.') }}</td>
                     </tr>
-                </thead>
-                <tbody>
-                    @foreach ($solicitantes as $solicitante)
-                        @if ($solicitante->soma_notas() > 0)
-                        @php
-                            $total_programa += $solicitante->soma_notas()
-                        @endphp
-                        <tr>
-                            <td><a href="{{ route('site.solicitante', ['id' => $solicitante->id]) }}" class="hover-underline"><b>{{ Str::upper($solicitante->nome) }}</b></a>{{ ($solicitante->tipo_solicitante) ? ' (' . $solicitante->tipo_solicitante . ')' : '' }}</td>
-                            <td>R$&nbsp;{{ number_format($solicitante->soma_notas(), 2, ',', '.') }}</td>
-                            {{-- <td>{{ $solicitante->solicitacao()->first()->programa->nome }}</td> --}}
-                            {{-- <td></td> --}}
-                        </tr>
-                        @endif
-                    @endforeach
-                </tbody>
-            </table>
-            <table class="compact-table striped responsive-table">
-                <tr>
-                    <th class="center-align"><span class="blue-text text-darken-2">Total {{ $programa }}:&nbsp;R$&nbsp;{{ number_format($total_programa, 2, ',', '.') }}</span></th>
-                </tr>
-            </table>
-            @php
-                $total_geral += $total_programa;
-                $total_programa = 0;
-            @endphp
-        @endforeach
-        @if (count($solicitantes_por_programa) > 1)
-            <table class="compact-table striped responsive-table">
-                <tr>
-                    <th class="center-align"><span class="red-text text-darken-2">Total geral:&nbsp;R$&nbsp;{{ number_format($total_geral, 2, ',', '.') }}</span></th>
-                </tr>
-            </table>
-        @endif
-        @if ($solicitantes_por_programa->count() == 0)
-            <div class="container center">
-                <h6><p>Nenhum dado para mostrar.</p></h6>
-            </div>            
-        @endif
-        <div class="row center section-margins side-margins print-hidden">
-            <a class="btn-small black waves-effect waves-black" onclick="history.back()">Voltar</a>
-        </div>
+                    @endif
+                @endforeach
+            </tbody>
+        </table>
+        <table class="compact-table striped responsive-table">
+            <tr>
+                <th class="center-align"><span class="blue-text text-darken-2">Total {{ $programa }}:&nbsp;R$&nbsp;{{ number_format($total_programa, 2, ',', '.') }}</span></th>
+            </tr>
+        </table>
+        @php
+            $total_geral += $total_programa;
+            $total_programa = 0;
+        @endphp
+    @endforeach
+    @if (count($solicitantes_por_programa) > 1)
+        <table class="compact-table striped responsive-table">
+            <tr>
+                <th class="center-align"><span class="red-text text-darken-2">Total geral:&nbsp;R$&nbsp;{{ number_format($total_geral, 2, ',', '.') }}</span></th>
+            </tr>
+        </table>
+    @endif
+    @if ($solicitantes_por_programa->count() == 0)
+        <div class="container center">
+            <h6><p>Nenhum dado para mostrar.</p></h6>
+        </div>            
+    @endif
+    <div class="row center section-margins side-margins print-hidden">
+        <a class="btn-small black waves-effect waves-black" onclick="history.back()">Voltar</a>
+    </div>
 @endsection
