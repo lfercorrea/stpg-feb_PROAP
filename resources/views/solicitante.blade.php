@@ -9,11 +9,11 @@
                 <h6>{{ $solicitante->nome }} ({{ $solicitante->email }})</h6>
             </div>
             <div class="col s12 m6 right-align">
-            <button id="print-button" class="btn-flat waves-effect waves-light print-hidden">
-                Imprimir
-                <i class="material-icons right">print</i>
-            </button>
-        </div>
+                <button id="print-button" class="btn-flat waves-effect waves-light print-hidden">
+                    Imprimir
+                    <i class="material-icons right">print</i>
+                </button>
+            </div>
         </div>
         <table class="compact-table striped responsive-table">
             <tr>
@@ -58,81 +58,99 @@
                 <h6>Solicitações</h6>
             </div>
             <div class="row">
-                <table class="bordered striped responsive-table highlight">
-                    <thead>
-                        <tr>
-                            <th class=" print-hidden">Status</th>
-                            <th>Solicitação</th>
-                            <th>Programa</th>
-                            <th>Valor pago</th>
-                            <th class="print-hidden">Orientador</th>
-                            <th class="center-align print-hidden">Parecer</th>
-                            <th class="center-align print-hidden">Orçamento</th>
-                            <th class="center-align print-hidden">Artigo</th>
-                            <th class="center-align print-hidden">Aceite</th>
-                            <th>Data</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($solicitacoes as $solicitacao)
-                        <tr>
-                            @php
-                                $total_valor_pago =+ $solicitacao->soma_notas();
-                                $resumo_solicitacao = optional($solicitacao->evento)->nome
-                                    ?? optional($solicitacao->atividade)->descricao
-                                    ?? optional($solicitacao->material)->descricao
-                                    ?? optional($solicitacao->traducao_artigo)->descricao
-                                    ?? optional($solicitacao->outro_servico)->descricao
-                                    ?? optional($solicitacao->manutencao)->descricao;
-                                $link_artigo_aceite = optional($solicitacao->evento)->artigo_aceite;
-                                $link_artigo_copia = optional($solicitacao->evento)->artigo_copia
-                                    ?? optional($solicitacao->traducao_artigo)->artigo_a_traduzir;
-                                $link_parecer = optional($solicitacao->evento)->parecer_orientador 
-                                    ?? optional($solicitacao->atividade)->parecer_orientador 
-                                    ?? optional($solicitacao->material)->parecer_orientador 
-                                    ?? optional($solicitacao->traducao_artigo)->parecer_orientador;
-                                $link_orcamento = optional($solicitacao->evento)->orcamento_passagens 
-                                    ?? optional($solicitacao->atividade)->orcamento_passagens 
-                                    ?? optional($solicitacao->material)->orcamento 
-                                    ?? optional($solicitacao->manutencao)->orcamento 
-                                    ?? optional($solicitacao->outro_servico)->orcamento 
-                                    ?? optional($solicitacao->traducao_artigo)->orcamento;
-                            @endphp
-                            <td class=" print-hidden">{{ $solicitacao->status->nome }}</td>
-                            <td><a href="{{ route('site.solicitacao', ['id' => $solicitacao->id]) }}"><b>{{ $solicitacao->tipo->nome }}</b>: {{ $resumo_solicitacao }}</td>
-                            <td>{{ $solicitacao->programa->nome }}</td>
-                            <td>R$&nbsp;{{ number_format($solicitacao->soma_notas(), 2, ',', '.') }}</td>
-                            <td class="print-hidden">{{ $solicitacao->nome_do_orientador }}</td>
-                            <td class="center-align print-hidden">
-                                @if ($link_parecer)
-                                    <a href="{{ $link_parecer }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $link_parecer }}"><i class="tiny material-icons black-text">open_in_new</i></a>
-                                @endif
-                            </td>
-                            <td class="center-align print-hidden">
-                                @if ($link_orcamento)
-                                    <a href="{{ $link_orcamento }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $link_orcamento }}"><i class="tiny material-icons black-text">open_in_new</i></a>
-                                @endif
-                            </td>
-                            <td class="center-align print-hidden">
-                                @if ($link_artigo_copia)
-                                    <a href="{{ $link_artigo_copia }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $link_artigo_copia }}"><i class="tiny material-icons black-text">open_in_new</i></a>
-                                @endif
-                            </td>
-                            <td class="center-align print-hidden">
-                                @if ($link_artigo_aceite)
-                                    <a href="{{ $link_artigo_aceite }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $link_artigo_aceite }}"><i class="tiny material-icons black-text">open_in_new</i></a>
-                                @endif
-                            </td>
-                            <td>{{ $solicitacao->carimbo_data_hora }}</td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-                <table class="bordered compact-table striped responsive-table">
-                    <tr>
-                        <th class="center-align"><span class="blue-text text-darken-2">Total pago:&nbsp;R$&nbsp;{{ number_format($total_valor_pago, 2, ',', '.') }}</span></th>
-                    </tr>
-                </table>
+                @foreach ($solicitacoes as $programa_id => $solicitacoes_programa)
+                    <h6><i>{{ $solicitacoes_programa->first()->programa->nome }}</i></h6>
+                    <table class="bordered striped responsive-table highlight">
+                        <thead>
+                            <tr>
+                                <th class="print-hidden">Status</th>
+                                <th>Solicitação</th>
+                                <th>Valor pago</th>
+                                <th>Discriminação</th>
+                                <th class="print-hidden">Orientador</th>
+                                <th class="center-align print-hidden">Parecer</th>
+                                <th class="center-align print-hidden">Orçamento</th>
+                                <th class="center-align print-hidden">Artigo</th>
+                                <th class="center-align print-hidden">Aceite</th>
+                                <th>Data</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($solicitacoes_programa as $solicitacao)
+                                @php
+                                // $nota = [];
+                                // foreach($solicitacao->nota as $nota){
+                                //     dd($nota);
+                                // }
+                                    $valor_total_programa += $solicitacao->soma_notas();
+                                    $resumo_solicitacao = optional($solicitacao->evento)->nome
+                                        ?? optional($solicitacao->atividade)->descricao
+                                        ?? optional($solicitacao->material)->descricao
+                                        ?? optional($solicitacao->traducao_artigo)->descricao
+                                        ?? optional($solicitacao->outro_servico)->descricao
+                                        ?? optional($solicitacao->manutencao)->descricao;
+                                    $link_artigo_aceite = optional($solicitacao->evento)->artigo_aceite;
+                                    $link_artigo_copia = optional($solicitacao->evento)->artigo_copia
+                                        ?? optional($solicitacao->traducao_artigo)->artigo_a_traduzir;
+                                    $link_parecer = optional($solicitacao->evento)->parecer_orientador 
+                                        ?? optional($solicitacao->atividade)->parecer_orientador 
+                                        ?? optional($solicitacao->material)->parecer_orientador 
+                                        ?? optional($solicitacao->traducao_artigo)->parecer_orientador;
+                                    $link_orcamento = optional($solicitacao->evento)->orcamento_passagens 
+                                        ?? optional($solicitacao->atividade)->orcamento_passagens 
+                                        ?? optional($solicitacao->material)->orcamento 
+                                        ?? optional($solicitacao->manutencao)->orcamento 
+                                        ?? optional($solicitacao->outro_servico)->orcamento 
+                                        ?? optional($solicitacao->traducao_artigo)->orcamento;
+                                @endphp
+                                <tr>
+                                    <td class="print-hidden">{{ $solicitacao->status->nome }}</td>
+                                    <td><a href="{{ route('site.solicitacao', ['id' => $solicitacao->id]) }}"><b>{{ $solicitacao->tipo->nome }}</b>: {{ $resumo_solicitacao }}</a></td>
+                                    <td>R$&nbsp;{{ number_format($solicitacao->soma_notas(), 2, ',', '.') }}</td>
+                                    <td>
+                                        @foreach ($solicitacao->nota as $nota)
+                                            R$&nbsp;{{ number_format($nota->valor, 2, ',', '.') }} <i>{{ $nota->descricao }}</i><br>
+                                        @endforeach
+                                    </td>
+                                    <td class="print-hidden">{{ $solicitacao->nome_do_orientador }}</td>
+                                    <td class="center-align print-hidden">
+                                        @if ($link_parecer)
+                                            <a href="{{ $link_parecer }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $link_parecer }}"><i class="tiny material-icons black-text">open_in_new</i></a>
+                                        @endif
+                                    </td>
+                                    <td class="center-align print-hidden">
+                                        @if ($link_orcamento)
+                                            <a href="{{ $link_orcamento }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $link_orcamento }}"><i class="tiny material-icons black-text">open_in_new</i></a>
+                                        @endif
+                                    </td>
+                                    <td class="center-align print-hidden">
+                                        @if ($link_artigo_copia)
+                                            <a href="{{ $link_artigo_copia }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $link_artigo_copia }}"><i class="tiny material-icons black-text">open_in_new</i></a>
+                                        @endif
+                                    </td>
+                                    <td class="center-align print-hidden">
+                                        @if ($link_artigo_aceite)
+                                            <a href="{{ $link_artigo_aceite }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $link_artigo_aceite }}"><i class="tiny material-icons black-text">open_in_new</i></a>
+                                        @endif
+                                    </td>
+                                    <td>{{ $solicitacao->carimbo_data_hora }}</td>
+                                </tr>
+                            @endforeach
+                            <table class="bordered compact-table striped responsive-table">
+                                <tr>
+                                    <th class="center-align">Total na {{ $solicitacoes_programa->first()->programa->nome }}:&nbsp;R$&nbsp;{{ number_format($valor_total_programa, 2, ',', '.') }}</th>
+                                </tr>
+                            </table>
+                        </tbody>
+                    </table>
+                    @php
+                        $valor_total += $valor_total_programa;
+                        $valor_total_programa = 0;
+                    @endphp
+                @endforeach
+                <div class="container center section-margins">
+                    <span class="blue-text text-darken-2"><h6><b>Total geral pago:&nbsp;R$&nbsp;{{ number_format($valor_total, 2, ',', '.') }}</b></h6></span>
+                </div>
             </div>
         @endif
         <div class="container center print-hidden">

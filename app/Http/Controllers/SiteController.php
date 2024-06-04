@@ -52,8 +52,10 @@ class SiteController extends Controller
             ])
                 ->where('solicitante_id', $id)
                 ->orderByRaw(" STR_TO_DATE(carimbo_data_hora, '%d/%m/%Y %H:%i:%s') DESC ")
-                ->get(),
-            'total_valor_pago' => 0,
+                ->get()
+                ->groupBy('programa_id'),
+            'valor_total' => 0,
+            'valor_total_programa' => 0,
         ]);
     }
 }
