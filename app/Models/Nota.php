@@ -14,6 +14,7 @@ class Nota extends Model
         'data',
         'descricao',
         'valor',
+        'valor_tipo',
         'fonte_pagadora',
     ];
 
@@ -27,5 +28,9 @@ class Nota extends Model
 
     public function solicitante() {
         return $this->belongsTo(Solicitante::class, 'solicitante_id');
+    }
+
+    public function valor_tipo() {
+        return $this->belongsTo(ValorTipo::class, 'valor_tipo_id');
     }
 }

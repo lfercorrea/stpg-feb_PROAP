@@ -137,6 +137,26 @@ table.highlight tbody tr:hover {
     display: none;
 }
 @media print {
+    body {
+        font-size: 85%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+        font-size: 85%;
+    }
+    p {
+        font-size: 85%;
+    }
+    table {
+        font-size: 85%;
+    }
+    .content {
+        margin: 0px;
+        padding: 0px;
+    }
+    img {
+        max-width: 100%;
+        height: auto;
+    }
     .print-hidden {
         display: none;
     }

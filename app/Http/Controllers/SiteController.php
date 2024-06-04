@@ -38,7 +38,7 @@ class SiteController extends Controller
         return view('solicitante', [
             'solicitante' => Solicitante::where('id', $id)->first(),
             'solicitacoes' => Solicitacao::with([
-                'nota',
+                'nota.valor_tipo',
                 'tipo',
                 'solicitante',
                 'programa',

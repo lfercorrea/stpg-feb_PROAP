@@ -32,7 +32,7 @@ class RelatorioController extends Controller
             return $solicitante->solicitacao->first()->programa->nome;
         });
 
-        return view('relatorio_form', [
+        return view('relatorio_programa', [
             'total_programa' => 0,
             'total_geral' => 0,
             'solicitantes_por_programa' => $solicitantes_por_programa,

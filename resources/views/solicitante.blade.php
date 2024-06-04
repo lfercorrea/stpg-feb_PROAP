@@ -72,7 +72,7 @@
                                 <th class="center-align print-hidden">Orçamento</th>
                                 <th class="center-align print-hidden">Artigo</th>
                                 <th class="center-align print-hidden">Aceite</th>
-                                <th>Data</th>
+                                <th>Data da solicitação</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -109,7 +109,7 @@
                                     <td>R$&nbsp;{{ number_format($solicitacao->soma_notas(), 2, ',', '.') }}</td>
                                     <td>
                                         @foreach ($solicitacao->nota as $nota)
-                                            R$&nbsp;{{ number_format($nota->valor, 2, ',', '.') }} <i>{{ $nota->descricao }}</i><br>
+                                            <b>R$&nbsp;{{ number_format($nota->valor, 2, ',', '.') }}</b>&nbsp;<i>({{ $nota->valor_tipo->nome }})</i><br>
                                         @endforeach
                                     </td>
                                     <td class="print-hidden">{{ $solicitacao->nome_do_orientador }}</td>

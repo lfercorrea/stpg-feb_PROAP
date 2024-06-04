@@ -15,6 +15,7 @@ class NotaController extends Controller
             'numero' => 'required|string|max:255',
             'data' => 'required|string',
             'descricao' => 'nullable|string',
+            'valor_tipo_id' => 'required|integer',
             // 'valor' => 'regex:/^\d+(\,\d{1,2})?$/',
             'valor' => 'required|numeric',
             'fonte_pagadora_id' => 'required|integer',
@@ -25,6 +26,8 @@ class NotaController extends Controller
             'data.required' => 'A data da nota precisa ser informada',
             'data.string' => 'A data da nota precisa ser uma string',
             'descricao.string' => 'A descrição precisa ser uma string',
+            'valor_tipo_id.required' => 'O tipo de despesa precisa ser informado',
+            'valor_tipo_id.integer' => 'O tipo de despesa é do tipo INT',
             'valor.required' => 'O valor precisa ser informado',
             'valor.numeric' => 'O valor precisa ser numérico',
             'fonte_pagadora_id.required' => 'A fonte pagadora deve ser informada pelo campo',
@@ -37,6 +40,7 @@ class NotaController extends Controller
         $nota->numero = $request->numero;
         $nota->data = $request->data;
         $nota->descricao = $request->descricao;
+        $nota->valor_tipo_id = $request->valor_tipo_id;
         $nota->valor = $request->valor;
         $nota->fonte_pagadora_id = $request->fonte_pagadora_id;
         $nota->solicitacao_id = $id;

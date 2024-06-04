@@ -99,7 +99,6 @@
             </form>
         </div>
         <div class="row">
-            <div class="container">
                 @if ($solicitacao->nota->isNotEmpty())
                     <div class="section-margins">
                         <h6>Notas/recibos</h6>
@@ -111,6 +110,7 @@
                             <th>Data</th>
                             <th>Descrição</th>
                             <th>Fonte pagadora</th>
+                            <th>Tipo de despesa</th>
                             <th>Valor</th>
                         </tr>
                         @foreach ($solicitacao->nota as $nota)
@@ -120,6 +120,7 @@
                                 <td>{{ \Carbon\Carbon::parse($nota->data)->format('d/m/Y') }}</td>
                                 <td>{{ $nota->descricao }}</td>
                                 <td>{{ $nota->fonte_pagadora->nome }}</td>
+                                <td>{{ $nota->valor_tipo->nome }}</td>
                                 <td>R$&nbsp;{{ number_format($nota->valor, 2, ',', '.') }}</td>
                             </tr>
                         @endforeach
@@ -166,9 +167,18 @@
                                 </select>
                                 <label>Fonte pagadora</label>
                             </div>
-                            <div class="input-field col s12 m9">
+                            <div class="input-field col s12 m6">
                                 <input name="descricao" id="descricao" type="text" class="validate">
                                 <label for="descricao">Descrição/observação</label>
+                            </div>
+                            <div class="input-field col s12 m3">
+                                <select name="valor_tipo_id" required>
+                                    <option value="" disabled selected>Selecione</option>
+                                    @foreach ($valor_tipos as $valor_tipo)
+                                        <option value="{{ $valor_tipo->id }}">{{ $valor_tipo->nome }}</option>
+                                    @endforeach
+                                </select>
+                                <label>Tipo de despesa</label>
                             </div>
                             <div class="input-field col s8 m2">
                                 <input name="valor" id="valor" type="number" min="0" step="0.01" class="validate" required>
@@ -180,7 +190,6 @@
                         </div>
                     </form>
                 </div>
-            </div>
         </div>
     </div>
     <div class="container center print-hidden">

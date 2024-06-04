@@ -7,6 +7,7 @@ use App\Models\Programa;
 use App\Models\Solicitacao;
 use App\Models\SolicitacaoTipo;
 use App\Models\Status;
+use App\Models\ValorTipo;
 use App\Models\FontePagadora;
 
 class SolicitacaoController extends Controller
@@ -125,6 +126,7 @@ class SolicitacaoController extends Controller
             'link_parecer' => $link_parecer,
             'link_orcamento' => $link_orcamento,
             'fontes_pagadoras' => FontePagadora::all(),
+            'valor_tipos' => ValorTipo::all(),
             'statuses' => Status::all(),
             'count_notas' => $solicitacao->nota->count(),
             'valor_total' => number_format($solicitacao->nota->sum('valor'), 2, ',', '.'),

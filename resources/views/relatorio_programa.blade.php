@@ -71,11 +71,9 @@
         @endphp
     @endforeach
     @if (count($solicitantes_por_programa) > 1)
-        <table class="compact-table striped responsive-table">
-            <tr>
-                <th class="center-align"><span class="red-text text-darken-2">Total geral:&nbsp;R$&nbsp;{{ number_format($total_geral, 2, ',', '.') }}</span></th>
-            </tr>
-        </table>
+        <div class="container center section-margins">
+            <span class="red-text text-darken-2"><h6><b>Total geral:&nbsp;R$&nbsp;{{ number_format($total_geral, 2, ',', '.') }}</b></h6></span>
+        </div>
     @endif
     @if ($solicitantes_por_programa->count() == 0)
         <div class="container center">
