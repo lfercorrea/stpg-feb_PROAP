@@ -87,7 +87,7 @@ class SiteController extends Controller
         $search_message = implode("<br>", $count_message);
         
         return view('solicitantes', [
-            'solicitantes' => $solicitantes,
+            'solicitantes' => $solicitantes->appends($request->except('page')),
             'count_solicitantes' => $count_solicitantes,
             'search_message' => $search_message,
         ]);

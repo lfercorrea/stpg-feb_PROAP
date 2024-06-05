@@ -24,7 +24,6 @@
                             @foreach ($programas as $key => $value)
                                 <option value="{{ $key }}">{{ $value }}</option>
                             @endforeach
-                        </optgroup>
                     </select>
                 </div>
                 <div class="col s4 m4 input-field">

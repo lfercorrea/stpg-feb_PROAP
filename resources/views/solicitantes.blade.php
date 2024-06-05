@@ -22,7 +22,6 @@
                     <option value="Discente">Discente</option>
                     <option value="Docente Colaborador">Docente Colaborador</option>
                     <option value="Docente Permanente">Docente Permanente</option>
-                    </optgroup>
                 </select>
                 <label>Tipo de solicitante</label>
             </div>

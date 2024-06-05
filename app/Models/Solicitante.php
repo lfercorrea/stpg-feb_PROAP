@@ -40,27 +40,37 @@ class Solicitante extends Model
 
     public static function search($search, $tipo_solicitante = null) {
         $query = self::query();
-
+    
         if($search AND $tipo_solicitante) {
-            $query->where('nome', 'like', '%' . $search . '%')
-            ->orWhere('endereco_completo', 'like', '%' . $search . '%')
-                ->where('tipo_solicitante', '=', $tipo_solicitante);
-
+            $query->where(function($q) use ($search) {
+                $q->where('nome', 'like', '%' . $search . '%')
+                    ->orWhere('email', 'like', '%' . $search . '%')
+                    ->orWhere('endereco_completo', 'like', '%' . $search . '%');
+            })->where('tipo_solicitante', '=', $tipo_solicitante);
+    
             return $query;
         }
-
+    
         if($search) {
-            $query->where('nome', 'like', '%' . $search . '%')
-                ->orWhere('email', 'like', '%' . $search . '%')
-                ->orWhere('endereco_completo', 'like', '%' . $search . '%');
+            $query->where(function($q) use ($search) {
+                $q->where('nome', 'like', '%' . $search . '%')
+                  ->orWhere('email', 'like', '%' . $search . '%')
+                  ->orWhere('endereco_completo', 'like', '%' . $search . '%');
+            });
         }
+    
+        // if($tipo_solicitante) {
+        //     $query->where('tipo_solicitante', 'like', '%' . $tipo_solicitante . '%');
+        // }
 
         if($tipo_solicitante) {
-            $query->where('tipo_solicitante', 'like', '%' . $tipo_solicitante . '%');
+            $query->where(function($q) use($tipo_solicitante) {
+                $q->where('tipo_solicitante', $tipo_solicitante);
+            });
         }
-        
+    
         return $query;
-    }
+    }    
 
     // obter todas as solicitaço~es com suas notas
     // public function solicitacoes_com_notas() {
