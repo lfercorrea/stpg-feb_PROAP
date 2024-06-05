@@ -58,15 +58,9 @@ class Solicitante extends Model
                   ->orWhere('endereco_completo', 'like', '%' . $search . '%');
             });
         }
-    
-        // if($tipo_solicitante) {
-        //     $query->where('tipo_solicitante', 'like', '%' . $tipo_solicitante . '%');
-        // }
 
         if($tipo_solicitante) {
-            $query->where(function($q) use($tipo_solicitante) {
-                $q->where('tipo_solicitante', $tipo_solicitante);
-            });
+            $query->where('tipo_solicitante', $tipo_solicitante);
         }
     
         return $query;

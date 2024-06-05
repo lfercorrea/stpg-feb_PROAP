@@ -10,7 +10,7 @@
             <b>{{ $paginator->lastItem() }},</b>
             {!! __('de') !!}
             <b>{{ $paginator->total() }}</b>
-            {!! __('solicitações') !!}
+            {!! __('itens') !!}
         </p>
 
         <ul class="pagination">

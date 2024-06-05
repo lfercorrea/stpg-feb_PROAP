@@ -62,7 +62,7 @@ class SiteController extends Controller
     public function solicitantes(Request $request) {
         $count_solicitantes = 0;
 
-        if($request->has('search') OR $request->has('tipo_solicitante_id')){
+        if($request->has('search') OR $request->has('tipo_solicitante')){
             $solicitantes = Solicitante::search($request->search, $request->tipo_solicitante)
                 ->paginate(30);
             $count_solicitantes = Solicitante::search($request->search, $request->tipo_solicitante)->count();
