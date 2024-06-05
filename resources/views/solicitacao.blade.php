@@ -76,6 +76,14 @@
                     </td>
                 </tr>
             </table>
+            <table class="compact-table striped responsive-table">
+                <tr>
+                    <th>Justificativa</th>
+                </tr>
+                <tr>
+                    <td><i>{{ $justificativa }}</i></td>
+                </tr>
+            </table>
         </div>
         <div class="row print-hidden">
             <form class="col s12" action="{{ route('site.solicitacao.update', ['id' => $solicitacao->id]) }}" method="POST">
