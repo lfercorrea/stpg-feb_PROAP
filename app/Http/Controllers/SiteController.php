@@ -59,10 +59,37 @@ class SiteController extends Controller
         ]);
     }
 
-    public function solicitantes() {
+    public function solicitantes(Request $request) {
+        $count_solicitantes = 0;
+
+        if($request->has('search') OR $request->has('tipo_solicitante_id')){
+            $solicitantes = Solicitante::search($request->search, $request->tipo_solicitante)
+                ->paginate(30);
+            $count_solicitantes = Solicitante::search($request->search, $request->tipo_solicitante)->count();
+        }
+        else{
+            $solicitantes = Solicitante::orderBy('nome', 'asc')
+            ->paginate(30);
+        }
+
+        $solicitante_tipos = Solicitante::orderBy('nome', 'asc')->pluck('nome', 'id')->toArray();
+        $count_message = [];
+
+        if(!empty($request->search)) {
+            $count_message[] = "Termo buscado: <b><i>\"$request->search\"</i></b>";
+        }
+        
+        if(!empty($request->tipo_solicitante)) {
+            $count_message[] = "Tipo de solicitante: <b><i>$request->tipo_solicitante</i></b>";
+        }
+
+        $plural = ($count_solicitantes > 1) ? 's' : '';
+        $search_message = implode("<br>", $count_message);
+        
         return view('solicitantes', [
-            'solicitantes' => Solicitante::orderBy('nome', 'asc')
-                ->paginate(100), 
+            'solicitantes' => $solicitantes,
+            'count_solicitantes' => $count_solicitantes,
+            'search_message' => $search_message,
         ]);
     }
 }

@@ -38,6 +38,30 @@ class Solicitante extends Model
             ->sum('notas.valor');
     }
 
+    public static function search($search, $tipo_solicitante = null) {
+        $query = self::query();
+
+        if($search AND $tipo_solicitante) {
+            $query->where('nome', 'like', '%' . $search . '%')
+            ->orWhere('endereco_completo', 'like', '%' . $search . '%')
+                ->where('tipo_solicitante', '=', $tipo_solicitante);
+
+            return $query;
+        }
+
+        if($search) {
+            $query->where('nome', 'like', '%' . $search . '%')
+                ->orWhere('email', 'like', '%' . $search . '%')
+                ->orWhere('endereco_completo', 'like', '%' . $search . '%');
+        }
+
+        if($tipo_solicitante) {
+            $query->where('tipo_solicitante', 'like', '%' . $tipo_solicitante . '%');
+        }
+        
+        return $query;
+    }
+
     // obter todas as solicitaço~es com suas notas
     // public function solicitacoes_com_notas() {
     //     return $this->solicitacao()

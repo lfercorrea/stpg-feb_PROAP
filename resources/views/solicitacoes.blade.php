@@ -14,7 +14,7 @@
                 <a href="{{ route('import_menu') }}" class="btn green darken-2 waves-effect waves-light">Importar CSV</a>
             </div>
             <div class="col s12 m3 input-field">
-                <input type="text" name="search" placeholder="Buscar"> 
+                <input type="text" name="search" placeholder="Nome, email ou tipo de solicitante"> 
             </div>
             <div class="col s8 m2 input-field">
                 <select class="browser-default" name="tipo_solicitacao_id"><option value="">Tipo</option>

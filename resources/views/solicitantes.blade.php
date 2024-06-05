@@ -8,6 +8,38 @@
     <div class="print-only section-margins">
         <h6><b>Lista de solicitantes</b></h6>
     </div>
+    <form action="#" method="GET" class="print-hidden">
+        <div class="row">
+            <div class="col s12 m2 input-field">
+                <a href="{{ route('import_menu') }}" class="btn green darken-2 waves-effect waves-light">Importar CSV</a>
+            </div>
+            <div class="col s12 m4 input-field">
+                <input type="text" name="search" placeholder="Nome, email, endereço, cidade etc"> 
+            </div>
+            <div class="col s4 m3 input-field">
+                <select name="tipo_solicitante">
+                    <option value="" selected disabled>Tipo de solicitante</option>
+                    <option value="Discente">Discente</option>
+                    <option value="Docente Colaborador">Docente Colaborador</option>
+                    <option value="Docente Permanente">Docente Permanente</option>
+                    </optgroup>
+                </select>
+                <label>Tipo de solicitante</label>
+            </div>
+        </div>
+        <div class="container center section-margins">
+            <button class="btn waves-effect waves-light black" type="submit">Buscar</button>
+            <button id="print-button" class="btn-flat waves-effect waves-light">
+                Imprimir
+                <i class="material-icons right">print</i>
+            </button>
+        </div>
+    </form>
+    @if ($count_solicitantes > 0)
+        <div class="row print-hidden">
+            {!! $search_message !!}
+        </div>
+    @endif
     <div class="print-hidden">
         {{ $solicitantes->links('common/pagination') }}
     </div>
