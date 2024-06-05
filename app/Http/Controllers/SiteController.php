@@ -58,4 +58,11 @@ class SiteController extends Controller
             'valor_total_programa' => 0,
         ]);
     }
+
+    public function solicitantes() {
+        return view('solicitantes', [
+            'solicitantes' => Solicitante::orderBy('nome', 'asc')
+                ->paginate(100), 
+        ]);
+    }
 }

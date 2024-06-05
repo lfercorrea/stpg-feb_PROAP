@@ -6,7 +6,7 @@
                 <h6><b>Detalhamento do solicitante</b></h6>
             </div>
             <div class="col s12 m6">
-                <h6>{{ $solicitante->nome }} ({{ $solicitante->email }})</h6>
+                <h6>{{ $solicitante->nome }} (<a href="mailto:{{ $solicitante->email }}" class="hover-underline">{{ $solicitante->email }}</a>)</h6>
             </div>
             <div class="col s12 m6 right-align">
                 <button id="print-button" class="btn-flat waves-effect waves-light print-hidden">
