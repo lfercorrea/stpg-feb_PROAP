@@ -55,11 +55,11 @@
         </table>
         @if (count($solicitacoes) > 0)
             <div class="section-margins">
-                <h6>Solicitações</h6>
+                <h5>Solicitações</h5>
             </div>
             <div class="row">
                 @foreach ($solicitacoes as $programa_id => $solicitacoes_programa)
-                    <h6><i>{{ $solicitacoes_programa->first()->programa->nome }}</i></h6>
+                    <h6><i><b><span class="blue-text text-darken-2">{{ $solicitacoes_programa->first()->programa->nome }}</span></b></i></h6>
                     <table class="bordered striped responsive-table highlight">
                         <thead>
                             <tr>
@@ -78,10 +78,6 @@
                         <tbody>
                             @foreach ($solicitacoes_programa as $solicitacao)
                                 @php
-                                // $nota = [];
-                                // foreach($solicitacao->nota as $nota){
-                                //     dd($nota);
-                                // }
                                     $valor_total_programa += $solicitacao->soma_notas();
                                     $resumo_solicitacao = optional($solicitacao->evento)->nome
                                         ?? optional($solicitacao->atividade)->descricao

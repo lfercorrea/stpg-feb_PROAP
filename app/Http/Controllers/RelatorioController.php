@@ -24,14 +24,39 @@ class RelatorioController extends Controller
                 $q->whereIn('programa_id', $arr_programa_id);
             });
         }
-
+    
         $solicitantes = $query->get();
-        $solicitantes_por_programa = $solicitantes->filter(function($solicitante) {
-            return $solicitante->soma_notas() > 0;
-        })->groupBy(function($solicitante) {
-            return $solicitante->solicitacao->first()->programa->nome;
-        });
-
+        $solicitantes_por_programa = collect();
+    
+        foreach($solicitantes as $solicitante) {
+            // agrupar os valores gastos por programa
+            $valores_por_programa = [];
+            foreach($solicitante->solicitacao as $solicitacao) {
+                $programa_nome = $solicitacao->programa->nome;
+                $valor_gasto = $solicitacao->soma_notas();
+    
+                if($valor_gasto > 0) {
+                    if(!isset($valores_por_programa[$programa_nome])) {
+                        $valores_por_programa[$programa_nome] = 0;
+                    }
+                    $valores_por_programa[$programa_nome] += $valor_gasto;
+                }
+            }
+    
+            // botar o solicitante aos programas correspondentes
+            foreach($valores_por_programa as $programa_nome => $valor_total) {
+                if(!$solicitantes_por_programa->has($programa_nome)) {
+                    $solicitantes_por_programa[$programa_nome] = collect();
+                }
+                // botar o solicitante só se ele ainda não foi adicionado
+                $solicitantes_por_programa[$programa_nome]->push([
+                    'solicitante' => $solicitante,
+                    'valor_gasto' => $valor_total
+                ]);
+            }
+            // ufa. consegui desfoder essa merda
+        }
+        
         return view('relatorio_programa', [
             'total_programa' => 0,
             'total_geral' => 0,
@@ -40,5 +65,5 @@ class RelatorioController extends Controller
             'programas' => Programa::orderBy('nome', 'asc')->pluck('nome', 'id')->toArray(),
             'statuses' => Status::all(),
         ]);
-    }
+    }    
 }

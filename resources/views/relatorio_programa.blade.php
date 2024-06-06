@@ -36,8 +36,8 @@
             </div>
         </div>
     </form>
-    @foreach ($solicitantes_por_programa as $programa => $solicitantes)
-        <h6 class="blue-text text-darken-2"><b>{{ $programa }}</b> ({{ $solicitantes->count() }})</h6>
+    @foreach ($solicitantes_por_programa as $programa_nome => $solicitacoes)
+        <h6 class="blue-text text-darken-2"><b><i>{{ $programa_nome }}</i></b> ({{ $solicitacoes->count() }})</h6>
         <table class="compact-table striped responsive-table">
             <thead>
                 <tr>
@@ -46,22 +46,20 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($solicitantes as $solicitante)
-                    @if ($solicitante->soma_notas() > 0)
+                @foreach ($solicitacoes as $solicitacao)
                     @php
-                        $total_programa += $solicitante->soma_notas()
+                        $total_programa += $solicitacao['valor_gasto']
                     @endphp
                     <tr>
-                        <td><a href="{{ route('site.solicitante', ['id' => $solicitante->id]) }}" class="hover-underline"><b>{{ Str::upper($solicitante->nome) }}</b></a>{{ ($solicitante->tipo_solicitante) ? ' (' . $solicitante->tipo_solicitante . ')' : '' }}</td>
-                        <td>R$&nbsp;{{ number_format($solicitante->soma_notas(), 2, ',', '.') }}</td>
+                        <td><a href="{{ route('site.solicitante', ['id' => $solicitacao['solicitante']->id]) }}" class="hover-underline"><b>{{ Str::upper($solicitacao['solicitante']->nome) }}</b></a>{{ ($solicitacao['solicitante']->tipo_solicitante) ? ' (' . $solicitacao['solicitante']->tipo_solicitante . ')' : '' }}</td>
+                        <td>R$&nbsp;{{ number_format($solicitacao['valor_gasto'], 2, ',', '.') }}</td>
                     </tr>
-                    @endif
                 @endforeach
             </tbody>
         </table>
         <table class="compact-table striped responsive-table">
             <tr>
-                <th class="center-align"><span class="blue-text text-darken-2">Total {{ $programa }}:&nbsp;R$&nbsp;{{ number_format($total_programa, 2, ',', '.') }}</span></th>
+                <th class="center-align"><span class="blue-text text-darken-2">Total {{ $programa_nome }}:&nbsp;R$&nbsp;{{ number_format($total_programa, 2, ',', '.') }}</span></th>
             </tr>
         </table>
         @php
