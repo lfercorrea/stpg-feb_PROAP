@@ -64,12 +64,12 @@ class SiteController extends Controller
 
         if($request->has('search') OR $request->has('tipo_solicitante')){
             $solicitantes = Solicitante::search($request->search, $request->tipo_solicitante)
-                ->paginate(30);
+                ->paginate($request->limite_paginacao);
             $count_solicitantes = Solicitante::search($request->search, $request->tipo_solicitante)->count();
         }
         else{
             $solicitantes = Solicitante::orderBy('nome', 'asc')
-            ->paginate(30);
+                ->paginate($request->limite_paginacao);
         }
 
         $solicitante_tipos = Solicitante::orderBy('nome', 'asc')->pluck('nome', 'id')->toArray();

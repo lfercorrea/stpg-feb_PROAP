@@ -13,7 +13,7 @@
             <div class="col s12 m2 input-field">
                 <a href="{{ route('import_menu') }}" class="btn green darken-2 waves-effect waves-light">Importar CSV</a>
             </div>
-            <div class="col s12 m4 input-field">
+            <div class="col s12 m3 input-field">
                 <input type="text" name="search" placeholder="Nome, email, endereço, cidade etc"> 
             </div>
             <div class="col s4 m3 input-field">
@@ -25,13 +25,20 @@
                 </select>
                 <label>Tipo de solicitante</label>
             </div>
-        </div>
-        <div class="container center section-margins">
-            <button class="btn waves-effect waves-light black" type="submit">Buscar</button>
-            <button id="print-button" class="btn-flat waves-effect waves-light">
-                Imprimir
-                <i class="material-icons right">print</i>
-            </button>
+            <div class="col s4 m1 input-field">
+                <select name="limite_paginacao">
+                    <option value="30" selected>30</option>
+                    <option value="1000">1000</option>
+                </select>
+                <label>Itens por página</label>
+            </div>
+            <div class="col s4 m3 input-field">
+                <button class="btn waves-effect waves-light black" type="submit">Buscar</button>
+                <button id="print-button" class="btn-flat waves-effect waves-light">
+                    Imprimir
+                    <i class="material-icons right">print</i>
+                </button>
+            </div>
         </div>
     </form>
     @if ($count_solicitantes > 0)
