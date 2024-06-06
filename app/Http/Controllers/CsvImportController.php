@@ -64,15 +64,59 @@ class CsvImportController extends Controller
             $csv_modelo = asset('storage/static/csv/header_discente.csv');
             $csv_modelo = fopen($csv_modelo, 'r');
             $csv_modelo = fgetcsv($csv_modelo);
-            $file = $request->file('file');
-            $file = fopen($file, 'r');
-            $file = fgetcsv($file);
+            $file_path = $request->file('file');
+            $file = fopen($file_path, 'r');
+            $file_header = fgetcsv($file);
 
-            if($csv_modelo !== $file){
+            /**
+             * comparar se é de fato a planiilha de discentes
+             */
+            if($csv_modelo !== $file_header){
                 return redirect()->route('import_discentes_form')->with('fail', 'O CSV escolhido não está no formato esperado, confira se é mesmo o CSV da planilha de discentes exportada diretamente pelo Google Sheets.');
             }
+    
             /**
-             * realimenta a tabela importacoes
+             * agora, comparar as linhas no banco com as presentes no CSV,
+             * só por precaução
+             */
+            $novas_linhas = [];
+            while($linha = fgetcsv($file)) {
+                $novas_linhas[] = $linha;
+            }
+            fclose($file);
+
+            $importadas_anteriormente = ImportacoesDiscentes::all()->toArray();
+            $count_importadas_anteriormente = count($importadas_anteriormente);
+            $count_novas_linhas = count($novas_linhas);
+
+            /**
+             * primeiro, comparar a quantidade de linhas no CSV. deve ser maior ou igual ao numero de linhas
+             * da última importacao
+             */
+            if($count_novas_linhas < $count_importadas_anteriormente) {
+                return redirect()->route('import_discentes_form')
+                    ->with('fail', 'O número de linhas do CSV é menor do que o número de linhas da última importação.');
+            }
+
+            /**
+             * caso o número de linhas confira, ainda é preciso ver, linha a linha, se algum dado do CSV
+             * foi removido manualmente
+             */
+            for($i = 0; $i < $count_importadas_anteriormente; $i++){
+                if($novas_linhas[$i][1] === $importadas_anteriormente[$i]['carimbo_data_hora']) {
+                    Log::info("[ OK ] Comparando linha do CSV com última importação; (CSV linha n° {$i}) {$novas_linhas[$i][1]} confere com {$importadas_anteriormente[$i]['carimbo_data_hora']} (linha nº {$i} já cadastrada no banco)");
+                }
+                else{
+                    $err_msg = "[ FALHA ] Comparando linha do CSV com última importação; (CSV linha n° {$i}) {$novas_linhas[$i][1]} não confere com {$importadas_anteriormente[$i]['carimbo_data_hora']} (linha nº {$i} já cadastrada no banco)";
+                    Log::info($err_msg);
+
+                    return redirect()->route('import_discentes_form')
+                        ->with('fail', 'Há linhas no CSV faltando em relação à última importação: ' . $err_msg);
+                }
+            }
+            /**
+             * OK, agora dá pra passar o rodo na tabela importacoes e realimentá-la,
+             * comparando a consistencia com os dados das demais tabelas
              */
             ImportacoesDiscentes::truncate();
             Excel::import(new SolicitacoesDiscentesImport, $request->file('file'));
@@ -459,21 +503,65 @@ class CsvImportController extends Controller
 
         try{
             /**
-             * teste para ver se a planilha é a correta
-             */
+            * teste para ver se a planilha é a correta
+            */
             $csv_modelo = asset('storage/static/csv/header_docente.csv');
             $csv_modelo = fopen($csv_modelo, 'r');
             $csv_modelo = fgetcsv($csv_modelo);
-            $file = $request->file('file');
-            $file = fopen($file, 'r');
-            $file = fgetcsv($file);
-            
-            if($csv_modelo !== $file){
+            $file_path = $request->file('file');
+            $file = fopen($file_path, 'r');
+            $file_header = fgetcsv($file);
+
+            /**
+             * comparar se é de fato a planilha de docentes
+             */
+            if($csv_modelo !== $file_header){
                 return redirect()->route('import_docentes_form')->with('fail', 'O CSV escolhido não está no formato esperado, confira se é mesmo o CSV da planilha de docentes exportada diretamente pelo Google Sheets.');
             }
+    
             /**
-             * realimenta a tabela importacoes
-             */
+                * agora, comparar as linhas no banco com as presentes no CSV,
+                * só por precaução
+                */
+            $novas_linhas = [];
+            while($linha = fgetcsv($file)) {
+                $novas_linhas[] = $linha;
+            }
+            fclose($file);
+
+            $importadas_anteriormente = ImportacoesDocentes::all()->toArray();
+            $count_importadas_anteriormente = count($importadas_anteriormente);
+            $count_novas_linhas = count($novas_linhas);
+
+            /**
+            * primeiro, comparar a quantidade de linhas no CSV. deve ser maior ou igual ao numero de linhas
+            * da última importacao
+            */
+            if($count_novas_linhas < $count_importadas_anteriormente) {
+                return redirect()->route('import_docentes_form')
+                    ->with('fail', 'O número de linhas do CSV é menor do que o número de linhas da última importação.');
+            }
+
+            /**
+            * caso o número de linhas confira, ainda é preciso ver, linha a linha, se algum dado do CSV
+            * foi removido manualmente
+            */
+            for($i = 0; $i < $count_importadas_anteriormente; $i++){
+                if($novas_linhas[$i][1] === $importadas_anteriormente[$i]['carimbo_data_hora']) {
+                    Log::info("[ OK ] Comparando linha do CSV com última importação; (CSV linha n° {$i}) {$novas_linhas[$i][1]} confere com {$importadas_anteriormente[$i]['carimbo_data_hora']} (linha nº {$i} já cadastrada no banco)");
+                }
+                else{
+                    $err_msg = "[ FALHA ] Comparando linha do CSV com última importação; (CSV linha n° {$i}) {$novas_linhas[$i][1]} não confere com {$importadas_anteriormente[$i]['carimbo_data_hora']} (linha nº {$i} já cadastrada no banco)";
+                    Log::info($err_msg);
+
+                    return redirect()->route('import_docentes_form')
+                        ->with('fail', 'Há linhas no CSV faltando em relação à última importação: ' . $err_msg);
+                }
+            }
+            /**
+            * OK, agora dá pra passar o rodo na tabela importacoes e realimentá-la,
+            * comparando a consistencia com os dados das demais tabelas
+            */
             ImportacoesDocentes::truncate();
             Excel::import(new SolicitacoesDocentesImport, $request->file('file'));
             ImportacoesDocentes::destroy(1); // passa o rodo na linha do csv que contem os cabeçalhos
