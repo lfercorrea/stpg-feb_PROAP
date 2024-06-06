@@ -33,6 +33,14 @@ class RelatorioController extends Controller
             $valores_por_programa = [];
             foreach($solicitante->solicitacao as $solicitacao) {
                 $programa_nome = $solicitacao->programa->nome;
+                // correção do bug onde mesmo nao marcado, o programa
+                // aparecia se o solicitante tivesse solicitacao em outro programa
+                $programa_id = $solicitacao->programa->id;
+    
+                if($request->filled('programa_id') AND !in_array($programa_id, $request->input('programa_id'))) {
+                    continue;
+                }
+    
                 $valor_gasto = $solicitacao->soma_notas();
     
                 if($valor_gasto > 0) {
@@ -56,7 +64,7 @@ class RelatorioController extends Controller
             }
             // ufa. consegui desfoder essa merda
         }
-        
+    
         return view('relatorio_programa', [
             'total_programa' => 0,
             'total_geral' => 0,
@@ -65,5 +73,5 @@ class RelatorioController extends Controller
             'programas' => Programa::orderBy('nome', 'asc')->pluck('nome', 'id')->toArray(),
             'statuses' => Status::all(),
         ]);
-    }    
+    }
 }
