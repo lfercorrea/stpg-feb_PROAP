@@ -61,15 +61,16 @@ class SiteController extends Controller
 
     public function solicitantes(Request $request) {
         $count_solicitantes = 0;
+        $limite = empty($request->limite_paginacao) ? 30 : $request->limite_paginacao;
 
         if($request->has('search') OR $request->has('tipo_solicitante')){
             $solicitantes = Solicitante::search($request->search, $request->tipo_solicitante)
-                ->paginate($request->limite_paginacao);
+                ->paginate($limite);
             $count_solicitantes = Solicitante::search($request->search, $request->tipo_solicitante)->count();
         }
         else{
             $solicitantes = Solicitante::orderBy('nome', 'asc')
-                ->paginate($request->limite_paginacao);
+                ->paginate($limite);
         }
 
         $solicitante_tipos = Solicitante::orderBy('nome', 'asc')->pluck('nome', 'id')->toArray();
