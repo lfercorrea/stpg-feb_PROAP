@@ -1,4 +1,3 @@
-
 @extends('layout')
 @section('content')
     <div class='center print-hidden'>
@@ -57,9 +56,18 @@
                 @endforeach
             </tbody>
         </table>
-        <table class="compact-table striped responsive-table">
+        <table class="compact-table responsive-table">
             <tr>
-                <th class="center-align"><span class="blue-text text-darken-2">Total {{ $programa_nome }}:&nbsp;R$&nbsp;{{ number_format($total_programa, 2, ',', '.') }}</span></th>
+                <th class="right-align"><span class="blue-text text-darken-2"><i><u>{{ $programa_nome }}</u></i></span></th>
+            </tr>
+            <tr>
+                <td class="right-align"><span class="green-text text-darken-2">Saldo inicial: R$ {{ number_format($solicitacoes[0]['saldo_inicial'], 2, ',', '.') }}</span></th>
+            </tr>
+            <tr>
+                <td class="right-align"><span class="red-text text-darken-2">Total de gastos: R$ {{ number_format($total_programa, 2, ',', '.') }}</span></th>
+            </tr>
+            <tr>
+                <td class="right-align"><span class="black-text text-darken-2">Saldo restante: R$ {{ number_format($solicitacoes[0]['saldo_inicial'] - $total_programa, 2, ',', '.') }}</span></th>
             </tr>
         </table>
         @php
@@ -69,7 +77,7 @@
     @endforeach
     @if (count($solicitantes_por_programa) > 1)
         <div class="container center section-margins">
-            <span class="red-text text-darken-2"><h6><b>Total geral:&nbsp;R$&nbsp;{{ number_format($total_geral, 2, ',', '.') }}</b></h6></span>
+            <span class="red-text text-darken-2"><h6><b>Total geral de gastos:&nbsp;R$&nbsp;{{ number_format($total_geral, 2, ',', '.') }}</b></h6></span>
         </div>
     @endif
     @if ($solicitantes_por_programa->count() == 0)

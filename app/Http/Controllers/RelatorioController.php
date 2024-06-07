@@ -32,10 +32,11 @@ class RelatorioController extends Controller
             // agrupar os valores gastos por programa
             $valores_por_programa = [];
             foreach($solicitante->solicitacao as $solicitacao) {
-                $programa_nome = $solicitacao->programa->nome;
+                $programa = $solicitacao->programa;
+                $programa_nome = $programa->nome;
                 // correção do bug onde mesmo nao marcado, o programa
                 // aparecia se o solicitante tivesse solicitacao em outro programa
-                $programa_id = $solicitacao->programa->id;
+                $programa_id = $programa->id;
     
                 if($request->filled('programa_id') AND !in_array($programa_id, $request->input('programa_id'))) {
                     continue;
@@ -59,7 +60,9 @@ class RelatorioController extends Controller
                 // botar o solicitante só se ele ainda não foi adicionado
                 $solicitantes_por_programa[$programa_nome]->push([
                     'solicitante' => $solicitante,
-                    'valor_gasto' => $valor_total
+                    'valor_gasto' => $valor_total,
+                    'saldo_inicial' => $programa->saldo_inicial,
+                    'saldo_restante' => $programa->saldo_inicial - $valor_total
                 ]);
             }
             // ufa. consegui desfoder essa merda
