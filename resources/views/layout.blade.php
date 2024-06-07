@@ -17,11 +17,11 @@
                 <img src="{{ asset('storage/static/images/logo.jpg') }}" class="responsive-img brand-logo">
               </a>
               <ul id="nav-mobile" class="right hide-on-med-and-down">
-                <li class="waves-effect waves-light"><a href="{{ route('site.solicitacoes') }}">Solicitações</a></li>
+                <li class="waves-effect waves-light"><a href="{{ route('site.solicitacoes.index') }}">Solicitações</a></li>
                 <li class="waves-effect waves-light"><a href="{{ route('import_menu') }}">Importação</a></li>
                 <li class="waves-effect waves-light"><a href="{{ route('site.relatorio.index') }}">Relatório por programa</a></li>
-                <li class="waves-effect waves-light"><a href="{{ route('site.programas.show') }}">Programas</a></li>
-                <li class="waves-effect waves-light"><a href="{{ route('site.solicitantes') }}">Solicitantes</a></li>
+                <li class="waves-effect waves-light"><a href="{{ route('site.programas.index') }}">Programas</a></li>
+                <li class="waves-effect waves-light"><a href="{{ route('site.solicitantes.index') }}">Solicitantes</a></li>
               </ul>
             </div>
         </nav>
@@ -48,7 +48,7 @@
           <div class="col l6 s12">
             <p class="black-text">
               <i>
-                "O melhor a se fazer, às vezes, é não fazer porra nenhuma."
+                "O melhor a se fazer, às vezes, é chutar o pau da barraca."
               </i>
               <br>
               <b>Autor brilhante desconhecido</b>
@@ -58,7 +58,7 @@
       </div>
       <div class="footer-copyright red black">
         <div class="container">
-        <p>&copy; {{ date('Y') }} STPG-FEB. Nenhum direito reservado.</p>
+        <p>&copy; {{ date('Y') }} STPG-FEB. Nenhum direito reservado. <span class="black-text">Cuide bem dos gatos.</span></p>
         </div>
       </div>
     </footer>

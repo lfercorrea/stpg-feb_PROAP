@@ -53,6 +53,21 @@ class CsvImportController extends Controller
         ]);
     }
 
+    public function importacoes() {
+        $solicitacoes_discentes = ImportacoesDiscentes::orderBy('id', 'asc')->get();
+        $solicitacoes_docentes = ImportacoesDocentes::orderBy('id', 'asc')->get();
+        $discentes_vazia = ImportacoesDiscentes::count() === 0;
+        $docentes_vazia = ImportacoesDocentes::count() === 0;
+
+        return view('importacoes', [
+            'title' => 'Últimas importações',
+            'solicitacoes_discentes' => $solicitacoes_discentes,
+            'solicitacoes_docentes' => $solicitacoes_docentes,
+            'discentes_vazia' => $discentes_vazia,
+            'docentes_vazia' => $docentes_vazia,
+        ]);
+    }
+
     public function import_discentes(Request $request) {
         $request->validate([
             'file' => 'required|mimes:csv,txt',

@@ -49,7 +49,7 @@
         </div>
     </form>
     @if ($count_solicitacoes > 0)
-        <div class="row print-hidden">
+        <div class="row">
             {!! $search_message !!}
         </div>
     @endif
@@ -93,8 +93,8 @@
                             ?? optional($solicitacao->traducao_artigo)->orcamento;
                     @endphp
                     <td class="print-hidden">{{ $solicitacao->status->nome }}</td>
-                    <td><a href="{{ route('site.solicitacao', ['id' => $solicitacao->id]) }}" class="hover-underline"><b>{{ optional($solicitacao->servico_tipo)->nome ?? $solicitacao->tipo->nome }}</b></a></td>
-                    <td><div class="chip print-hidden">{{ $solicitacao->solicitante->tipo_solicitante }}</div><a href="{{ route('site.solicitante', ['id' => $solicitacao->solicitante->id]) }}" class="black-text hover-underline"><b>{{ Str::upper($solicitacao->solicitante->nome) }}</b></a> <span class="print-hidden">(<a href="mailto:{{ $solicitacao->solicitante->email }}" class="hover-underline">{{ $solicitacao->solicitante->email }}</a>)</span></td>
+                    <td><a href="{{ route('site.solicitacao.show', ['id' => $solicitacao->id]) }}" class="hover-underline"><b>{{ optional($solicitacao->servico_tipo)->nome ?? $solicitacao->tipo->nome }}</b></a></td>
+                    <td><div class="chip print-hidden">{{ $solicitacao->solicitante->tipo_solicitante }}</div><a href="{{ route('site.solicitante.show', ['id' => $solicitacao->solicitante->id]) }}" class="black-text hover-underline"><b>{{ Str::upper($solicitacao->solicitante->nome) }}</b></a> <span class="print-hidden">(<a href="mailto:{{ $solicitacao->solicitante->email }}" class="hover-underline">{{ $solicitacao->solicitante->email }}</a>)</span></td>
                     <td>{{ $solicitacao->programa->nome }}</td>
                     <td class="center-align print-hidden">
                         @if ($link_parecer)

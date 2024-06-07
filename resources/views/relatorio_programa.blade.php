@@ -51,7 +51,7 @@
                         $total_programa += $solicitacao['valor_gasto']
                     @endphp
                     <tr>
-                        <td><a href="{{ route('site.solicitante', ['id' => $solicitacao['solicitante']->id]) }}" class="hover-underline"><b>{{ Str::upper($solicitacao['solicitante']->nome) }}</b></a>{{ ($solicitacao['solicitante']->tipo_solicitante) ? ' (' . $solicitacao['solicitante']->tipo_solicitante . ')' : '' }}</td>
+                        <td><a href="{{ route('site.solicitante.show', ['id' => $solicitacao['solicitante']->id]) }}" class="hover-underline"><b>{{ Str::upper($solicitacao['solicitante']->nome) }}</b></a>{{ ($solicitacao['solicitante']->tipo_solicitante) ? ' (' . $solicitacao['solicitante']->tipo_solicitante . ')' : '' }}</td>
                         <td>R$&nbsp;{{ number_format($solicitacao['valor_gasto'], 2, ',', '.') }}</td>
                     </tr>
                 @endforeach

@@ -157,7 +157,7 @@ class SolicitacaoController extends Controller
         $solicitacao->save();
 
         return redirect()
-            ->route('site.solicitacao', ['id' => $solicitacao->id])
+            ->route('site.solicitacao.show', ['id' => $solicitacao->id])
             ->with('success', 'Status da solicitação alterado.');
     }
 }

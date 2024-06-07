@@ -7,7 +7,7 @@ use App\Models\Programa;
 
 class ProgramaController extends Controller
 {
-    public function show() {
+    public function index() {
         return view('programas', [
             'title' => 'Programas',
             'programas' => Programa::orderBy('nome', 'asc')->get(),
@@ -26,7 +26,7 @@ class ProgramaController extends Controller
             }
         }
 
-        return redirect()->route('site.programas.show')
+        return redirect()->route('site.programas.index')
             ->with('success', 'Programas atualizados.');
     }
 }

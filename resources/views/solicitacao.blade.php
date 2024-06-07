@@ -29,7 +29,7 @@
                     <th>Conta</th>
                 </tr>
                 <tr>
-                    <td><a href="{{ route('site.solicitante', ['id' => $solicitacao->solicitante->id]) }}" class="hover-underline">{{ $solicitacao->solicitante->nome }}</a> (<a href="mailto:{{ $solicitacao->solicitante->email }}" class="hover-underline">{{ $solicitacao->solicitante->email }}</a>)</td>
+                    <td><a href="{{ route('site.solicitante.show', ['id' => $solicitacao->solicitante->id]) }}" class="hover-underline">{{ $solicitacao->solicitante->nome }}</a> (<a href="mailto:{{ $solicitacao->solicitante->email }}" class="hover-underline">{{ $solicitacao->solicitante->email }}</a>)</td>
                     <td>{{ $solicitacao->solicitante->telefone }}</td>
                     <td class="print-hidden">{{ $solicitacao->solicitante->cpf }}</td>
                     <td class="print-hidden">{{ $solicitacao->solicitante->rg }}</td>
@@ -203,7 +203,7 @@
     </div>
     <div class="container center print-hidden">
         <a class="btn-flat waves-effect waves-black" onclick="history.back()">Voltar</a>
-        <a class="btn black waves-effect waves-black" href="{{ route('site.solicitante', ['id' => $solicitacao->solicitante->id]) }}">Resumo do solicitante</a>
+        <a class="btn black waves-effect waves-black" href="{{ route('site.solicitante.show', ['id' => $solicitacao->solicitante->id]) }}">Resumo do solicitante</a>
         <button id="print-button" class="btn-flat waves-effect waves-light">
             Imprimir
             <i class="material-icons right">print</i>

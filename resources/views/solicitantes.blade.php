@@ -43,7 +43,7 @@
         </div>
     </form>
     @if ($count_solicitantes > 0)
-        <div class="row print-hidden">
+        <div class="row">
             {!! $search_message !!}
         </div>
     @endif
@@ -64,7 +64,7 @@
             <tbody>
                 @foreach ($solicitantes as $solicitante)
                 <tr>
-                    <td><a href="{{ route('site.solicitante', ['id' => $solicitante->id]) }}" class="hover-underline"><b>{{ Str::upper($solicitante->nome) }}</b></a></td>
+                    <td><a href="{{ route('site.solicitante.show', ['id' => $solicitante->id]) }}" class="hover-underline"><b>{{ Str::upper($solicitante->nome) }}</b></a></td>
                     <td>{{ $solicitante->tipo_solicitante }}</td>
                     <td><a href="mailto:{{ $solicitante->email }}" class="hover-underline">{{ $solicitante->email }}</a></td>
                     <td>{{ $solicitante->telefone }}</td>

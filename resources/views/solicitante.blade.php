@@ -102,7 +102,7 @@
                                 @endphp
                                 <tr>
                                     <td class="print-hidden">{{ $solicitacao->status->nome }}</td>
-                                    <td><a href="{{ route('site.solicitacao', ['id' => $solicitacao->id]) }}"><b>{{ $solicitacao->tipo->nome }}</b>: {{ $resumo_solicitacao }}</a></td>
+                                    <td><a href="{{ route('site.solicitacao.show', ['id' => $solicitacao->id]) }}"><b>{{ $solicitacao->tipo->nome }}</b>: {{ $resumo_solicitacao }}</a></td>
                                     <td>R$&nbsp;{{ number_format($solicitacao->soma_notas(), 2, ',', '.') }}</td>
                                     <td>
                                         @foreach ($solicitacao->nota as $nota)
@@ -152,7 +152,7 @@
         @endif
         <div class="container center print-hidden">
             <a class="btn-flat waves-effect waves-black" onclick="history.back()">Voltar</a>
-            <a class="btn black waves-effect waves-black" href="{{ route('site.solicitacoes') }}">Todas as solicitações</a>
+            <a class="btn black waves-effect waves-black" href="{{ route('site.solicitacoes.index') }}">Todas as solicitações</a>
         </div>
     </div>
 @endsection

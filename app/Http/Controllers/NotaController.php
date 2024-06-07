@@ -34,9 +34,7 @@ class NotaController extends Controller
             'fonte_pagadora_id.integer' => 'A fonte pagadora deve ser do tipo INT',
         ]);
 
-        $solicitante_id = Solicitacao::where('id', $id)
-            ->value('solicitante_id');
-
+        $solicitacao = Solicitacao::find($id);
         $nota->numero = $request->numero;
         $nota->data = $request->data;
         $nota->descricao = $request->descricao;
@@ -44,12 +42,15 @@ class NotaController extends Controller
         $nota->valor = $request->valor;
         $nota->fonte_pagadora_id = $request->fonte_pagadora_id;
         $nota->solicitacao_id = $id;
-        $nota->solicitante_id = $solicitante_id;
-
-        $nota->save();
+        $nota->solicitante_id = $solicitacao->solicitante_id;
+        
+        if($nota->save()) {
+            $solicitacao->status_id = 5;
+            $solicitacao->save();
+        }
         
         return redirect()
-            ->route('site.solicitacao', ['id' => $id])
+            ->route('site.solicitacao.show', ['id' => $id])
             ->with('success', 'Nota lançada.');
     }
     
@@ -57,6 +58,6 @@ class NotaController extends Controller
         $nota = Nota::FindOrFail($nota_id);
         $nota->delete();
 
-        return redirect()->route('site.solicitacao', ['id' => $solicitacao_id])->with('success', 'Nota/recibo já era.');
+        return redirect()->route('site.solicitacao.show', ['id' => $solicitacao_id])->with('success', 'Nota/recibo já era.');
     }
 }
