@@ -1,6 +1,6 @@
 <div class="row container">
     <div class="col s12 section-margin-bottom center">
-        <h6 class="blue-text text-darken-2">Importações de CSV</h6>
+        <h6 class="blue-text text-darken-2">{{ $title }}</h6>
     </div>
     <a href="{{ route('import_discentes_form') }}" class="black-text">
         <div class="col s6 m4 center waves-effect">

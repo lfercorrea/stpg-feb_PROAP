@@ -1,8 +1,9 @@
 @extends('layout')
+@section('title', $title)
 @section('content')
     <div class="row container center section-margins">
         <div class="col s12">
-            <h5>Gestão do PROAP</h5>
+            <h5>{{ $title }}</h5>
         </div>
     </div>
     <div class="row container">

@@ -1,11 +1,12 @@
 @extends('layout')
+@section('title', $title)
 @section('content')
     <div class='center print-hidden'>
-        <h6>Relatório de gastos por programa</h6>
+        <h6>{{ $title }}</h6>
         <hr>
     </div>
     <div class="print-only section-margins">
-        <h6><b>Relatório consolidado por programa</b></h6>
+        <h6><b>{{ $title }}</b></h6>
     </div>
     <form action="{{ route('site.relatorio.index') }}" method="GET" class="print-hidden">
         <div class="container center">

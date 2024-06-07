@@ -1,4 +1,5 @@
 @extends('layout')
+@section('title', $title)
 @section('content')
     <div id="confirmModal" class="modal">
         <div class="modal-content">
@@ -11,7 +12,7 @@
         </div>
     </div>
     <div class="print-only section-margins">
-        <h6><b>Detalhes da solicitação</b></h6>
+        <h6><b>{{ $title }}</b></h6>
     </div>
     <div class="side-margins">
         <div class="row">

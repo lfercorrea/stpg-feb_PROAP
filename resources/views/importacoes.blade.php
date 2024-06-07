@@ -1,10 +1,6 @@
 @extends('layout')
+@section('title', $title)
 @section('content')
-    {{-- @if (!$discentes_vazia OR !$docentes_vazia)
-        <div class="section-margins side-margins">
-            <h5>Solicitações importadas via CSV</h5>
-        </div>
-    @endif --}}
     @if (!$discentes_vazia)
         <div class="container center">
             <p>
@@ -270,12 +266,6 @@
                 </tbody>
             </table>
         </div>
-        {{-- <div class="container center">
-            <form action="{{ route('site.drop_importacoes_discentes') }}" method="POST">
-            @csrf
-                <button type="submit" class="btn red darken-2 waves-effect waves-light">Esvaziar tabela de importacoes</button>
-            </form>
-        </div> --}}
     @endif
     @if ($discentes_vazia + $docentes_vazia = 0)
         <div class="row center section-margins side-margins">

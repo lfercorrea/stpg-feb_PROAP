@@ -9,6 +9,7 @@ class ProgramaController extends Controller
 {
     public function show() {
         return view('programas', [
+            'title' => 'Programas',
             'programas' => Programa::orderBy('nome', 'asc')->get(),
         ]);
     }

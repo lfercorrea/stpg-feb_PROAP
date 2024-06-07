@@ -72,6 +72,7 @@ class SolicitacaoController extends Controller
         $search_message = implode("<br>", $count_message);
         
         return view('solicitacoes', [
+            'title' => 'Solicitações',
             'solicitacoes' => $solicitacoes,
             'count_solicitacoes' => $count_solicitacoes,
             'search_message' => $search_message,
@@ -125,6 +126,7 @@ class SolicitacaoController extends Controller
             ?? optional($solicitacao->traducao_artigo)->orcamento;
 
         return view('solicitacao', [
+            'title' => 'Detalhes da solicitação',
             'solicitacao' => $solicitacao,
             'resumo_solicitacao' => $resumo_solicitacao,
             'justificativa' => $justificativa,

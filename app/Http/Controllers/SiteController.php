@@ -13,7 +13,7 @@ class SiteController extends Controller
 {
     public function index() {
         return view('index', [
-            //
+            'title' => 'Gestão do PROAP',
         ]);
     }
 
@@ -24,6 +24,7 @@ class SiteController extends Controller
         $docentes_vazia = ImportacoesDocentes::count() === 0;
 
         return view('importacoes', [
+            'title' => 'Últimas importações',
             'solicitacoes_discentes' => $solicitacoes_discentes,
             'solicitacoes_docentes' => $solicitacoes_docentes,
             'discentes_vazia' => $discentes_vazia,
@@ -36,6 +37,7 @@ class SiteController extends Controller
      */
     public function solicitante(string $id) {
         return view('solicitante', [
+            'title' => 'Solicitante',
             'solicitante' => Solicitante::where('id', $id)->first(),
             'solicitacoes' => Solicitacao::with([
                 'nota.valor_tipo',
@@ -88,6 +90,7 @@ class SiteController extends Controller
         $search_message = implode("<br>", $count_message);
         
         return view('solicitantes', [
+            'title' => 'Solicitantes',
             'solicitantes' => $solicitantes->appends($request->except('page')),
             'count_solicitantes' => $count_solicitantes,
             'search_message' => $search_message,

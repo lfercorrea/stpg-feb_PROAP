@@ -69,6 +69,7 @@ class RelatorioController extends Controller
         }
     
         return view('relatorio_programa', [
+            'title' => 'Relatório consolidado por programa',
             'total_programa' => 0,
             'total_geral' => 0,
             'solicitantes_por_programa' => $solicitantes_por_programa,

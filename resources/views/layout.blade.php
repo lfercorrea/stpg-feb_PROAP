@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>STPG-FEB - PROAP</title>
+    <title>STPG-FEB - @yield('title')</title>
     <link rel="stylesheet" href="{{ asset('css/materialize.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
     <link rel="icon" type="image/x-icon" href="{{ asset('storage/static/images/favicon.ico') }}">

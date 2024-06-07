@@ -1,12 +1,13 @@
 @extends('layout')
+@section('title', $title)
 @section('content')
     <div class="side-margins">
         <div class="row section-margins">
             <div class="print-only section-margins">
-                <h6><b>Detalhamento do solicitante</b></h6>
+                <h6><b>{{ $title }} - resumo</b></h6>
             </div>
             <div class="col s12 m6">
-                <h6>{{ $solicitante->nome }} (<a href="mailto:{{ $solicitante->email }}" class="hover-underline">{{ $solicitante->email }}</a>)</h6>
+                <h5>{{ $solicitante->nome }} (<a href="mailto:{{ $solicitante->email }}" class="hover-underline">{{ $solicitante->email }}</a>)</h5>
             </div>
             <div class="col s12 m6 right-align">
                 <button id="print-button" class="btn-flat waves-effect waves-light print-hidden">

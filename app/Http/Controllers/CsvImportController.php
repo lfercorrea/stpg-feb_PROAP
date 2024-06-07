@@ -30,23 +30,27 @@ class CsvImportController extends Controller
 {
     public function import_menu(){
         return view('importar', [
-            //
+            'title' => 'Importação de CSVs',
         ]);
     }
     public function show_import_discentes_form() {
         return view('import_form', [
+            'title' => 'Importação de CSVs - planilha discentes',
             'solicitante' => 'discentes',
         ]);
     }
 
     public function show_import_docentes_form() {
         return view('import_form', [
+            'title' => 'Importação de CSVs - planilha docentes',
             'solicitante' => 'docentes',
         ]);
     }
 
     public function show() {
-        return view('importacoes');
+        return view('importacoes', [
+            //
+        ]);
     }
 
     public function import_discentes(Request $request) {

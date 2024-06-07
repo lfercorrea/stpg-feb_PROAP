@@ -1,14 +1,15 @@
 @extends('layout')
+@section('title', $title)
 @section('content')
     <div class='center print-hidden'>
-        <h6>Programas</h6>
+        <h6>{{ $title }}</h6>
         <hr>
     </div>
     <div class="print-only section-margins">
         <h6><b>Saldos iniciais dos programas</b></h6>
     </div>
     @if ($programas->count() > 0)
-        <form action="{{ route('site.programas.update') }}" method="POST" class="print-hidden">
+        <form action="{{ route('site.programas.update') }}" method="POST">
             @csrf
             <div class="container center">
                 <table class="compact-table striped responsive-table">
