@@ -20,6 +20,7 @@
                 <li class="waves-effect waves-light"><a href="{{ route('site.solicitacoes') }}">Solicitações</a></li>
                 <li class="waves-effect waves-light"><a href="{{ route('import_menu') }}">Importação</a></li>
                 <li class="waves-effect waves-light"><a href="{{ route('site.relatorio.index') }}">Relatório por programa</a></li>
+                <li class="waves-effect waves-light"><a href="{{ route('site.programas.show') }}">Programas</a></li>
                 <li class="waves-effect waves-light"><a href="{{ route('site.solicitantes') }}">Solicitantes</a></li>
               </ul>
             </div>

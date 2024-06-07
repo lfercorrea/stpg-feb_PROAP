@@ -22,6 +22,14 @@
                 </div>
             </div>
         </a>
+        <a href="{{ route('site.programas.show') }}" class="black-text">
+            <div class="col s4 center waves-effect">
+                <i class="material-icons medium black-text">history_edu</i>
+                <div class="container">
+                    Programas
+                </div>
+            </div>
+        </a>
     </div>
     @include('common.import_menu')
 @endsection

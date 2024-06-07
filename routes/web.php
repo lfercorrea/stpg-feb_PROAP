@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CsvImportController;
 use App\Http\Controllers\NotaController;
+use App\Http\Controllers\ProgramaController;
 use App\Http\Controllers\SiteController;
 use App\Http\Controllers\SolicitacaoController;
 use App\Http\Controllers\RelatorioController;
@@ -22,6 +23,9 @@ Route::get('solicitacoes', [SolicitacaoController::class, 'index'])->name('site.
 Route::get('solicitantes', [SiteController::class, 'solicitantes'])->name('site.solicitantes');
 Route::get('solicitante/{id}', [SiteController::class, 'solicitante'])->name('site.solicitante');
 Route::get('solicitacao/{id}', [SolicitacaoController::class, 'show'])->name('site.solicitacao');
+
+Route::get('programas', [ProgramaController::class, 'show'])->name('site.programas.show');
+Route::post('programas/update', [ProgramaController::class, 'update'])->name('site.programas.update');
 
 Route::post('solicitacao/{id}/update', [SolicitacaoController::class, 'update'])->name('site.solicitacao.update');
 Route::post('solicitacao/{id}', [NotaController::class, 'store'])->name('site.nota.store');
