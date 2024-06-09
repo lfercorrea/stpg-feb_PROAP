@@ -203,8 +203,8 @@
     </div>
     <div class="container center print-hidden">
         <a class="btn-flat waves-effect waves-black" onclick="history.back()">Voltar</a>
-        <a class="btn black waves-effect waves-black" href="{{ route('site.solicitante.show', ['id' => $solicitacao->solicitante->id]) }}">Resumo do solicitante</a>
-        <button id="print-button" class="btn-flat waves-effect waves-light">
+        <a class="btn black waves-effect waves-light" href="{{ route('site.solicitante.show', ['id' => $solicitacao->solicitante->id]) }}">Resumo do solicitante</a>
+        <button id="print-button" class="btn-flat waves-effect waves-black">
             Imprimir
             <i class="material-icons right">print</i>
         </button>

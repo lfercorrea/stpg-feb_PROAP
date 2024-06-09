@@ -10,7 +10,7 @@
                 <h5>{{ $solicitante->nome }} (<a href="mailto:{{ $solicitante->email }}" class="hover-underline">{{ $solicitante->email }}</a>)</h5>
             </div>
             <div class="col s12 m6 right-align">
-                <button id="print-button" class="btn-flat waves-effect waves-light print-hidden">
+                <button id="print-button" class="btn-flat waves-effect waves-black print-hidden">
                     Imprimir
                     <i class="material-icons right">print</i>
                 </button>
@@ -152,7 +152,7 @@
         @endif
         <div class="container center print-hidden">
             <a class="btn-flat waves-effect waves-black" onclick="history.back()">Voltar</a>
-            <a class="btn black waves-effect waves-black" href="{{ route('site.solicitacoes.index') }}">Todas as solicitações</a>
+            <a class="btn black waves-effect waves-light" href="{{ route('site.solicitacoes.index') }}">Todas as solicitações</a>
         </div>
     </div>
 @endsection

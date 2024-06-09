@@ -28,7 +28,7 @@
                 </div>
                 <div class="col s4 m4 input-field">
                     <button class="btn waves-effect waves-light black" type="submit">Filtrar</button> 
-                    <button id="print-button" class="btn-flat waves-effect waves-light">
+                    <button id="print-button" class="btn-flat waves-effect waves-black">
                         Imprimir
                         <i class="material-icons right">print</i>
                     </button>
@@ -87,6 +87,6 @@
         </div>            
     @endif
     <div class="row center section-margins side-margins print-hidden">
-        <a class="btn-small black waves-effect waves-black" onclick="history.back()">Voltar</a>
+        <a class="btn-small black waves-effect waves-light" onclick="history.back()">Voltar</a>
     </div>
 @endsection

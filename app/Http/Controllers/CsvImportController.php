@@ -47,12 +47,6 @@ class CsvImportController extends Controller
         ]);
     }
 
-    public function show() {
-        return view('importacoes', [
-            //
-        ]);
-    }
-
     public function importacoes() {
         $solicitacoes_discentes = ImportacoesDiscentes::orderBy('id', 'asc')->get();
         $solicitacoes_docentes = ImportacoesDocentes::orderBy('id', 'asc')->get();
