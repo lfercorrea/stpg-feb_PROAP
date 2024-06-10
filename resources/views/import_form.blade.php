@@ -13,7 +13,7 @@
             <div class="row">
                 <div class="col s12">
                     <div class="row center">
-                    <p>{{ $message }}</p>
+                    <p><b>{{ $message }}</b></p>
                         <a href="{{ route('site.importacoes') }}" class="btn blue darken-2 waves-effect waves-light">Conferir importação</a>
                         <a href="{{ route('site.solicitacoes.index') }}" class="btn black darken-2 waves-effect waves-light">Ver solicitações</a>
                         <a href="{{ route('import_menu') }}" class="btn green darken-2 waves-effect waves-light">Importar outro</a>

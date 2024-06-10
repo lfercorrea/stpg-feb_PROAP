@@ -115,9 +115,10 @@ class CsvImportController extends Controller
              * caso o número de linhas confira, ainda é preciso ver, linha a linha, se algum dado do CSV
              * foi removido manualmente
              */
-            for($i = 0; $i < $count_importadas_anteriormente; $i++){
+            for($i = 0, $j = 0; $i < $count_importadas_anteriormente; $i++){
                 if($novas_linhas[$i][1] === $importadas_anteriormente[$i]['carimbo_data_hora']) {
                     Log::info("[ OK ] Comparando linha do CSV com última importação; (CSV linha n° {$i}) {$novas_linhas[$i][1]} confere com {$importadas_anteriormente[$i]['carimbo_data_hora']} (linha nº {$i} já cadastrada no banco)");
+                    $j++;
                 }
                 else{
                     $err_msg = "[ FALHA ] Comparando linha do CSV com última importação; (CSV linha n° {$i}) {$novas_linhas[$i][1]} não confere com {$importadas_anteriormente[$i]['carimbo_data_hora']} (linha nº {$i} já cadastrada no banco)";
@@ -126,6 +127,15 @@ class CsvImportController extends Controller
                     return redirect()->route('import_discentes_form')
                         ->with('fail', 'Há linhas no CSV faltando em relação à última importação: ' . $err_msg);
                 }
+            }
+
+            /**
+             * para economizar processamento desnecessário, ele não procederá com a importação
+             * caso o banco esteja atualizado em relação ao CSV apontado
+             */
+            if($count_importadas_anteriormente === $count_novas_linhas AND $i === $j) {
+                return redirect()->back()
+                    ->with('success', 'O banco de dados já está atualizado. Nenhuma inserção foi feita.');
             }
             /**
              * OK, agora dá pra passar o rodo na tabela importacoes e realimentá-la,
@@ -559,9 +569,10 @@ class CsvImportController extends Controller
             * caso o número de linhas confira, ainda é preciso ver, linha a linha, se algum dado do CSV
             * foi removido manualmente
             */
-            for($i = 0; $i < $count_importadas_anteriormente; $i++){
+            for($i = 0, $j = 0; $i < $count_importadas_anteriormente; $i++){
                 if($novas_linhas[$i][1] === $importadas_anteriormente[$i]['carimbo_data_hora']) {
                     Log::info("[ OK ] Comparando linha do CSV com última importação; (CSV linha n° {$i}) {$novas_linhas[$i][1]} confere com {$importadas_anteriormente[$i]['carimbo_data_hora']} (linha nº {$i} já cadastrada no banco)");
+                    $j++;
                 }
                 else{
                     $err_msg = "[ FALHA ] Comparando linha do CSV com última importação; (CSV linha n° {$i}) {$novas_linhas[$i][1]} não confere com {$importadas_anteriormente[$i]['carimbo_data_hora']} (linha nº {$i} já cadastrada no banco)";
@@ -571,6 +582,16 @@ class CsvImportController extends Controller
                         ->with('fail', 'Há linhas no CSV faltando em relação à última importação: ' . $err_msg);
                 }
             }
+
+            /**
+             * para economizar processamento desnecessário, ele não procederá com a importação
+             * caso o banco esteja atualizado em relação ao CSV apontado
+             */
+            if($count_importadas_anteriormente === $count_novas_linhas AND $i === $j) {
+                return redirect()->back()
+                    ->with('success', 'O banco de dados já está atualizado. Nenhuma inserção foi feita.');
+            }
+
             /**
             * OK, agora dá pra passar o rodo na tabela importacoes e realimentá-la,
             * comparando a consistencia com os dados das demais tabelas
