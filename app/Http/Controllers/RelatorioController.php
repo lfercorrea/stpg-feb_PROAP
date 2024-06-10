@@ -12,7 +12,8 @@ use App\Models\Status;
 class RelatorioController extends Controller
 {
     public function index(Request $request) {
-        $query = Solicitante::with(['solicitacao.programa']);
+        $query = Solicitante::with(['solicitacao.programa'])
+            ->orderBy('nome', 'asc');
         
         if($request->filled('tipo_solicitante')) {
             $query->where('tipo_solicitante', $request->tipo_solicitante);
