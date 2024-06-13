@@ -133,11 +133,11 @@
                                     <td>{{ $solicitacao->carimbo_data_hora }}</td>
                                 </tr>
                             @endforeach
-                            <table class="bordered compact-table striped responsive-table">
+                            {{-- <table class="bordered compact-table striped responsive-table"> --}}
                                 <tr>
-                                    <th class="center-align">Total na {{ $solicitacoes_programa->first()->programa->nome }}:&nbsp;R$&nbsp;{{ number_format($valor_total_programa, 2, ',', '.') }}</th>
+                                    <th colspan="10" class="center-align blue-text text-darken-2">Total na {{ $solicitacoes_programa->first()->programa->nome }}:&nbsp;R$&nbsp;{{ number_format($valor_total_programa, 2, ',', '.') }}</th>
                                 </tr>
-                            </table>
+                            {{-- </table> --}}
                         </tbody>
                     </table>
                     @php
@@ -146,7 +146,7 @@
                     @endphp
                 @endforeach
                 <div class="container center section-margins">
-                    <span class="blue-text text-darken-2"><h6><b>Total geral pago:&nbsp;R$&nbsp;{{ number_format($valor_total, 2, ',', '.') }}</b></h6></span>
+                    <span class="red-text text-darken-2"><h6><b>Total geral pago:&nbsp;R$&nbsp;{{ number_format($valor_total, 2, ',', '.') }}</b></h6></span>
                 </div>
             </div>
         @endif
