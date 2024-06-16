@@ -36,7 +36,7 @@
             </div>
             <div class="row center section-margins side-margins print-hidden">
                 <a class="btn-small black waves-effect waves-light" onclick="history.back()">Voltar</a>
-                <button type="submit" class="btn-small green waves-effect waves-light">Salvar</button>
+                <button type="submit" class="btn-small green darken-2 waves-effect waves-light">Salvar</button>
             </div>
         </form>
     @else
