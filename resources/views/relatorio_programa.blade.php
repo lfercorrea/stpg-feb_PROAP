@@ -9,33 +9,48 @@
         <h6><b>{{ $title }}</b></h6>
     </div>
     <form action="{{ route('site.relatorio.index') }}" method="GET" class="print-hidden">
-        <div class="container center">
-            <div class="row">
-                <div class="col s8 m4 input-field">
-                    <select class="browser-default" name="tipo_solicitante"><option value="">Todos</option>
-                        <option value="Discente">Discente</option>
-                        <option value="Docente Permanente">Docente Permanente</option>
-                        <option value="Docente Colaborador">Docente Colaborador</option>
-                    </select>
-                </div>
-                <div class="col s4 m4 input-field">
-                    <select name="programa_id[]" id="programa_id" multiple="" tabindex="-1" style="display: none;">
-                        <option value="" selected disabled>Programas</option>
-                            @foreach ($programas as $key => $value)
-                                <option value="{{ $key }}">{{ $value }}</option>
-                            @endforeach
-                    </select>
-                </div>
-                <div class="col s4 m4 input-field">
-                    <button class="btn waves-effect waves-light black" type="submit">Filtrar</button> 
-                    <button id="print-button" class="btn-flat waves-effect waves-black">
-                        Imprimir
-                        <i class="material-icons right">print</i>
-                    </button>
-                </div>
+        <div class="row">
+            <div class="input-field col s6 m2">
+                <input name="start_date" id="start_date" type="date" class="validate">
+                <label for="start_date">De:</label>
+            </div>
+            <div class="input-field col s6 m2">
+                <input name="end_date" id="end_date" type="date" class="validate">
+                <label for="end_date">Até:</label>
+            </div>
+            <div class="col s6 m2 input-field">
+                <select class="browser-default" name="tipo_solicitante"><option value="">Todos</option>
+                    <option value="Discente">Discente</option>
+                    <option value="Docente Permanente">Docente Permanente</option>
+                    <option value="Docente Colaborador">Docente Colaborador</option>
+                </select>
+            </div>
+            <div class="col s6 m2 input-field">
+                <select name="programa_id[]" id="programa_id" multiple="" tabindex="-1" style="display: none;">
+                    <option value="" selected disabled>Programas</option>
+                        @foreach ($programas as $key => $value)
+                            <option value="{{ $key }}">{{ $value }}</option>
+                        @endforeach
+                </select>
+            </div>
+            <div class="col s12 m2 input-field">
+                <button class="btn waves-effect waves-light black" type="submit">Filtrar</button> 
+            </div>
+            <div class="col s12 m2 input-field">
+                <button id="print-button" class="btn-flat waves-effect waves-black">
+                    Imprimir
+                    <i class="material-icons right">print</i>
+                </button>
             </div>
         </div>
     </form>
+    @if ($start_date AND $end_date)
+        <div class="row">
+            <div class="col s12 m6">
+                Período: de <b>{{ $start_date }}</b> até <b>{{ $end_date }}</b>
+            </div>
+        </div>
+    @endif
     @foreach ($solicitantes_por_programa as $programa_nome => $solicitacoes)
         <h6 class="blue-text text-darken-2"><b><i>{{ $programa_nome }}</i></b> ({{ $solicitacoes->count() }})</h6>
         <table class="compact-table striped responsive-table">

@@ -8,6 +8,7 @@ use App\Models\Solicitante;
 use App\Models\Solicitacao;
 use App\Models\SolicitacaoTipo;
 use App\Models\Status;
+use Carbon\Carbon;
 
 class RelatorioController extends Controller
 {
@@ -23,6 +24,14 @@ class RelatorioController extends Controller
             $arr_programa_id = $request->input('programa_id');
             $query->whereHas('solicitacao', function($q) use ($arr_programa_id) {
                 $q->whereIn('programa_id', $arr_programa_id);
+            });
+        }
+
+        if($request->filled('start_date') && $request->filled('end_date')) {
+            $start_date = Carbon::createFromFormat('Y-m-d', $request->input('start_date'))->startOfDay()->format('d/m/Y H:i:s');
+            $end_date = Carbon::createFromFormat('Y-m-d', $request->input('end_date'))->endOfDay()->format('d/m/Y H:i:s');
+            $query->whereHas('solicitacao', function ($q) use ($start_date, $end_date) {
+                $q->whereBetween('carimbo_data_hora', [$start_date, $end_date]);
             });
         }
     
@@ -77,6 +86,8 @@ class RelatorioController extends Controller
             'tipos_solicitacao' => SolicitacaoTipo::orderBy('nome', 'asc')->pluck('nome', 'id')->toArray(),
             'programas' => Programa::orderBy('nome', 'asc')->pluck('nome', 'id')->toArray(),
             'statuses' => Status::all(),
+            'start_date' => $start_date ?? null,
+            'end_date' => $end_date ?? null,
         ]);
     }
 }
