@@ -17,21 +17,15 @@
             <div class="col s12 m3 input-field">
                 <input type="text" name="search" placeholder="Nome, email ou tipo de solicitante"> 
             </div>
-            <div class="col s8 m2 input-field">
-                <select class="browser-default" name="tipo_solicitacao_id"><option value="">Tipo</option>
-                    @foreach ($tipos_solicitacao as $key => $value)
-                        <option value="{{ $key }}">{{ $value }}</option>
-                    @endforeach
-                </select>
+            <div class="col s6 m2 input-field">
+                <input name="start_date" id="start_date" type="date" class="validate" value="{{ $start_month }}">
+                <label for="start_date">De:</label>
             </div>
-            <div class="col s8 m2 input-field">
-                <select class="browser-default" name="status_id"><option value="">Status</option>
-                    @foreach ($statuses as $status)
-                        <option value="{{ $status->id }}">{{ $status->nome }}</option>
-                    @endforeach
-                </select>
+            <div class="col s6 m2 input-field">
+                <input name="end_date" id="end_date" type="date" class="validate" value="{{ $now }}">
+                <label for="end_date">Até:</label>
             </div>
-            <div class="col s4 m3 input-field">
+            <div class="col s12 m3 input-field">
                 <select name="programa_id[]" id="programa_id" multiple="" tabindex="-1" style="display: none;">
                     <option value="" selected disabled>Programas</option>
                         @foreach ($programas as $key => $value)
@@ -41,22 +35,50 @@
             </div>
         </div>
         <div class="container center">
-            <button class="btn waves-effect waves-light black" type="submit">Buscar</button>
-            <button id="print-button" class="btn-flat waves-effect waves-black">
-                Imprimir
-                <i class="material-icons right">print</i>
-            </button>
+            <div class="row center">
+                <div class="col s6 m3">
+                    <select name="tipo_solicitacao_id"><option value="">Tipo</option>
+                        @foreach ($tipos_solicitacao as $key => $value)
+                            <option value="{{ $key }}">{{ $value }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col s6 m3">
+                    <select name="status_id"><option value="">Status</option>
+                        @foreach ($statuses as $status)
+                            <option value="{{ $status->id }}">{{ $status->nome }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col s12 m2">
+                    <select name="limit">
+                            <option value="30">Itens por página</option>
+                            <option value="100">100</option>
+                            <option value="1000">1000</option>
+                    </select>
+                </div>
+                <div class="col s6 m2">
+                    <button class="btn waves-effect waves-light black" type="submit">Buscar</button>
+                </div>
+                <div class="col s6 m2">
+                    <button id="print-button" class="btn-flat waves-effect waves-black">
+                        Imprimir
+                        <i class="material-icons right">print</i>
+                    </button>
+                </div>
+            </div>
         </div>
     </form>
-    @if ($count_solicitacoes > 0)
+    @if ($count_solicitacoes > 0 AND $search_message)
         <div class="row">
-            {!! $search_message !!}
+            <div class="search-terms small-text">
+                {!! $search_message !!}
+            </div>
         </div>
     @endif
     <div class="print-hidden">
         {{
-            $solicitacoes->appends(request()->only(['search', 'programa_id', 'tipo_solicitacao_id', 'status_id']))
-                ->links('common/pagination')
+            $solicitacoes->links('common/pagination')
         }}
     </div>
     @if (count($solicitacoes) > 0)
@@ -128,8 +150,7 @@
     @endif
     <div class="print-hidden">
         {{
-            $solicitacoes->appends(request()->only(['search', 'programa_id', 'tipo_solicitacao_id', 'status_id']))
-                ->links('common/pagination')
+            $solicitacoes->links('common/pagination')
         }}
     </div>
     <div class="row center section-margins side-margins print-hidden">

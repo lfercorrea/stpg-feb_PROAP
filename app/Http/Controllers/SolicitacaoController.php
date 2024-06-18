@@ -9,17 +9,39 @@ use App\Models\SolicitacaoTipo;
 use App\Models\Status;
 use App\Models\ValorTipo;
 use App\Models\FontePagadora;
+use Carbon\Carbon;
 
 class SolicitacaoController extends Controller
 {
     public function index(Request $request) {
         $count_solicitacoes = 0;
+        $limit = 30;
 
-        if($request->has('search') OR $request->has('programa_id') OR $request->has('tipo_solicitacao_id') OR $request->has('status_id')){
-            $solicitacoes = Solicitacao::search($request->search, $request->programa_id, $request->tipo_solicitacao_id, $request->status_id)
-                ->orderByRaw("STR_TO_DATE(carimbo_data_hora, '%d/%m/%Y %H:%i:%s') DESC")
-                ->paginate(30);
-            $count_solicitacoes = Solicitacao::search($request->search, $request->programa_id, $request->tipo_solicitacao_id, $request->status_id)->count();
+        if($request->filled('limit') AND $request->input('limit') <= 1000) {
+            $limit = $request->input('limit');
+        }
+
+        if($request->has('search') 
+            OR ($request->has('start_date') AND $request->has('end_date')) 
+            OR $request->has('programa_id') 
+            OR $request->has('tipo_solicitacao_id') 
+            OR $request->has('status_id')){
+            $solicitacoes = Solicitacao::search(
+                $request->search,
+                $request->start_date,
+                $request->end_date,
+                $request->programa_id,
+                $request->tipo_solicitacao_id,
+                $request->status_id)
+                    ->orderByRaw("STR_TO_DATE(carimbo_data_hora, '%d/%m/%Y %H:%i:%s') DESC")
+                    ->paginate($limit);
+            $count_solicitacoes = Solicitacao::search($request->search,
+                $request->start_date,
+                $request->end_date,
+                $request->programa_id, 
+                $request->tipo_solicitacao_id, 
+                $request->status_id)
+                    ->count();
         }
         else{
             $solicitacoes = Solicitacao::with([
@@ -36,7 +58,7 @@ class SolicitacaoController extends Controller
                 'manutencao',
             ])
             ->orderByRaw("STR_TO_DATE(carimbo_data_hora, '%d/%m/%Y %H:%i:%s') DESC")
-            ->paginate(30);
+            ->paginate($limit);
         }
 
         $tipos_solicitacao = SolicitacaoTipo::orderBy('nome', 'asc')->pluck('nome', 'id')->toArray();
@@ -44,20 +66,20 @@ class SolicitacaoController extends Controller
         $statuses = Status::all();
         $count_message = [];
 
-        if(!empty($request->search)) {
+        if($request->filled('search')) {
             $count_message[] = "Termo buscado: <b><i>\"$request->search\"</i></b>";
         }
         
-        if(!empty($request->tipo_solicitacao_id)) {
+        if($request->filled('tipo_solicitacao_id')) {
             $count_message[] = "Tipo: <b><i>{$tipos_solicitacao[$request->tipo_solicitacao_id]}</i></b>";
         }
         
-        if(!empty($request->status_id)) {
+        if($request->filled('status_id')) {
             $status = $statuses->firstWhere('id', $request->status_id);
             $count_message[] = "Status: <b><i>{$status->nome}</i></b>";
         }
 
-        if(!empty($request->programa_id)) {
+        if($request->filled('programa_id')) {
             $arr_programas_selecionados = [];
             
             foreach($request->programa_id as $selected_id) {
@@ -67,18 +89,26 @@ class SolicitacaoController extends Controller
             $programas_selecionados = implode(', ', $arr_programas_selecionados);
             $count_message[] = "Programas: <b><i>{$programas_selecionados}</i></b>";
         }
+        
+        if($request->filled('start_date') AND $request->filled('end_date')) {
+            $start_date = Carbon::createFromFormat('Y-m-d', $request->input('start_date'))->startOfDay()->format('d/m/Y H:i:s');
+            $end_date = Carbon::createFromFormat('Y-m-d', $request->input('end_date'))->endOfDay()->format('d/m/Y H:i:s');
+            $count_message[] = "Período: de <b>{$start_date}</b> até <b>{$end_date}</b>";
+        }
 
         $plural = ($count_solicitacoes > 1) ? 's' : '';
         $search_message = implode("<br>", $count_message);
         
         return view('solicitacoes', [
             'title' => 'Solicitações',
-            'solicitacoes' => $solicitacoes,
+            'solicitacoes' => $solicitacoes->appends($request->except('page')),
             'count_solicitacoes' => $count_solicitacoes,
             'search_message' => $search_message,
             'tipos_solicitacao' => $tipos_solicitacao,
             'programas' => $programas,
             'statuses' => $statuses,
+            'start_month' => Carbon::now()->startOfMonth()->toDateString(),
+            'now' => Carbon::now()->toDateString(),
         ]);
     }
 

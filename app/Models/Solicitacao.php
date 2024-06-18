@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Solicitacao extends Model
 {
@@ -88,7 +89,7 @@ class Solicitacao extends Model
         return $this->nota()->sum('valor');
     }
 
-    public static function search($search, $programa_id = null, $tipo_solicitacao = null, $status_id = null) {
+    public static function search($search, $start_date = null, $end_date = null, $programa_id = null, $tipo_solicitacao = null, $status_id = null) {
         $query = self::query();
 
         if($search) {
@@ -97,6 +98,15 @@ class Solicitacao extends Model
                     ->orWhere('email', 'like', '%' . $search . '%')
                     ->orWhere('tipo_solicitante', 'like', '%' . $search . '%');
             });
+        }
+
+        if($start_date AND $end_date) {
+            $obj_start_date = Carbon::createFromFormat('Y-m-d', $start_date)->startOfDay()->format('d/m/Y H:i:s');
+            $obj_end_date = Carbon::createFromFormat('Y-m-d', $end_date)->endOfDay()->format('d/m/Y H:i:s');
+            $query->whereRaw(
+                "STR_TO_DATE(carimbo_data_hora, '%d/%m/%Y %H:%i:%s') BETWEEN STR_TO_DATE(?, '%d/%m/%Y %H:%i:%s') AND STR_TO_DATE(?, '%d/%m/%Y %H:%i:%s')",
+                [$obj_start_date, $obj_end_date]
+            );
         }
         
         if($programa_id) {

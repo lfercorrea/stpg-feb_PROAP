@@ -26,14 +26,6 @@ class RelatorioController extends Controller
                 $q->whereIn('programa_id', $arr_programa_id);
             });
         }
-
-        if($request->filled('start_date') && $request->filled('end_date')) {
-            $start_date = Carbon::createFromFormat('Y-m-d', $request->input('start_date'))->startOfDay()->format('d/m/Y H:i:s');
-            $end_date = Carbon::createFromFormat('Y-m-d', $request->input('end_date'))->endOfDay()->format('d/m/Y H:i:s');
-            $query->whereHas('solicitacao', function ($q) use ($start_date, $end_date) {
-                $q->whereBetween('carimbo_data_hora', [$start_date, $end_date]);
-            });
-        }
     
         $solicitantes = $query->get();
         $solicitantes_por_programa = collect();
@@ -53,6 +45,8 @@ class RelatorioController extends Controller
                 }
 
                 if($request->filled('start_date') AND $request->filled('end_date')) {
+                    $start_date = Carbon::createFromFormat('Y-m-d', $request->input('start_date'))->startOfDay()->format('d/m/Y H:i:s');
+                    $end_date = Carbon::createFromFormat('Y-m-d', $request->input('end_date'))->endOfDay()->format('d/m/Y H:i:s');
                     $carimbo_data_hora = Carbon::createFromFormat('d/m/Y H:i:s', $solicitacao->carimbo_data_hora);
                     $start_date_obj = Carbon::createFromFormat('d/m/Y H:i:s', $start_date);
                     $end_date_obj = Carbon::createFromFormat('d/m/Y H:i:s', $end_date);
@@ -109,6 +103,8 @@ class RelatorioController extends Controller
             'tipo_solicitante' => $request->input('tipo_solicitante'),
             'programas' => $programas,
             'programas_selecionados' => $programas_selecionados ?? null,
+            'start_month' => Carbon::now()->startOfMonth()->toDateString(),
+            'now' => Carbon::now()->toDateString(),
             'start_date' => $start_date ?? null,
             'end_date' => $end_date ?? null,
         ]);
