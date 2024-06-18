@@ -4,7 +4,7 @@
     <div class="side-margins">
         <div class="row section-margins">
             <div class="print-only section-margins">
-                <h6><b>{{ $title }} - resumo</b></h6>
+                <h6><b>Relatório de solicitações</b></h6>
             </div>
             <div class="col s12 m6">
                 <h5>{{ $solicitante->nome }} (<a href="mailto:{{ $solicitante->email }}" class="hover-underline">{{ $solicitante->email }}</a>)</h5>

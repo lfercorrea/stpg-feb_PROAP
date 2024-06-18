@@ -6,7 +6,7 @@
         <hr>
     </div>
     <div class="print-only section-margins">
-        <h6><b>{{ $title }}</b></h6>
+        <h6><b>Relatório consolidado de gastos em programas de pós-graduação</b></h6>
     </div>
     <form action="{{ route('site.relatorio.index') }}" method="GET" class="print-hidden">
         <div class="row">
@@ -44,10 +44,21 @@
             </div>
         </div>
     </form>
-    @if ($start_date AND $end_date)
+    @if ($start_date && $end_date || $tipo_solicitante || $programas_selecionados)
         <div class="row">
-            <div class="col s12 m6">
-                Período: de <b>{{ $start_date }}</b> até <b>{{ $end_date }}</b>
+            <div class="search-terms small-text">
+                @if ($start_date AND $end_date)
+                    Período: de <b>{{ $start_date }}</b> até <b>{{ $end_date }}</b>
+                    <br>
+                @endif
+                @if ($tipo_solicitante)
+                    Tipo de solicitante: <b>{{ $tipo_solicitante }}</b>
+                    <br>
+                @endif
+                @if ($programas_selecionados)
+                    Programas: <b>{{ $programas_selecionados }}</b>
+                    <br>
+                @endif
             </div>
         </div>
     @endif

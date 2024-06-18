@@ -51,6 +51,16 @@ class RelatorioController extends Controller
                 if($request->filled('programa_id') AND !in_array($programa_id, $request->input('programa_id'))) {
                     continue;
                 }
+
+                if($request->filled('start_date') AND $request->filled('end_date')) {
+                    $carimbo_data_hora = Carbon::createFromFormat('d/m/Y H:i:s', $solicitacao->carimbo_data_hora);
+                    $start_date_obj = Carbon::createFromFormat('d/m/Y H:i:s', $start_date);
+                    $end_date_obj = Carbon::createFromFormat('d/m/Y H:i:s', $end_date);
+                    
+                    if(!$carimbo_data_hora->between($start_date_obj, $end_date_obj)) {
+                        continue;
+                    }
+                }
     
                 $valor_gasto = $solicitacao->soma_notas();
     
@@ -77,15 +87,28 @@ class RelatorioController extends Controller
             }
             // ufa. consegui desfoder essa merda
         }
+
+        $programas = Programa::orderBy('nome', 'asc')->pluck('nome', 'id')->toArray();
+
+        $title = 'Relatório consolidado';
+
+        if($request->filled('programa_id')) {
+            foreach($request->input('programa_id') as $key => $programa_id) {
+                $arr_nome_programas[] = $programas[$programa_id];
+            }
+
+            $title .= ' - ' . $programas_selecionados = implode(', ', $arr_nome_programas);
+        }
     
         return view('relatorio_programa', [
-            'title' => 'Relatório consolidado por programa',
+            'title' => $title,
             'total_programa' => 0,
             'total_geral' => 0,
             'solicitantes_por_programa' => $solicitantes_por_programa,
-            'tipos_solicitacao' => SolicitacaoTipo::orderBy('nome', 'asc')->pluck('nome', 'id')->toArray(),
-            'programas' => Programa::orderBy('nome', 'asc')->pluck('nome', 'id')->toArray(),
             'statuses' => Status::all(),
+            'tipo_solicitante' => $request->input('tipo_solicitante'),
+            'programas' => $programas,
+            'programas_selecionados' => $programas_selecionados ?? null,
             'start_date' => $start_date ?? null,
             'end_date' => $end_date ?? null,
         ]);

@@ -50,9 +50,11 @@ class SolicitanteController extends Controller
      * mostra a página de visualização com dados do solicitante
      */
     public function show(string $id) {
+        $solicitante = Solicitante::where('id', $id)->first();
+
         return view('solicitante', [
-            'title' => 'Solicitante',
-            'solicitante' => Solicitante::where('id', $id)->first(),
+            'title' => 'Solicitante' . ' - ' . $solicitante->nome,
+            'solicitante' => $solicitante,
             'solicitacoes' => Solicitacao::with([
                 'nota.valor_tipo',
                 'tipo',
