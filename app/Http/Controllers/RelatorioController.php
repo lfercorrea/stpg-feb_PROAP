@@ -26,6 +26,22 @@ class RelatorioController extends Controller
                 $q->whereIn('programa_id', $arr_programa_id);
             });
         }
+
+        if($request->filled('start_date') AND $request->filled('end_date')) {
+            $obj_start_date = Carbon::createFromFormat('Y-m-d', $request->input('start_date'))->startOfDay();
+            $obj_end_date = Carbon::createFromFormat('Y-m-d', $request->input('end_date'))->endOfDay();
+            /**
+             * este encadeamento em $query serve tão somente para melhorar a performance e economizar memória.
+             * o código funciona perfeitamente sem ele. no entanto, sem este filtro, TODOS os solicitantes serão consultados
+             * e armazenados em memória, além de serem todos iterados nos loops a seguir, reduzindo drasticamente a performance
+             */
+            $query->whereHas('solicitacao', function($q) use ($obj_start_date, $obj_end_date) {
+                $q->whereRaw(
+                    "STR_TO_DATE(carimbo_data_hora, '%d/%m/%Y %H:%i:%s') BETWEEN STR_TO_DATE(?, '%d/%m/%Y %H:%i:%s') AND STR_TO_DATE(?, '%d/%m/%Y %H:%i:%s')",
+                    [$obj_start_date->format('d/m/Y H:i:s'), $obj_end_date->format('d/m/Y H:i:s')]
+                );
+            });
+        }
     
         $solicitantes = $query->get();
         $solicitantes_por_programa = collect();
@@ -45,13 +61,9 @@ class RelatorioController extends Controller
                 }
 
                 if($request->filled('start_date') AND $request->filled('end_date')) {
-                    $start_date = Carbon::createFromFormat('Y-m-d', $request->input('start_date'))->startOfDay()->format('d/m/Y H:i:s');
-                    $end_date = Carbon::createFromFormat('Y-m-d', $request->input('end_date'))->endOfDay()->format('d/m/Y H:i:s');
                     $carimbo_data_hora = Carbon::createFromFormat('d/m/Y H:i:s', $solicitacao->carimbo_data_hora);
-                    $start_date_obj = Carbon::createFromFormat('d/m/Y H:i:s', $start_date);
-                    $end_date_obj = Carbon::createFromFormat('d/m/Y H:i:s', $end_date);
                     
-                    if(!$carimbo_data_hora->between($start_date_obj, $end_date_obj)) {
+                    if(!$carimbo_data_hora->between($obj_start_date, $obj_end_date)) {
                         continue;
                     }
                 }
