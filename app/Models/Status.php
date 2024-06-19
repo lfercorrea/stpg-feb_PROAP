@@ -14,7 +14,7 @@ class Status extends Model
         'observacao',
     ];
 
-    public function solicitacao() {
+    public function solicitacoes() {
         return $this->hasMany(Solicitacao::class);
     }
 }

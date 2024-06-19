@@ -15,7 +15,7 @@ class FontePagadora extends Model
         'nome',
     ];
 
-    public function nota() {
+    public function notas() {
         return $this->hasMany(Nota::class);
     }
 }

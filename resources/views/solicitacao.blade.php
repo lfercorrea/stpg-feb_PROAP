@@ -108,7 +108,7 @@
             </form>
         </div>
         <div class="row">
-                @if ($solicitacao->nota->isNotEmpty())
+                @if ($solicitacao->notas->isNotEmpty())
                     <div class="section-margins">
                         <h6>Notas/recibos</h6>
                     </div>
@@ -122,7 +122,7 @@
                             <th>Tipo de despesa</th>
                             <th>Valor</th>
                         </tr>
-                        @foreach ($solicitacao->nota as $nota)
+                        @foreach ($solicitacao->notas as $nota)
                             <tr>
                                 <td class="center-align print-hidden"><a href="{{ route('site.nota.destroy', ['solicitacao_id' => $solicitacao->id, 'nota_id' => $nota->id]) }}" class="confirm-link"><i class="material-icons tiny red-text">delete</i></a></td>
                                 <td>{{ $nota->numero }}</td>

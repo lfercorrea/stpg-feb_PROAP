@@ -56,7 +56,7 @@ class SolicitanteController extends Controller
             'title' => 'Solicitante' . ' - ' . $solicitante->nome,
             'solicitante' => $solicitante,
             'solicitacoes' => Solicitacao::with([
-                'nota.valor_tipo',
+                'notas.valor_tipo',
                 'tipo',
                 'solicitante',
                 'programa',

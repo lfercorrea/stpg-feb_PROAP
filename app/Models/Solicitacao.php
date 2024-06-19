@@ -81,22 +81,48 @@ class Solicitacao extends Model
         return $this->belongsTo(ServicoTipo::class);
     }
 
-    public function nota() {
+    public function notas() {
         return $this->hasMany(Nota::class);
     }
 
     public function soma_notas() {
-        return $this->nota()->sum('valor');
+        return $this->notas()->sum('valor');
     }
 
     public static function search($search, $start_date = null, $end_date = null, $programa_id = null, $tipo_solicitacao = null, $status_id = null) {
         $query = self::query();
 
         if($search) {
-            $query->whereHas('solicitante', function($query) use($search) {
-                $query->where('nome', 'like', '%' . $search . '%')
+            $query->where(function($query) use ($search) {
+                /**
+                 * busca por solicitante
+                 */
+                $query->whereHas('solicitante', function($q) use($search) {
+                    $q->where('nome', 'like', '%' . $search . '%')
                     ->orWhere('email', 'like', '%' . $search . '%')
                     ->orWhere('tipo_solicitante', 'like', '%' . $search . '%');
+                })
+                ->orWhereHas('atividade', function($q) use ($search) {
+                    $q->where('descricao', 'like', '%' . $search . '%');
+                })
+                ->orWhereHas('evento', function($q) use ($search) {
+                    $q->where('nome', 'like', '%' . $search . '%');
+                })
+                ->orWhereHas('material', function($q) use ($search) {
+                    $q->where('descricao', 'like', '%' . $search . '%');
+                })
+                /**
+                 * caso seja busca por serviço...
+                 */
+                ->orWhereHas('manutencao', function($q) use ($search) {
+                    $q->where('descricao', 'like', '%' . $search . '%');
+                })
+                ->orWhereHas('outro_servico', function($q) use ($search) {
+                    $q->where('descricao', 'like', '%' . $search . '%');
+                })
+                ->orWhereHas('traducao_artigo', function($q) use ($search) {
+                    $q->where('titulo_artigo', 'like', '%' . $search . '%');
+                });
             });
         }
 
@@ -126,6 +152,9 @@ class Solicitacao extends Model
                 $query->where('status_id', $status_id);
             });
         }
+
+        // $query->toSql();
+        // dd($query->toSql(), $query->getBindings());
         
         return $query;
     }

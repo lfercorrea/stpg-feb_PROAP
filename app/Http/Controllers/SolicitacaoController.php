@@ -126,7 +126,7 @@ class SolicitacaoController extends Controller
                 'traducao_artigo',
                 'outro_servico',
                 'manutencao',
-                'nota',
+                'notas',
             ])->first();
             
         $resumo_solicitacao = optional($solicitacao->evento)->nome
@@ -167,8 +167,8 @@ class SolicitacaoController extends Controller
             'fontes_pagadoras' => FontePagadora::all(),
             'valor_tipos' => ValorTipo::all(),
             'statuses' => Status::all(),
-            'count_notas' => $solicitacao->nota->count(),
-            'valor_total' => number_format($solicitacao->nota->sum('valor'), 2, ',', '.'),
+            'count_notas' => $solicitacao->notas->count(),
+            'valor_total' => number_format($solicitacao->notas->sum('valor'), 2, ',', '.'),
         ]);
     }
 

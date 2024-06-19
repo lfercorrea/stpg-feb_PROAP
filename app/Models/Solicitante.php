@@ -13,11 +13,11 @@ class Solicitante extends Model
         //
     ];
 
-    public function solicitacao() {
+    public function solicitacoes() {
         return $this->hasMany(Solicitacao::class);
     }
 
-    public function nota() {
+    public function notas() {
         return $this->hasMany(Nota::class);
     }
 

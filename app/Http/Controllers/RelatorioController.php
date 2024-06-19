@@ -13,7 +13,7 @@ use Carbon\Carbon;
 class RelatorioController extends Controller
 {
     public function index(Request $request) {
-        $query = Solicitante::with(['solicitacao.programa'])
+        $query = Solicitante::with(['solicitacoes.programa'])
             ->orderBy('nome', 'asc');
         
         if($request->filled('tipo_solicitante')) {
@@ -22,7 +22,7 @@ class RelatorioController extends Controller
         
         if($request->filled('programa_id')) {
             $arr_programa_id = $request->input('programa_id');
-            $query->whereHas('solicitacao', function($q) use ($arr_programa_id) {
+            $query->whereHas('solicitacoes', function($q) use ($arr_programa_id) {
                 $q->whereIn('programa_id', $arr_programa_id);
             });
         }
@@ -40,11 +40,11 @@ class RelatorioController extends Controller
              * whereHas(), TODOS os solicitantes serão consultados e armazenados em memória, além de serem todos
              * iterados nos loops a seguir, reduzindo drasticamente a performance
              */
-            $query->whereHas('solicitacao', function($q) use ($str_start_date, $str_end_date, $sql) {
+            $query->whereHas('solicitacoes', function($q) use ($str_start_date, $str_end_date, $sql) {
                 $q->whereRaw($sql, [$str_start_date, $str_end_date]);
             });
             
-            $query->with(['solicitacao' => function($q) use ($str_start_date, $str_end_date, $sql) {
+            $query->with(['solicitacoes' => function($q) use ($str_start_date, $str_end_date, $sql) {
                 $q->whereRaw($sql, [$str_start_date, $str_end_date]);
             }]);
         }
@@ -55,7 +55,7 @@ class RelatorioController extends Controller
         foreach($solicitantes as $solicitante) {
             // agrupar os valores gastos por programa
             $valores_por_programa = [];
-            foreach($solicitante->solicitacao as $solicitacao) {
+            foreach($solicitante->solicitacoes as $solicitacao) {
                 $programa = $solicitacao->programa;
                 $programa_nome = $programa->nome;
                 // correção do bug onde mesmo nao marcado, o programa

@@ -105,7 +105,7 @@
                                     <td><a href="{{ route('site.solicitacao.show', ['id' => $solicitacao->id]) }}"><b>{{ $solicitacao->tipo->nome }}</b>: {{ $resumo_solicitacao }}</a></td>
                                     <td>R$&nbsp;{{ number_format($solicitacao->soma_notas(), 2, ',', '.') }}</td>
                                     <td>
-                                        @foreach ($solicitacao->nota as $nota)
+                                        @foreach ($solicitacao->notas as $nota)
                                             <b>R$&nbsp;{{ number_format($nota->valor, 2, ',', '.') }}</b>&nbsp;<i>({{ $nota->valor_tipo->nome }})</i><br>
                                         @endforeach
                                     </td>

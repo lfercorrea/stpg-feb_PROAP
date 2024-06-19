@@ -13,11 +13,11 @@ class ServicoTipo extends Model
         'nome',
     ];
 
-    public function servico() {
+    public function servicos() {
         return $this->hasMany(Servico::class);
     }
 
-    public function solicitacao() {
+    public function solicitacoes() {
         return $this->hasMany(Solicitacao::class);
     }
 }
