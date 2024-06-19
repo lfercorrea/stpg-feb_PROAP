@@ -20,8 +20,12 @@ return new class extends Migration
         });
 
         $dados = [
+            ['nome' => 'Combustível'],
             ['nome' => 'Diária'],
+            ['nome' => 'Material'],
             ['nome' => 'Passagem aérea/transporte'],
+            ['nome' => 'Pedágio'],
+            ['nome' => 'Serviço'],
             ['nome' => 'Taxa de inscrição'],
         ];
 

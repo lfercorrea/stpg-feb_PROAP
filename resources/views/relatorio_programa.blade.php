@@ -2,7 +2,7 @@
 @section('title', $title)
 @section('content')
     <div class='center print-hidden'>
-        <h6>{{ $title }}</h6>
+        <h6>Relatório consolidado por programas</h6>
         <hr>
     </div>
     <div class="print-only section-margins">
@@ -37,7 +37,7 @@
                 <button class="btn waves-effect waves-light black" type="submit">Filtrar</button> 
             </div>
             <div class="col s12 m2 input-field">
-                <button id="print-button" class="btn-flat waves-effect waves-black">
+                <button id="print-button" class="btn-flat waves-effect waves-black" type="button">
                     Imprimir
                     <i class="material-icons right">print</i>
                 </button>

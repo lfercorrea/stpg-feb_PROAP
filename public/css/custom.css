@@ -338,3 +338,8 @@ table {
 .small-text {
     font-size: 12px;
 }
+
+.justify {
+    text-align: justify;
+    /* hyphens: auto; */
+}

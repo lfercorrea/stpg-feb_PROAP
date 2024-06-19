@@ -15,7 +15,7 @@
                 <a href="{{ route('import_menu') }}" class="btn green darken-2 waves-effect waves-light">Importar CSV</a>
             </div>
             <div class="col s12 m3 input-field">
-                <input type="text" name="search" placeholder="Nome, email, endereço, cidade etc"> 
+                <input type="text" name="search" placeholder="Nome, email, endereço, cidade, etc."> 
             </div>
             <div class="col s4 m3 input-field">
                 <select name="tipo_solicitante">
@@ -35,7 +35,7 @@
             </div>
             <div class="col s4 m3 input-field">
                 <button class="btn waves-effect waves-light black" type="submit">Buscar</button>
-                <button id="print-button" class="btn-flat waves-effect waves-black">
+                <button id="print-button" class="btn-flat waves-effect waves-black" type="button">
                     Imprimir
                     <i class="material-icons right">print</i>
                 </button>

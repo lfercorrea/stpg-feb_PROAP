@@ -11,7 +11,7 @@ class Status extends Model
 
     protected $fillable = [
         'status',
-        'observacao',
+        // 'observacao',
     ];
 
     public function solicitacoes() {

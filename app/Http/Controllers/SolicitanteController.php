@@ -17,6 +17,7 @@ class SolicitanteController extends Controller
 
         if($request->has('search') OR $request->has('tipo_solicitante')){
             $solicitantes = Solicitante::search($request->search, $request->tipo_solicitante)
+                ->orderBy('nome', 'asc')
                 ->paginate($limite);
             $count_solicitantes = Solicitante::search($request->search, $request->tipo_solicitante)->count();
         }

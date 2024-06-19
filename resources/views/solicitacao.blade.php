@@ -52,7 +52,7 @@
                 </tr>
                 <tr>
                     {{-- {{dd($solicitacao->servico_tipo)}} --}}
-                    <td><i>{{ optional($solicitacao->servico_tipo)->nome ?? $solicitacao->tipo->nome }}</i>: {{ $resumo_solicitacao }}</td>
+                    <td class="justify"><i>{{ optional($solicitacao->servico_tipo)->nome ?? $solicitacao->tipo->nome }}</i>: {{ $resumo_solicitacao }}</td>
                     <td>{{ $solicitacao->carimbo_data_hora }}</td>
                     <td class="print-hidden">{{ $solicitacao->nome_do_orientador }}</td>
                     <td class="center-align print-hidden">
@@ -82,7 +82,7 @@
                     <th>Justificativa</th>
                 </tr>
                 <tr>
-                    <td><i>{{ $justificativa }}</i></td>
+                    <td class="justify"><i>{{ $justificativa }}</i></td>
                 </tr>
             </table>
         </div>
@@ -106,6 +106,20 @@
                     <button class="btn-small green darken-2 waves-effect waves-light" type="submit" name="action">Salvar</button>
                 </div>
             </form>
+        </div>
+        <div class="print-only">
+            <div class="row">
+                <div class="col s6 small-text">
+                    <b>Status:</b> {{ $solicitacao->status->nome }}
+                </div>
+            </div>
+            @if ($solicitacao->observacao)
+                <div class="row">
+                    <div class="col s12 small-text justify">
+                        <b>Observação:</b> {{ $solicitacao->observacao }}
+                    </div>
+                </div>
+            @endif
         </div>
         <div class="row">
                 @if ($solicitacao->notas->isNotEmpty())
@@ -204,7 +218,7 @@
     <div class="container center print-hidden">
         <a class="btn-flat waves-effect waves-black" onclick="history.back()">Voltar</a>
         <a class="btn black waves-effect waves-light" href="{{ route('site.solicitante.show', ['id' => $solicitacao->solicitante->id]) }}">Resumo do solicitante</a>
-        <button id="print-button" class="btn-flat waves-effect waves-black">
+        <button id="print-button" class="btn-flat waves-effect waves-black" type="button">
             Imprimir
             <i class="material-icons right">print</i>
         </button>

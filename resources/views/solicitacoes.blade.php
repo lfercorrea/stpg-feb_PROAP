@@ -15,7 +15,7 @@
                 <a href="{{ route('import_menu') }}" class="btn green darken-2 waves-effect waves-light">Importar CSV</a>
             </div>
             <div class="col s12 m3 input-field">
-                <input type="text" name="search" placeholder="Nome, email ou tipo de solicitante"> 
+                <input type="text" name="search" placeholder="Solicitante, email, descrição da solicitação, etc."> 
             </div>
             <div class="col s6 m2 input-field">
                 <input name="start_date" id="start_date" type="date" class="validate" value="{{ $start_month }}">
@@ -61,7 +61,7 @@
                     <button class="btn waves-effect waves-light black" type="submit">Buscar</button>
                 </div>
                 <div class="col s6 m2">
-                    <button id="print-button" class="btn-flat waves-effect waves-black">
+                    <button id="print-button" class="btn-flat waves-effect waves-black" type="button">
                         Imprimir
                         <i class="material-icons right">print</i>
                     </button>
