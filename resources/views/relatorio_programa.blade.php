@@ -44,7 +44,7 @@
             </div>
         </div>
     </form>
-    @if ($start_date && $end_date || $tipo_solicitante || $programas_selecionados)
+    @if (($start_date && $end_date) || $tipo_solicitante || $programas_selecionados)
         <div class="row">
             <div class="search-terms small-text">
                 @if ($start_date AND $end_date)

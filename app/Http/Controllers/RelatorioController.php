@@ -30,17 +30,23 @@ class RelatorioController extends Controller
         if($request->filled('start_date') AND $request->filled('end_date')) {
             $obj_start_date = Carbon::createFromFormat('Y-m-d', $request->input('start_date'))->startOfDay();
             $obj_end_date = Carbon::createFromFormat('Y-m-d', $request->input('end_date'))->endOfDay();
+            $str_start_date = $obj_start_date->format('d/m/Y H:i:s');
+            $str_end_date = $obj_end_date->format('d/m/Y H:i:s');
+            $sql = "STR_TO_DATE(carimbo_data_hora, '%d/%m/%Y %H:%i:%s') BETWEEN STR_TO_DATE(?, '%d/%m/%Y %H:%i:%s') AND STR_TO_DATE(?, '%d/%m/%Y %H:%i:%s')";
+            
             /**
-             * este encadeamento em $query serve tão somente para melhorar a performance e economizar memória.
-             * o código funciona perfeitamente sem ele. no entanto, sem este filtro, TODOS os solicitantes serão consultados
-             * e armazenados em memória, além de serem todos iterados nos loops a seguir, reduzindo drasticamente a performance
+             * este encadeamento em $query->whereHas() serve tão somente para melhorar a performance e economizar
+             * memória. o código funciona perfeitamente acessando diretamente com $query->with(). no entanto, sem
+             * whereHas(), TODOS os solicitantes serão consultados e armazenados em memória, além de serem todos
+             * iterados nos loops a seguir, reduzindo drasticamente a performance
              */
-            $query->whereHas('solicitacao', function($q) use ($obj_start_date, $obj_end_date) {
-                $q->whereRaw(
-                    "STR_TO_DATE(carimbo_data_hora, '%d/%m/%Y %H:%i:%s') BETWEEN STR_TO_DATE(?, '%d/%m/%Y %H:%i:%s') AND STR_TO_DATE(?, '%d/%m/%Y %H:%i:%s')",
-                    [$obj_start_date->format('d/m/Y H:i:s'), $obj_end_date->format('d/m/Y H:i:s')]
-                );
+            $query->whereHas('solicitacao', function($q) use ($str_start_date, $str_end_date, $sql) {
+                $q->whereRaw($sql, [$str_start_date, $str_end_date]);
             });
+            
+            $query->with(['solicitacao' => function($q) use ($str_start_date, $str_end_date, $sql) {
+                $q->whereRaw($sql, [$str_start_date, $str_end_date]);
+            }]);
         }
     
         $solicitantes = $query->get();
@@ -58,14 +64,6 @@ class RelatorioController extends Controller
     
                 if($request->filled('programa_id') AND !in_array($programa_id, $request->input('programa_id'))) {
                     continue;
-                }
-
-                if($request->filled('start_date') AND $request->filled('end_date')) {
-                    $carimbo_data_hora = Carbon::createFromFormat('d/m/Y H:i:s', $solicitacao->carimbo_data_hora);
-                    
-                    if(!$carimbo_data_hora->between($obj_start_date, $obj_end_date)) {
-                        continue;
-                    }
                 }
     
                 $valor_gasto = $solicitacao->soma_notas();
@@ -112,13 +110,13 @@ class RelatorioController extends Controller
             'total_geral' => 0,
             'solicitantes_por_programa' => $solicitantes_por_programa,
             'statuses' => Status::all(),
-            'tipo_solicitante' => $request->input('tipo_solicitante'),
+            'tipo_solicitante' => $request->input('tipo_solicitante') ?? false,
             'programas' => $programas,
-            'programas_selecionados' => $programas_selecionados ?? null,
+            'programas_selecionados' => $programas_selecionados ?? false,
             'start_month' => Carbon::now()->startOfMonth()->toDateString(),
             'now' => Carbon::now()->toDateString(),
-            'start_date' => $start_date ?? null,
-            'end_date' => $end_date ?? null,
+            'start_date' => $str_start_date ?? false,
+            'end_date' => $str_end_date ?? false,
         ]);
     }
 }
