@@ -1,9 +1,8 @@
 @extends('layout')
 @section('title', $title)
 @section('content')
-    <div class='center print-hidden'>
-        <h6>Relatório consolidado por programas</h6>
-        <hr>
+    <div class='center print-hidden section-margin-bottom'>
+        <h5>Relatório consolidado por programas</h5>
     </div>
     <div class="print-only section-margins">
         <h6><b>Relatório consolidado de gastos em programas de pós-graduação</b></h6>

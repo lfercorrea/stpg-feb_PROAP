@@ -2,9 +2,8 @@
 @extends('layout')
 @section('title', $title)
 @section('content')
-    <div class='center print-hidden'>
-        <h6>{{ $title }}</h6>
-        <hr>
+    <div class='center print-hidden section-margin-bottom'>
+        <h5>{{ $title }}</h5>
     </div>
     <div class="print-only section-margins">
         <h6><b>Lista de solicitantes</b></h6>

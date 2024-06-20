@@ -2,8 +2,8 @@
 @section('title', $title)
 @section('content')
     <div class="side-margins">
-        <div class="row section-margins">
-            <div class="print-only section-margins">
+        <div class="row section-margin-bottom">
+            <div class="col s12 print-only section-margins">
                 <h6><b>Relatório de solicitações</b></h6>
             </div>
             <div class="col s12 m6">
