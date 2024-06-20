@@ -14,6 +14,17 @@
     <div class="print-only section-margins">
         <h6><b>{{ $title }}</b></h6>
     </div>
+    <div class="row print-hidden">
+        <div class="col s10">
+            <h5>{{ $title }}</h5>
+        </div>
+        <div class="col s2">
+            <button id="print-button" class="btn-flat waves-effect waves-black" type="button">
+                Imprimir
+                <i class="material-icons right">print</i>
+            </button>
+        </div>
+    </div>
     <div class="side-margins">
         <div class="row">
             <table class="compact-table striped responsive-table">
@@ -218,9 +229,5 @@
     <div class="container center print-hidden">
         <a class="btn-flat waves-effect waves-black" onclick="history.back()">Voltar</a>
         <a class="btn black waves-effect waves-light" href="{{ route('site.solicitante.show', ['id' => $solicitacao->solicitante->id]) }}">Resumo do solicitante</a>
-        <button id="print-button" class="btn-flat waves-effect waves-black" type="button">
-            Imprimir
-            <i class="material-icons right">print</i>
-        </button>
     </div>
 @endsection
