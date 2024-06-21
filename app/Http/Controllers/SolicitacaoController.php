@@ -156,7 +156,7 @@ class SolicitacaoController extends Controller
             ?? optional($solicitacao->traducao_artigo)->orcamento;
 
         return view('solicitacao', [
-            'title' => 'Detalhes da solicitação',
+            'title' => 'Detalhes da solicitação' . ' - ' . $solicitacao->solicitante->nome,
             'solicitacao' => $solicitacao,
             'resumo_solicitacao' => $resumo_solicitacao,
             'justificativa' => $justificativa,

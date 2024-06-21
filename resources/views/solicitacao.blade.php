@@ -12,11 +12,11 @@
         </div>
     </div>
     <div class="print-only section-margins">
-        <h6><b>{{ $title }}</b></h6>
+        <h6><b>Detalhes da solicitação</b></h6>
     </div>
     <div class="row print-hidden">
         <div class="col s10">
-            <h5>{{ $title }}</h5>
+            <h5>Detalhes da solicitação</h5>
         </div>
         <div class="col s2">
             <button id="print-button" class="btn-flat waves-effect waves-black" type="button">
