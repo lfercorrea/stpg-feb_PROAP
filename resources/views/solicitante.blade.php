@@ -6,10 +6,10 @@
             <div class="col s12 print-only section-margins">
                 <h6><b>Relatório de solicitações</b></h6>
             </div>
-            <div class="col s12 m6">
+            <div class="col s12 m10">
                 <h5>{{ $solicitante->nome }} (<a href="mailto:{{ $solicitante->email }}" class="hover-underline">{{ $solicitante->email }}</a>)</h5>
             </div>
-            <div class="col s12 m6 right-align">
+            <div class="col s12 m2 right-align">
                 <button id="print-button" class="btn-flat waves-effect waves-black print-hidden" type="button">
                     Imprimir
                     <i class="material-icons right">print</i>
