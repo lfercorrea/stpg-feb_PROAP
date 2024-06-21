@@ -139,6 +139,7 @@ table.highlight tbody tr:hover {
 @media print {
     body {
         font-size: 85%;
+        margin-bottom: 60mm;
     }
     h1, h2, h3, h4, h5, h6 {
         font-size: 100%;
@@ -187,9 +188,6 @@ table.highlight tbody tr:hover {
         bottom: 10px;
         left: 50%;
         transform: translateX(-50%);
-    }
-    body {
-        margin-bottom: 60mm;
     }
 }
 
