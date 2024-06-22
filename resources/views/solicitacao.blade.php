@@ -219,7 +219,7 @@
                                 <label for="valor">Valor</label>
                             </div>
                             <div class="input-field col s4 m1">
-                                <input type="submit" class="input-field btn-small green darken-2" value="Salvar">
+                                <button class="btn-small green darken-2 waves-effect waves-light" type="submit" name="action">Salvar</button>
                             </div>
                         </div>
                     </form>
