@@ -83,7 +83,7 @@
                                     $resumo_solicitacao = optional($solicitacao->evento)->nome
                                         ?? optional($solicitacao->atividade)->descricao
                                         ?? optional($solicitacao->material)->descricao
-                                        ?? optional($solicitacao->traducao_artigo)->descricao
+                                        ?? optional($solicitacao->traducao_artigo)->titulo_artigo
                                         ?? optional($solicitacao->outro_servico)->descricao
                                         ?? optional($solicitacao->manutencao)->descricao;
                                     $link_artigo_aceite = optional($solicitacao->evento)->artigo_aceite;
@@ -102,7 +102,7 @@
                                 @endphp
                                 <tr>
                                     <td class="print-hidden">{{ $solicitacao->status->nome }}</td>
-                                    <td><a href="{{ route('site.solicitacao.show', ['id' => $solicitacao->id]) }}"><b>{{ $solicitacao->tipo->nome }}</b>: {{ $resumo_solicitacao }}</a></td>
+                                    <td><a href="{{ route('site.solicitacao.show', ['id' => $solicitacao->id]) }}"><b>{{ optional($solicitacao->servico_tipo)->nome ?? $solicitacao->tipo->nome }}</b>: {{ $resumo_solicitacao }}</a></td>
                                     <td>R$&nbsp;{{ number_format($solicitacao->soma_notas(), 2, ',', '.') }}</td>
                                     <td>
                                         @foreach ($solicitacao->notas as $nota)
