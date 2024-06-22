@@ -113,8 +113,10 @@ class RelatorioController extends Controller
             'tipo_solicitante' => $request->input('tipo_solicitante') ?? false,
             'programas' => $programas,
             'programas_selecionados' => $programas_selecionados ?? false,
-            'start_month' => Carbon::now()->startOfMonth()->toDateString(),
-            'now' => Carbon::now()->toDateString(),
+            // 'start_month' => Carbon::now()->startOfMonth()->toDateString(),
+            // 'now' => Carbon::now()->toDateString(),
+            'start_time' => Carbon::now()->subMonth()->startOfMonth()->toDateString(),
+            'end_time' => Carbon::now()->subMonth()->endOfMonth()->toDateString(),
             'start_date' => $str_start_date ?? false,
             'end_date' => $str_end_date ?? false,
         ]);

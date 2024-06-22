@@ -17,11 +17,11 @@
                 <input type="text" name="search" placeholder="Solicitante, email, descrição da solicitação, etc."> 
             </div>
             <div class="col s6 m2 input-field">
-                <input name="start_date" id="start_date" type="date" class="validate" value="{{ $start_month }}">
+                <input name="start_date" id="start_date" type="date" class="validate">
                 <label for="start_date">De:</label>
             </div>
             <div class="col s6 m2 input-field">
-                <input name="end_date" id="end_date" type="date" class="validate" value="{{ $now }}">
+                <input name="end_date" id="end_date" type="date" class="validate">
                 <label for="end_date">Até:</label>
             </div>
             <div class="col s12 m3 input-field">
@@ -86,7 +86,7 @@
                 <tr>
                     <th class="print-hidden">Status</th>
                     <th>Solicitação</th>
-                    <th>Solicitante</th>
+                    <th class="min-width-25">Solicitante</th>
                     <th>Programa</th>
                     <th class="center-align print-hidden">Parecer</th>
                     <th class="center-align print-hidden">Orçamento</th>
@@ -99,6 +99,12 @@
                 @foreach ($solicitacoes as $solicitacao)
                 <tr>
                     @php
+                        $resumo_solicitacao = optional($solicitacao->evento)->nome
+                            ?? optional($solicitacao->atividade)->descricao
+                            ?? optional($solicitacao->material)->descricao
+                            ?? optional($solicitacao->traducao_artigo)->titulo_artigo
+                            ?? optional($solicitacao->outro_servico)->descricao
+                            ?? optional($solicitacao->manutencao)->descricao;
                         $link_artigo_aceite = optional($solicitacao->evento)->artigo_aceite;
                         $link_artigo_copia = optional($solicitacao->evento)->artigo_copia
                             ?? optional($solicitacao->traducao_artigo)->artigo_a_traduzir;
@@ -114,7 +120,7 @@
                             ?? optional($solicitacao->traducao_artigo)->orcamento;
                     @endphp
                     <td class="print-hidden">{{ $solicitacao->status->nome }}</td>
-                    <td><a href="{{ route('site.solicitacao.show', ['id' => $solicitacao->id]) }}" class="hover-underline"><b>{{ optional($solicitacao->servico_tipo)->nome ?? $solicitacao->tipo->nome }}</b></a></td>
+                    <td><a href="{{ route('site.solicitacao.show', ['id' => $solicitacao->id]) }}"><i><b>{{ optional($solicitacao->servico_tipo)->nome ?? $solicitacao->tipo->nome }}:</b> {{ $resumo_solicitacao }}</i></a></td>
                     <td><div class="chip print-hidden">{{ $solicitacao->solicitante->tipo_solicitante }}</div><a href="{{ route('site.solicitante.show', ['id' => $solicitacao->solicitante->id]) }}" class="black-text hover-underline"><b>{{ Str::upper($solicitacao->solicitante->nome) }}</b></a> <span class="print-hidden">(<a href="mailto:{{ $solicitacao->solicitante->email }}" class="hover-underline">{{ $solicitacao->solicitante->email }}</a>)</span></td>
                     <td>{{ $solicitacao->programa->nome }}</td>
                     <td class="center-align print-hidden">

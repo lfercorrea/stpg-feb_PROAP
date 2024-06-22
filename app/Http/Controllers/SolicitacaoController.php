@@ -107,8 +107,6 @@ class SolicitacaoController extends Controller
             'tipos_solicitacao' => $tipos_solicitacao,
             'programas' => $programas,
             'statuses' => $statuses,
-            'start_month' => Carbon::now()->startOfMonth()->toDateString(),
-            'now' => Carbon::now()->toDateString(),
         ]);
     }
 

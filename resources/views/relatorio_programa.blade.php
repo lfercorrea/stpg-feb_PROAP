@@ -10,11 +10,11 @@
     <form action="{{ route('site.relatorio.index') }}" method="GET" class="print-hidden">
         <div class="row">
             <div class="input-field col s6 m2">
-                <input name="start_date" id="start_date" type="date" class="validate" value="{{ $start_month }}">
+                <input name="start_date" id="start_date" type="date" class="validate" value="{{ $start_time }}">
                 <label for="start_date">De:</label>
             </div>
             <div class="input-field col s6 m2">
-                <input name="end_date" id="end_date" type="date" class="validate" value="{{ $now }}">
+                <input name="end_date" id="end_date" type="date" class="validate" value="{{ $end_time }}">
                 <label for="end_date">Até:</label>
             </div>
             <div class="col s6 m2 input-field">

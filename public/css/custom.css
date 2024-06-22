@@ -324,6 +324,9 @@ table {
     padding: 8px;
     /* text-align: left; */
 }
+th.min-width-25 {
+    min-width: 25%;
+}
 
 /** imagens */
 .img-max-width {
