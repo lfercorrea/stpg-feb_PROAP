@@ -13,41 +13,44 @@ use Carbon\Carbon;
 class RelatorioController extends Controller
 {
     public function index(Request $request) {
+        /**
+         * inicialmente, o acesso na página gerava o relatório sem filtro.
+         * considerei isso inconveniente do ponto de vista performático,
+         * então resolvi aplicar o filtro por padrão
+         */
+        $obj_start_date = Carbon::now()->subMonth()->startOfMonth();
+        $obj_end_date = Carbon::now()->subMonth()->endOfMonth();
+        $str_start_date = $request->filled('start_date') ? Carbon::createFromFormat('Y-m-d', $request->input('start_date'))->startOfDay()->format('d/m/Y H:i:s') : $obj_start_date->format('d/m/Y H:i:s');
+        $str_end_date = $request->filled('end_date') ? Carbon::createFromFormat('Y-m-d', $request->input('end_date'))->endOfDay()->format('d/m/Y H:i:s') : $obj_end_date->format('d/m/Y H:i:s');
+        $sql = "STR_TO_DATE(carimbo_data_hora, '%d/%m/%Y %H:%i:%s') BETWEEN STR_TO_DATE(?, '%d/%m/%Y %H:%i:%s') AND STR_TO_DATE(?, '%d/%m/%Y %H:%i:%s')";
+    
         $query = Solicitante::with(['solicitacoes.programa'])
             ->orderBy('nome', 'asc');
-        
+    
         if($request->filled('tipo_solicitante')) {
             $query->where('tipo_solicitante', $request->tipo_solicitante);
         }
-        
+    
         if($request->filled('programa_id')) {
             $arr_programa_id = $request->input('programa_id');
             $query->whereHas('solicitacoes', function($q) use ($arr_programa_id) {
                 $q->whereIn('programa_id', $arr_programa_id);
             });
         }
-
-        if($request->filled('start_date') AND $request->filled('end_date')) {
-            $obj_start_date = Carbon::createFromFormat('Y-m-d', $request->input('start_date'))->startOfDay();
-            $obj_end_date = Carbon::createFromFormat('Y-m-d', $request->input('end_date'))->endOfDay();
-            $str_start_date = $obj_start_date->format('d/m/Y H:i:s');
-            $str_end_date = $obj_end_date->format('d/m/Y H:i:s');
-            $sql = "STR_TO_DATE(carimbo_data_hora, '%d/%m/%Y %H:%i:%s') BETWEEN STR_TO_DATE(?, '%d/%m/%Y %H:%i:%s') AND STR_TO_DATE(?, '%d/%m/%Y %H:%i:%s')";
-            
-            /**
-             * este encadeamento em $query->whereHas() serve tão somente para melhorar a performance e economizar
-             * memória. o código funciona perfeitamente acessando diretamente com $query->with(). no entanto, sem
-             * whereHas(), TODOS os solicitantes serão consultados e armazenados em memória, além de serem todos
-             * iterados nos loops a seguir, reduzindo drasticamente a performance
-             */
-            $query->whereHas('solicitacoes', function($q) use ($str_start_date, $str_end_date, $sql) {
-                $q->whereRaw($sql, [$str_start_date, $str_end_date]);
-            });
-            
-            $query->with(['solicitacoes' => function($q) use ($str_start_date, $str_end_date, $sql) {
-                $q->whereRaw($sql, [$str_start_date, $str_end_date]);
-            }]);
-        }
+    
+        /**
+         * este encadeamento em $query->whereHas() serve tão somente para melhorar a performance e economizar
+         * memória. o código funciona perfeitamente acessando diretamente com $query->with(). no entanto, sem
+         * whereHas(), TODOS os solicitantes serão consultados e armazenados em memória, além de serem todos
+         * iterados nos loops a seguir, reduzindo drasticamente a performance
+         */
+        $query->whereHas('solicitacoes', function($q) use ($str_start_date, $str_end_date, $sql) {
+            $q->whereRaw($sql, [$str_start_date, $str_end_date]);
+        });
+    
+        $query->with(['solicitacoes' => function($q) use ($str_start_date, $str_end_date, $sql) {
+            $q->whereRaw($sql, [$str_start_date, $str_end_date]);
+        }]);
     
         $solicitantes = $query->get();
         $solicitantes_por_programa = collect();
@@ -91,16 +94,16 @@ class RelatorioController extends Controller
             }
             // ufa. consegui desfoder essa merda
         }
-
+    
         $programas = Programa::orderBy('nome', 'asc')->pluck('nome', 'id')->toArray();
-
+    
         $title = 'Relatório consolidado';
-
+    
         if($request->filled('programa_id')) {
             foreach($request->input('programa_id') as $key => $programa_id) {
                 $arr_nome_programas[] = $programas[$programa_id];
             }
-
+    
             $title .= ' - ' . $programas_selecionados = implode(', ', $arr_nome_programas);
         }
     
@@ -120,5 +123,5 @@ class RelatorioController extends Controller
             'start_date' => $str_start_date ?? false,
             'end_date' => $str_end_date ?? false,
         ]);
-    }
+    }    
 }
