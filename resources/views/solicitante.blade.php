@@ -60,7 +60,7 @@
             </div>
             <div class="row">
                 @foreach ($solicitacoes as $programa_id => $solicitacoes_programa)
-                    <h6><i><b><span class="blue-text text-darken-2">{{ $solicitacoes_programa->first()->programa->nome }}</span></b></i></h6>
+                    <h6><i><b><span class="blue-text text-darken-2">{{ $solicitacoes_programa->nome_programa }}</span></b></i></h6>
                     <table class="bordered striped responsive-table highlight">
                         <thead>
                             <tr>
@@ -78,56 +78,34 @@
                         </thead>
                         <tbody>
                             @foreach ($solicitacoes_programa as $solicitacao)
-                                @php
-                                    $valor_total_programa += $solicitacao->soma_notas();
-                                    $resumo_solicitacao = optional($solicitacao->evento)->nome
-                                        ?? optional($solicitacao->atividade)->descricao
-                                        ?? optional($solicitacao->material)->descricao
-                                        ?? optional($solicitacao->traducao_artigo)->titulo_artigo
-                                        ?? optional($solicitacao->outro_servico)->descricao
-                                        ?? optional($solicitacao->manutencao)->descricao;
-                                    $link_artigo_aceite = optional($solicitacao->evento)->artigo_aceite;
-                                    $link_artigo_copia = optional($solicitacao->evento)->artigo_copia
-                                        ?? optional($solicitacao->traducao_artigo)->artigo_a_traduzir;
-                                    $link_parecer = optional($solicitacao->evento)->parecer_orientador 
-                                        ?? optional($solicitacao->atividade)->parecer_orientador 
-                                        ?? optional($solicitacao->material)->parecer_orientador 
-                                        ?? optional($solicitacao->traducao_artigo)->parecer_orientador;
-                                    $link_orcamento = optional($solicitacao->evento)->orcamento_passagens 
-                                        ?? optional($solicitacao->atividade)->orcamento_passagens 
-                                        ?? optional($solicitacao->material)->orcamento 
-                                        ?? optional($solicitacao->manutencao)->orcamento 
-                                        ?? optional($solicitacao->outro_servico)->orcamento 
-                                        ?? optional($solicitacao->traducao_artigo)->orcamento;
-                                @endphp
                                 <tr>
                                     <td class="print-hidden">{{ $solicitacao->status->nome }}</td>
-                                    <td><a href="{{ route('site.solicitacao.show', ['id' => $solicitacao->id]) }}"><b>{{ optional($solicitacao->servico_tipo)->nome ?? $solicitacao->tipo->nome }}</b>: {{ $resumo_solicitacao }}</a></td>
-                                    <td>R$&nbsp;{{ number_format($solicitacao->soma_notas(), 2, ',', '.') }}</td>
+                                    <td><a href="{{ route('site.solicitacao.show', ['id' => $solicitacao->id]) }}"><b>{{ optional($solicitacao->servico_tipo)->nome ?? $solicitacao->tipo->nome }}</b>: {{ $solicitacao->resumo }}</a></td>
+                                    <td>R$&nbsp;{{ $solicitacao->soma_notas }}</td>
                                     <td>
                                         @foreach ($solicitacao->notas as $nota)
-                                            <b>R$&nbsp;{{ number_format($nota->valor, 2, ',', '.') }}</b>&nbsp;<i>({{ $nota->valor_tipo->nome }})</i><br>
+                                            <b>R$&nbsp;{{ $nota->valor }}</b>&nbsp;<i>({{ $nota->valor_tipo->nome }})</i><br>
                                         @endforeach
                                     </td>
                                     <td class="print-hidden">{{ $solicitacao->nome_do_orientador }}</td>
                                     <td class="center-align print-hidden">
-                                        @if ($link_parecer)
-                                            <a href="{{ $link_parecer }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $link_parecer }}"><i class="tiny material-icons black-text">open_in_new</i></a>
+                                        @if ($solicitacao->parecer_orientador)
+                                            <a href="{{ $solicitacao->parecer_orientador }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->parecer_orientador }}"><i class="tiny material-icons black-text">open_in_new</i></a>
                                         @endif
                                     </td>
                                     <td class="center-align print-hidden">
-                                        @if ($link_orcamento)
-                                            <a href="{{ $link_orcamento }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $link_orcamento }}"><i class="tiny material-icons black-text">open_in_new</i></a>
+                                        @if ($solicitacao->orcamento)
+                                            <a href="{{ $solicitacao->orcamento }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->orcamento }}"><i class="tiny material-icons black-text">open_in_new</i></a>
                                         @endif
                                     </td>
                                     <td class="center-align print-hidden">
-                                        @if ($link_artigo_copia)
-                                            <a href="{{ $link_artigo_copia }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $link_artigo_copia }}"><i class="tiny material-icons black-text">open_in_new</i></a>
+                                        @if ($solicitacao->artigo_copia)
+                                            <a href="{{ $solicitacao->artigo_copia }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->artigo_copia }}"><i class="tiny material-icons black-text">open_in_new</i></a>
                                         @endif
                                     </td>
                                     <td class="center-align print-hidden">
-                                        @if ($link_artigo_aceite)
-                                            <a href="{{ $link_artigo_aceite }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $link_artigo_aceite }}"><i class="tiny material-icons black-text">open_in_new</i></a>
+                                        @if ($solicitacao->artigo_aceite)
+                                            <a href="{{ $solicitacao->artigo_aceite }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->artigo_aceite }}"><i class="tiny material-icons black-text">open_in_new</i></a>
                                         @endif
                                     </td>
                                     <td>{{ $solicitacao->carimbo_data_hora }}</td>
@@ -135,18 +113,14 @@
                             @endforeach
                             {{-- <table class="bordered compact-table striped responsive-table"> --}}
                                 <tr>
-                                    <th colspan="10" class="center-align blue-text text-darken-2">Total na {{ $solicitacoes_programa->first()->programa->nome }}:&nbsp;R$&nbsp;{{ number_format($valor_total_programa, 2, ',', '.') }}</th>
+                                    <th colspan="10" class="center-align blue-text text-darken-2">Total na {{ $solicitacoes_programa->first()->programa->nome }}:&nbsp;R$&nbsp;{{ $solicitacoes_programa->valor_total }}</th>
                                 </tr>
                             {{-- </table> --}}
                         </tbody>
                     </table>
-                    @php
-                        $valor_total += $valor_total_programa;
-                        $valor_total_programa = 0;
-                    @endphp
                 @endforeach
                 <div class="container center section-margins">
-                    <span class="red-text text-darken-2"><h6><b>Total geral pago:&nbsp;R$&nbsp;{{ number_format($valor_total, 2, ',', '.') }}</b></h6></span>
+                    <span class="red-text text-darken-2"><h6><b>Total geral pago:&nbsp;R$&nbsp;{{ $solicitacoes->valor_total }}</b></h6></span>
                 </div>
             </div>
         @endif

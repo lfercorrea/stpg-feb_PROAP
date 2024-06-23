@@ -60,6 +60,34 @@ class SolicitacaoController extends Controller
             ->orderByRaw("STR_TO_DATE(carimbo_data_hora, '%d/%m/%Y %H:%i:%s') DESC")
             ->paginate($limit);
         }
+        
+        foreach($solicitacoes as $solicitacao) {
+            $resumo_solicitacao = optional($solicitacao->evento)->nome
+                ?? optional($solicitacao->atividade)->descricao
+                ?? optional($solicitacao->material)->descricao
+                ?? optional($solicitacao->traducao_artigo)->titulo_artigo
+                ?? optional($solicitacao->outro_servico)->descricao
+                ?? optional($solicitacao->manutencao)->descricao;
+            $link_artigo_aceite = optional($solicitacao->evento)->artigo_aceite;
+            $link_artigo_copia = optional($solicitacao->evento)->artigo_copia
+                ?? optional($solicitacao->traducao_artigo)->artigo_a_traduzir;
+            $link_parecer = optional($solicitacao->evento)->parecer_orientador 
+                ?? optional($solicitacao->atividade)->parecer_orientador 
+                ?? optional($solicitacao->material)->parecer_orientador 
+                ?? optional($solicitacao->traducao_artigo)->parecer_orientador;
+            $link_orcamento = optional($solicitacao->evento)->orcamento_passagens 
+                ?? optional($solicitacao->atividade)->orcamento_passagens 
+                ?? optional($solicitacao->material)->orcamento 
+                ?? optional($solicitacao->manutencao)->orcamento 
+                ?? optional($solicitacao->outro_servico)->orcamento 
+                ?? optional($solicitacao->traducao_artigo)->orcamento;
+
+            $solicitacao->resumo = $resumo_solicitacao;
+            $solicitacao->artigo_aceite = $link_artigo_aceite;
+            $solicitacao->artigo_copia = $link_artigo_copia;
+            $solicitacao->parecer_orientador = $link_parecer;
+            $solicitacao->orcamento = $link_orcamento;
+        }
 
         $tipos_solicitacao = SolicitacaoTipo::orderBy('nome', 'asc')->pluck('nome', 'id')->toArray();
         $programas = Programa::orderBy('nome', 'asc')->pluck('nome', 'id')->toArray();

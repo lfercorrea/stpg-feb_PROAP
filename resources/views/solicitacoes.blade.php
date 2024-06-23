@@ -97,54 +97,33 @@
             </thead>
             <tbody>
                 @foreach ($solicitacoes as $solicitacao)
-                <tr>
-                    @php
-                        $resumo_solicitacao = optional($solicitacao->evento)->nome
-                            ?? optional($solicitacao->atividade)->descricao
-                            ?? optional($solicitacao->material)->descricao
-                            ?? optional($solicitacao->traducao_artigo)->titulo_artigo
-                            ?? optional($solicitacao->outro_servico)->descricao
-                            ?? optional($solicitacao->manutencao)->descricao;
-                        $link_artigo_aceite = optional($solicitacao->evento)->artigo_aceite;
-                        $link_artigo_copia = optional($solicitacao->evento)->artigo_copia
-                            ?? optional($solicitacao->traducao_artigo)->artigo_a_traduzir;
-                        $link_parecer = optional($solicitacao->evento)->parecer_orientador 
-                            ?? optional($solicitacao->atividade)->parecer_orientador 
-                            ?? optional($solicitacao->material)->parecer_orientador 
-                            ?? optional($solicitacao->traducao_artigo)->parecer_orientador;
-                        $link_orcamento = optional($solicitacao->evento)->orcamento_passagens 
-                            ?? optional($solicitacao->atividade)->orcamento_passagens 
-                            ?? optional($solicitacao->material)->orcamento 
-                            ?? optional($solicitacao->manutencao)->orcamento 
-                            ?? optional($solicitacao->outro_servico)->orcamento 
-                            ?? optional($solicitacao->traducao_artigo)->orcamento;
-                    @endphp
-                    <td class="print-hidden">{{ $solicitacao->status->nome }}</td>
-                    <td><a href="{{ route('site.solicitacao.show', ['id' => $solicitacao->id]) }}"><b>{{ optional($solicitacao->servico_tipo)->nome ?? $solicitacao->tipo->nome }}:</b> {{ $resumo_solicitacao }}</a></td>
-                    <td><div class="chip print-hidden">{{ $solicitacao->solicitante->tipo_solicitante }}</div><a href="{{ route('site.solicitante.show', ['id' => $solicitacao->solicitante->id]) }}" class="black-text hover-underline"><b>{{ Str::upper($solicitacao->solicitante->nome) }}</b></a> <span class="print-hidden">(<a href="mailto:{{ $solicitacao->solicitante->email }}" class="hover-underline">{{ $solicitacao->solicitante->email }}</a>)</span></td>
-                    <td>{{ $solicitacao->programa->nome }}</td>
-                    <td class="center-align print-hidden">
-                        @if ($link_parecer)
-                            <a href="{{ $link_parecer }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $link_parecer }}"><i class="tiny material-icons black-text">open_in_new</i></a>
-                        @endif
-                    </td>
-                    <td class="center-align print-hidden">
-                        @if ($link_orcamento)
-                            <a href="{{ $link_orcamento }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $link_orcamento }}"><i class="tiny material-icons black-text">open_in_new</i></a>
-                        @endif
-                    </td>
-                    <td class="center-align print-hidden">
-                        @if ($link_artigo_copia)
-                            <a href="{{ $link_artigo_copia }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $link_artigo_copia }}"><i class="tiny material-icons black-text">open_in_new</i></a>
-                        @endif
-                    </td>
-                    <td class="center-align print-hidden">
-                        @if ($link_artigo_aceite)
-                            <a href="{{ $link_artigo_aceite }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $link_artigo_aceite }}"><i class="tiny material-icons black-text">open_in_new</i></a>
-                        @endif
-                    </td>
-                    <td>{{ $solicitacao->carimbo_data_hora }}</td>
-                </tr>
+                    <tr>
+                        <td class="print-hidden">{{ $solicitacao->status->nome }}</td>
+                        <td><a href="{{ route('site.solicitacao.show', ['id' => $solicitacao->id]) }}"><b>{{ optional($solicitacao->servico_tipo)->nome ?? $solicitacao->tipo->nome }}:</b> {{ $solicitacao->resumo }}</a></td>
+                        <td><div class="chip print-hidden">{{ $solicitacao->solicitante->tipo_solicitante }}</div><a href="{{ route('site.solicitante.show', ['id' => $solicitacao->solicitante->id]) }}" class="black-text hover-underline"><b>{{ Str::upper($solicitacao->solicitante->nome) }}</b></a> <span class="print-hidden">(<a href="mailto:{{ $solicitacao->solicitante->email }}" class="hover-underline">{{ $solicitacao->solicitante->email }}</a>)</span></td>
+                        <td>{{ $solicitacao->programa->nome }}</td>
+                        <td class="center-align print-hidden">
+                            @if ($solicitacao->parecer_orientador)
+                                <a href="{{ $solicitacao->parecer_orientador }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->parecer_orientador }}"><i class="tiny material-icons black-text">open_in_new</i></a>
+                            @endif
+                        </td>
+                        <td class="center-align print-hidden">
+                            @if ($solicitacao->orcamento)
+                                <a href="{{ $solicitacao->orcamento }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->orcamento }}"><i class="tiny material-icons black-text">open_in_new</i></a>
+                            @endif
+                        </td>
+                        <td class="center-align print-hidden">
+                            @if ($solicitacao->artigo_copia)
+                                <a href="{{ $solicitacao->artigo_copia }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->artigo_copia }}"><i class="tiny material-icons black-text">open_in_new</i></a>
+                            @endif
+                        </td>
+                        <td class="center-align print-hidden">
+                            @if ($solicitacao->artigo_aceite)
+                                <a href="{{ $solicitacao->artigo_aceite }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->artigo_aceite }}"><i class="tiny material-icons black-text">open_in_new</i></a>
+                            @endif
+                        </td>
+                        <td>{{ $solicitacao->carimbo_data_hora }}</td>
+                    </tr>
                 @endforeach
             </tbody>
         </table>
