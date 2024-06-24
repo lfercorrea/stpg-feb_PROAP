@@ -62,7 +62,6 @@
         </div>
     @endif
     @foreach ($programas as $programa)
-        {{-- {{dd($programa)}} --}}
         <h6 class="blue-text text-darken-2"><b><i>{{ $programa->nome }}</i></b> ({{ $programa->solicitacoes->count() }})</h6>
         <table class="compact-table striped responsive-table">
             <thead>
@@ -78,7 +77,7 @@
                     @endphp
                     <tr>
                         <td><a href="{{ route('site.solicitante.show', ['id' => $solicitacao->id_solicitante]) }}" class="hover-underline"><b>{{ Str::upper($solicitacao->nome_solicitante) }}</b></a> ({{ ($solicitacao->tipo_solicitante) }})</td>
-                        <td>R$&nbsp;{{ number_format($solicitacao->soma_notas, 2, ',', '.') }}</td>
+                        <td>R$ {{ number_format($solicitacao->soma_notas, 2, ',', '.') }}</td>
                     </tr>
                 @endforeach
             </tbody>
@@ -102,9 +101,9 @@
             $gastos_programa = 0;
         @endphp
     @endforeach
-    @if (count($programas) > 1)
+    @if ($programas->count() > 1)
         <div class="container center section-margins">
-            <span class="red-text text-darken-2"><h6><b>Total geral de gastos neste relatório:&nbsp;R$&nbsp;{{ number_format($total_geral, 2, ',', '.') }}</b></h6></span>
+            <span class="red-text text-darken-2"><h6><b>Total geral de gastos neste relatório: R$ {{ number_format($total_geral, 2, ',', '.') }}</b></h6></span>
         </div>
     @endif
     @if ($programas->count() == 0)
