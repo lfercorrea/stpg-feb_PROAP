@@ -12,6 +12,10 @@ class Programa extends Model
     protected $fillable = [
         'nome',
     ];
+    
+    public function solicitacoes() {
+        return $this->hasMany(Solicitacao::class, 'programa_id');
+    }
 
     public function solicitantes() {
         return $this->belongsToMany(Solicitante::class, 'solicitacoes');

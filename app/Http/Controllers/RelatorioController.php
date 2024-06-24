@@ -24,18 +24,30 @@ class RelatorioController extends Controller
         $str_end_date = $request->filled('end_date') ? Carbon::createFromFormat('Y-m-d', $request->input('end_date'))->endOfDay()->format('d/m/Y H:i:s') : $obj_end_date->format('d/m/Y H:i:s');
         $sql = "STR_TO_DATE(carimbo_data_hora, '%d/%m/%Y %H:%i:%s') BETWEEN STR_TO_DATE(?, '%d/%m/%Y %H:%i:%s') AND STR_TO_DATE(?, '%d/%m/%Y %H:%i:%s')";
     
-        $query = Solicitante::with(['solicitacoes.programa'])
-            ->orderBy('nome', 'asc');
-    
+        $query = Programa::with([
+            'solicitacoes.solicitante',
+            'solicitantes',
+            ])
+                ->orderBy('nome', 'asc');
+
+        $query->whereHas('solicitacoes', function($q) use ($sql, $str_start_date, $str_end_date) {
+            $q->whereRaw($sql, [$str_start_date, $str_end_date])
+                ->whereHas('notas', function($subQ) {
+                    $subQ->havingRaw('SUM(valor) > 0')
+                        ->groupBy('id');
+                });
+        });
+        
         if($request->filled('tipo_solicitante')) {
-            $query->where('tipo_solicitante', $request->tipo_solicitante);
+            $tipo_solicitante = $request->input('tipo_solicitante');
+            $query->whereHas('solicitacoes.solicitante', function($q) use ($tipo_solicitante) {
+                $q->where('tipo_solicitante', $tipo_solicitante);
+            });
         }
-    
+        
         if($request->filled('programa_id')) {
             $arr_programa_id = $request->input('programa_id');
-            $query->whereHas('solicitacoes', function($q) use ($arr_programa_id) {
-                $q->whereIn('programa_id', $arr_programa_id);
-            });
+            $query->whereIn('id', $arr_programa_id);
         }
     
         /**
@@ -44,64 +56,40 @@ class RelatorioController extends Controller
          * whereHas(), TODOS os solicitantes serão consultados e armazenados em memória, além de serem todos
          * iterados nos loops a seguir, reduzindo drasticamente a performance
          */
-        $query->whereHas('solicitacoes', function($q) use ($str_start_date, $str_end_date, $sql) {
+        $query->with('solicitacoes', function($q) use ($sql, $str_start_date, $str_end_date) {
             $q->whereRaw($sql, [$str_start_date, $str_end_date]);
         });
-    
-        $query->with(['solicitacoes' => function($q) use ($str_start_date, $str_end_date, $sql) {
+
+        $query->whereHas('solicitacoes', function($q) use ($sql, $str_start_date, $str_end_date) {
             $q->whereRaw($sql, [$str_start_date, $str_end_date]);
-        }]);
-    
-        $solicitantes = $query->get();
-        $solicitantes_por_programa = collect();
-    
-        foreach($solicitantes as $solicitante) {
-            // agrupar os valores gastos por programa
-            $valores_por_programa = [];
-            foreach($solicitante->solicitacoes as $solicitacao) {
-                $programa = $solicitacao->programa;
-                $programa_nome = $programa->nome;
-                // correção do bug onde mesmo nao marcado, o programa
-                // aparecia se o solicitante tivesse solicitacao em outro programa
-                $programa_id = $programa->id;
-    
-                if($request->filled('programa_id') AND !in_array($programa_id, $request->input('programa_id'))) {
-                    continue;
-                }
-    
-                $valor_gasto = $solicitacao->soma_notas();
-    
-                if($valor_gasto > 0) {
-                    if(!isset($valores_por_programa[$programa_nome])) {
-                        $valores_por_programa[$programa_nome] = 0;
+        });
+
+        $programas = $query->get();
+
+        foreach($programas as $programa) {
+            $programa->solicitacoes = $programa->solicitacoes->filter(function($solicitacao) use ($programa) {
+                $soma_notas = $solicitacao->soma_notas();
+
+                if($soma_notas > 0) {
+                    if($solicitacao->programa_id === $programa->id) {
+                        $solicitacao->soma_notas = $soma_notas;
+                        $solicitacao->id_solicitante = $solicitacao->solicitante->id;
+                        $solicitacao->nome_solicitante = $solicitacao->solicitante->nome;
+                        $solicitacao->tipo_solicitante = $solicitacao->solicitante->tipo_solicitante;
+                        
+                        return $solicitacao;
                     }
-                    $valores_por_programa[$programa_nome] += $valor_gasto;
                 }
-            }
-    
-            // botar o solicitante aos programas correspondentes
-            foreach($valores_por_programa as $programa_nome => $valor_total) {
-                if(!$solicitantes_por_programa->has($programa_nome)) {
-                    $solicitantes_por_programa[$programa_nome] = collect();
-                }
-                // botar o solicitante só se ele ainda não foi adicionado
-                $solicitantes_por_programa[$programa_nome]->push([
-                    'solicitante' => $solicitante,
-                    'valor_gasto' => $valor_total,
-                    'saldo_inicial' => $programa->saldo_inicial,
-                    'saldo_restante' => $programa->saldo_inicial - $valor_total
-                ]);
-            }
-            // ufa. consegui desfoder essa merda
+            })->values();
         }
     
-        $programas = Programa::orderBy('nome', 'asc')->pluck('nome', 'id')->toArray();
+        $lista_programas = Programa::orderBy('nome', 'asc')->pluck('nome', 'id')->toArray();
     
         $title = 'Relatório consolidado';
     
         if($request->filled('programa_id')) {
             foreach($request->input('programa_id') as $key => $programa_id) {
-                $arr_nome_programas[] = $programas[$programa_id];
+                $arr_nome_programas[] = $lista_programas[$programa_id];
             }
     
             $title .= ' - ' . $programas_selecionados = implode(', ', $arr_nome_programas);
@@ -109,9 +97,9 @@ class RelatorioController extends Controller
     
         return view('relatorio_programa', [
             'title' => $title,
-            'total_programa' => 0,
+            'gastos_programa' => 0,
             'total_geral' => 0,
-            'solicitantes_por_programa' => $solicitantes_por_programa,
+            'lista_programas' => $lista_programas,
             'statuses' => Status::all(),
             'tipo_solicitante' => $request->input('tipo_solicitante') ?? false,
             'programas' => $programas,

@@ -27,7 +27,7 @@
             <div class="col s6 m2 input-field">
                 <select name="programa_id[]" id="programa_id" multiple="" tabindex="-1" style="display: none;">
                     <option value="" selected disabled>Programas</option>
-                        @foreach ($programas as $key => $value)
+                        @foreach ($lista_programas as $key => $value)
                             <option value="{{ $key }}">{{ $value }}</option>
                         @endforeach
                 </select>
@@ -61,8 +61,9 @@
             </div>
         </div>
     @endif
-    @foreach ($solicitantes_por_programa as $programa_nome => $solicitacoes)
-        <h6 class="blue-text text-darken-2"><b><i>{{ $programa_nome }}</i></b> ({{ $solicitacoes->count() }})</h6>
+    @foreach ($programas as $programa)
+        {{-- {{dd($programa)}} --}}
+        <h6 class="blue-text text-darken-2"><b><i>{{ $programa->nome }}</i></b> ({{ $programa->count() }})</h6>
         <table class="compact-table striped responsive-table">
             <thead>
                 <tr>
@@ -71,42 +72,42 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($solicitacoes as $solicitacao)
+                @foreach ($programa->solicitacoes as $solicitacao)
                     @php
-                        $total_programa += $solicitacao['valor_gasto']
+                        $gastos_programa += $solicitacao->soma_notas;
                     @endphp
                     <tr>
-                        <td><a href="{{ route('site.solicitante.show', ['id' => $solicitacao['solicitante']->id]) }}" class="hover-underline"><b>{{ Str::upper($solicitacao['solicitante']->nome) }}</b></a>{{ ($solicitacao['solicitante']->tipo_solicitante) ? ' (' . $solicitacao['solicitante']->tipo_solicitante . ')' : '' }}</td>
-                        <td>R$&nbsp;{{ number_format($solicitacao['valor_gasto'], 2, ',', '.') }}</td>
+                        <td><a href="{{ route('site.solicitante.show', ['id' => $solicitacao->id_solicitante]) }}" class="hover-underline"><b>{{ Str::upper($solicitacao->nome_solicitante) }}</b></a> ({{ ($solicitacao->tipo_solicitante) }})</td>
+                        <td>R$&nbsp;{{ number_format($solicitacao->soma_notas, 2, ',', '.') }}</td>
                     </tr>
                 @endforeach
             </tbody>
         </table>
         <table class="compact-table responsive-table">
             <tr>
-                <th class="right-align"><span class="blue-text text-darken-2"><i><u>{{ $programa_nome }}</u></i></span></th>
+                <th class="right-align"><span class="blue-text text-darken-2"><i><u>{{ $programa->nome }}</u></i></span></th>
             </tr>
             <tr>
-                <td class="right-align"><span class="green-text text-darken-2">Saldo inicial (A): R$ {{ number_format($solicitacoes[0]['saldo_inicial'], 2, ',', '.') }}</span></th>
+                <td class="right-align"><span class="green-text text-darken-2">Saldo inicial (A): R$ {{ number_format($programa->saldo_inicial, 2, ',', '.') }}</span></th>
             </tr>
             <tr>
-                <td class="right-align"><span class="red-text text-darken-2">Gastos neste relatório (B): R$ {{ number_format($total_programa, 2, ',', '.') }}</span></th>
+                <td class="right-align"><span class="red-text text-darken-2">Gastos neste relatório (B): R$ {{ number_format($gastos_programa, 2, ',', '.') }}</span></th>
             </tr>
             <tr>
-                <td class="right-align"><span class="black-text text-darken-2">Saldo (A-B): R$ {{ number_format($solicitacoes[0]['saldo_inicial'] - $total_programa, 2, ',', '.') }}</span></th>
+                <td class="right-align"><span class="black-text text-darken-2">Saldo (A-B): R$ {{ number_format(($programa->saldo_inicial - $gastos_programa), 2, ',', '.') }}</span></th>
             </tr>
         </table>
         @php
-            $total_geral += $total_programa;
-            $total_programa = 0;
+            $total_geral += $gastos_programa;
+            $gastos_programa = 0;
         @endphp
     @endforeach
-    @if (count($solicitantes_por_programa) > 1)
+    @if (count($programas) > 1)
         <div class="container center section-margins">
             <span class="red-text text-darken-2"><h6><b>Total geral de gastos neste relatório:&nbsp;R$&nbsp;{{ number_format($total_geral, 2, ',', '.') }}</b></h6></span>
         </div>
     @endif
-    @if ($solicitantes_por_programa->count() == 0)
+    @if ($programas->count() == 0)
         <div class="container center">
             <h6><p>Nenhum dado para mostrar.</p></h6>
         </div>            
