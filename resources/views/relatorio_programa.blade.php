@@ -63,7 +63,7 @@
     @endif
     @foreach ($programas as $programa)
         {{-- {{dd($programa)}} --}}
-        <h6 class="blue-text text-darken-2"><b><i>{{ $programa->nome }}</i></b> ({{ $programa->count() }})</h6>
+        <h6 class="blue-text text-darken-2"><b><i>{{ $programa->nome }}</i></b> ({{ $programa->solicitacoes->count() }})</h6>
         <table class="compact-table striped responsive-table">
             <thead>
                 <tr>

@@ -25,7 +25,7 @@ class RelatorioController extends Controller
         $sql = "STR_TO_DATE(carimbo_data_hora, '%d/%m/%Y %H:%i:%s') BETWEEN STR_TO_DATE(?, '%d/%m/%Y %H:%i:%s') AND STR_TO_DATE(?, '%d/%m/%Y %H:%i:%s')";
     
         $query = Programa::with([
-            'solicitacoes.solicitante',
+            'solicitacoes',
             'solicitantes',
             ])
                 ->orderBy('nome', 'asc');
@@ -38,9 +38,10 @@ class RelatorioController extends Controller
                 });
         });
         
+        $tipo_solicitante = $request->input('tipo_solicitante');
+        
         if($request->filled('tipo_solicitante')) {
-            $tipo_solicitante = $request->input('tipo_solicitante');
-            $query->whereHas('solicitacoes.solicitante', function($q) use ($tipo_solicitante) {
+            $query->whereHas('solicitantes', function($q) use ($tipo_solicitante) {
                 $q->where('tipo_solicitante', $tipo_solicitante);
             });
         }
@@ -67,7 +68,7 @@ class RelatorioController extends Controller
         $programas = $query->get();
 
         foreach($programas as $programa) {
-            $programa->solicitacoes = $programa->solicitacoes->filter(function($solicitacao) use ($programa) {
+            $programa->solicitacoes = $programa->solicitacoes->filter(function($solicitacao) use ($programa, $tipo_solicitante, $request) {
                 $soma_notas = $solicitacao->soma_notas();
 
                 if($soma_notas > 0) {
@@ -76,8 +77,14 @@ class RelatorioController extends Controller
                         $solicitacao->id_solicitante = $solicitacao->solicitante->id;
                         $solicitacao->nome_solicitante = $solicitacao->solicitante->nome;
                         $solicitacao->tipo_solicitante = $solicitacao->solicitante->tipo_solicitante;
-                        
-                        return $solicitacao;
+                        if($request->filled('tipo_solicitante')) {
+                            if($solicitacao->tipo_solicitante === $tipo_solicitante) {
+                                return $solicitacao;
+                            }
+                        }
+                        else {
+                            return $solicitacao;
+                        }
                     }
                 }
             })->values();
