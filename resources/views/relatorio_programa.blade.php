@@ -76,7 +76,11 @@
                         $gastos_programa += $solicitacao->soma_notas;
                     @endphp
                     <tr>
-                        <td><a href="{{ route('site.solicitante.show', ['id' => $solicitacao->id_solicitante]) }}" class="hover-underline"><b>{{ Str::upper($solicitacao->nome_solicitante) }}</b></a> ({{ ($solicitacao->tipo_solicitante) }})</td>
+                        <td>
+                            <div class="chip">{{ ($solicitacao->tipo_solicitante) }}</div>
+                            <a href="{{ route('site.solicitante.show', ['id' => $solicitacao->id_solicitante]) }}" class="hover-underline"><b>{{ Str::upper($solicitacao->nome_solicitante) }}</b></a>
+                            <i>(<a href="{{ route('site.solicitacao.show', ['id' => $solicitacao->id]) }}" class="hover-underline">{{ $solicitacao->tipo }}</a>)</i>
+                        </td>
                         <td>R$ {{ number_format($solicitacao->soma_notas, 2, ',', '.') }}</td>
                     </tr>
                 @endforeach

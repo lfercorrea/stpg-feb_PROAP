@@ -4,9 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Programa;
-use App\Models\Solicitante;
-use App\Models\Solicitacao;
-use App\Models\SolicitacaoTipo;
 use App\Models\Status;
 use Carbon\Carbon;
 
@@ -77,6 +74,7 @@ class RelatorioController extends Controller
                         $solicitacao->id_solicitante = $solicitacao->solicitante->id;
                         $solicitacao->nome_solicitante = $solicitacao->solicitante->nome;
                         $solicitacao->tipo_solicitante = $solicitacao->solicitante->tipo_solicitante;
+                        $solicitacao->tipo = $solicitacao->tipo()->first()->nome;
                         if($request->filled('tipo_solicitante')) {
                             if($solicitacao->tipo_solicitante === $tipo_solicitante) {
                                 return $solicitacao;
