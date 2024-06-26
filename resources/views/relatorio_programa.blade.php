@@ -77,7 +77,7 @@
                     @endphp
                     <tr>
                         <td>
-                            <div class="chip">{{ ($solicitacao->tipo_solicitante) }}</div>
+                            <div class="chip print-hidden">{{ ($solicitacao->tipo_solicitante) }}</div>
                             <a href="{{ route('site.solicitante.show', ['id' => $solicitacao->id_solicitante]) }}" class="hover-underline"><b>{{ Str::upper($solicitacao->nome_solicitante) }}</b></a>
                             <i>(<a href="{{ route('site.solicitacao.show', ['id' => $solicitacao->id]) }}" class="hover-underline">{{ $solicitacao->tipo }}</a>)</i>
                         </td>

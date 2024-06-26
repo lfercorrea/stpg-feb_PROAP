@@ -84,7 +84,7 @@
         <table class="bordered striped responsive-table highlight">
             <thead>
                 <tr>
-                    <th class="print-hidden">Status</th>
+                    <th class="center">Status</th>
                     <th>Solicitação</th>
                     <th class="min-width-25">Solicitante</th>
                     <th>Programa</th>
@@ -98,7 +98,16 @@
             <tbody>
                 @foreach ($solicitacoes as $solicitacao)
                     <tr>
-                        <td class="print-hidden">{{ $solicitacao->status->nome }}</td>
+                        <td class="center">
+                            {{ $solicitacao->status->nome }}
+                            @if ($soma_notas = ($solicitacao->soma_notas() > 0))
+                                <br>
+                                @php
+                                    $total_pago += $soma_notas;
+                                @endphp
+                                (R$&nbsp;{{ number_format($soma_notas, 2, ',', '.') }})
+                            @endif
+                        </td>
                         <td><a href="{{ route('site.solicitacao.show', ['id' => $solicitacao->id]) }}"><b>{{ optional($solicitacao->servico_tipo)->nome ?? $solicitacao->tipo->nome }}:</b> {{ $solicitacao->resumo }}</a></td>
                         <td><div class="chip print-hidden">{{ $solicitacao->solicitante->tipo_solicitante }}</div><a href="{{ route('site.solicitante.show', ['id' => $solicitacao->solicitante->id]) }}" class="black-text hover-underline"><b>{{ Str::upper($solicitacao->solicitante->nome) }}</b></a> <span class="print-hidden">(<a href="mailto:{{ $solicitacao->solicitante->email }}" class="hover-underline">{{ $solicitacao->solicitante->email }}</a>)</span></td>
                         <td>{{ $solicitacao->programa->nome }}</td>
@@ -125,6 +134,11 @@
                         <td>{{ $solicitacao->carimbo_data_hora }}</td>
                     </tr>
                 @endforeach
+                @if ($total_pago > 0)
+                    <tr>
+                        <td colspan="10" class="center"><span class="red-text"><b>Valor total pago: R$ {{ number_format($total_pago, 2, ',', '.') }}</b></span></td>
+                    </tr>
+                @endif
             </tbody>
         </table>
     @else

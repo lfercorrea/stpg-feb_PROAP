@@ -135,6 +135,7 @@ class SolicitacaoController extends Controller
             'tipos_solicitacao' => $tipos_solicitacao,
             'programas' => $programas,
             'statuses' => $statuses,
+            'total_pago' => 0,
         ]);
     }
 
