@@ -84,7 +84,6 @@
         <table class="bordered striped responsive-table highlight">
             <thead>
                 <tr>
-                    <th class="center">Status</th>
                     <th>Solicitação</th>
                     <th class="min-width-25">Solicitante</th>
                     <th>Programa</th>
@@ -93,11 +92,36 @@
                     <th class="center-align print-hidden">Artigo</th>
                     <th class="center-align print-hidden">Aceite</th>
                     <th>Data</th>
+                    <th class="center">Status</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($solicitacoes as $solicitacao)
                     <tr>
+                        <td><a href="{{ route('site.solicitacao.show', ['id' => $solicitacao->id]) }}"><b>{{ optional($solicitacao->servico_tipo)->nome ?? $solicitacao->tipo->nome }}:</b> {{ $solicitacao->resumo }}</a></td>
+                        <td><div class="chip print-hidden">{{ $solicitacao->solicitante->tipo_solicitante }}</div><a href="{{ route('site.solicitante.show', ['id' => $solicitacao->solicitante->id]) }}" class="black-text hover-underline"><b>{{ Str::upper($solicitacao->solicitante->nome) }}</b></a> <span class="print-hidden">(<a href="mailto:{{ $solicitacao->solicitante->email }}" class="hover-underline">{{ $solicitacao->solicitante->email }}</a>)</span></td>
+                        <td>{{ $solicitacao->programa->nome }}</td>
+                        <td class="center-align print-hidden">
+                            @if ($solicitacao->parecer_orientador)
+                            <a href="{{ $solicitacao->parecer_orientador }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->parecer_orientador }}"><i class="tiny material-icons black-text">open_in_new</i></a>
+                            @endif
+                        </td>
+                        <td class="center-align print-hidden">
+                            @if ($solicitacao->orcamento)
+                            <a href="{{ $solicitacao->orcamento }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->orcamento }}"><i class="tiny material-icons black-text">open_in_new</i></a>
+                            @endif
+                        </td>
+                        <td class="center-align print-hidden">
+                            @if ($solicitacao->artigo_copia)
+                            <a href="{{ $solicitacao->artigo_copia }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->artigo_copia }}"><i class="tiny material-icons black-text">open_in_new</i></a>
+                            @endif
+                        </td>
+                        <td class="center-align print-hidden">
+                            @if ($solicitacao->artigo_aceite)
+                            <a href="{{ $solicitacao->artigo_aceite }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->artigo_aceite }}"><i class="tiny material-icons black-text">open_in_new</i></a>
+                            @endif
+                        </td>
+                        <td>{{ $solicitacao->carimbo_data_hora }}</td>
                         <td class="center">
                             {{ $solicitacao->status->nome }}
                             @if ($soma_notas = ($solicitacao->soma_notas() > 0))
@@ -108,30 +132,6 @@
                                 (R$&nbsp;{{ number_format($soma_notas, 2, ',', '.') }})
                             @endif
                         </td>
-                        <td><a href="{{ route('site.solicitacao.show', ['id' => $solicitacao->id]) }}"><b>{{ optional($solicitacao->servico_tipo)->nome ?? $solicitacao->tipo->nome }}:</b> {{ $solicitacao->resumo }}</a></td>
-                        <td><div class="chip print-hidden">{{ $solicitacao->solicitante->tipo_solicitante }}</div><a href="{{ route('site.solicitante.show', ['id' => $solicitacao->solicitante->id]) }}" class="black-text hover-underline"><b>{{ Str::upper($solicitacao->solicitante->nome) }}</b></a> <span class="print-hidden">(<a href="mailto:{{ $solicitacao->solicitante->email }}" class="hover-underline">{{ $solicitacao->solicitante->email }}</a>)</span></td>
-                        <td>{{ $solicitacao->programa->nome }}</td>
-                        <td class="center-align print-hidden">
-                            @if ($solicitacao->parecer_orientador)
-                                <a href="{{ $solicitacao->parecer_orientador }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->parecer_orientador }}"><i class="tiny material-icons black-text">open_in_new</i></a>
-                            @endif
-                        </td>
-                        <td class="center-align print-hidden">
-                            @if ($solicitacao->orcamento)
-                                <a href="{{ $solicitacao->orcamento }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->orcamento }}"><i class="tiny material-icons black-text">open_in_new</i></a>
-                            @endif
-                        </td>
-                        <td class="center-align print-hidden">
-                            @if ($solicitacao->artigo_copia)
-                                <a href="{{ $solicitacao->artigo_copia }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->artigo_copia }}"><i class="tiny material-icons black-text">open_in_new</i></a>
-                            @endif
-                        </td>
-                        <td class="center-align print-hidden">
-                            @if ($solicitacao->artigo_aceite)
-                                <a href="{{ $solicitacao->artigo_aceite }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->artigo_aceite }}"><i class="tiny material-icons black-text">open_in_new</i></a>
-                            @endif
-                        </td>
-                        <td>{{ $solicitacao->carimbo_data_hora }}</td>
                     </tr>
                 @endforeach
                 @if ($total_pago > 0)
