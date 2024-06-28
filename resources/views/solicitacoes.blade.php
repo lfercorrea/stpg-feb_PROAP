@@ -17,11 +17,11 @@
                 <input type="text" name="search" placeholder="Solicitante, email, descrição da solicitação, etc."> 
             </div>
             <div class="col s6 m2 input-field">
-                <input name="start_date" id="start_date" type="date" class="validate">
+                <input name="start_date" id="start_date" type="date" class="validate" min="1900-01-01" max="2099-12-31">
                 <label for="start_date">De:</label>
             </div>
             <div class="col s6 m2 input-field">
-                <input name="end_date" id="end_date" type="date" class="validate">
+                <input name="end_date" id="end_date" type="date" class="validate" min="1900-01-01" max="2099-12-31">
                 <label for="end_date">Até:</label>
             </div>
             <div class="col s12 m3 input-field">

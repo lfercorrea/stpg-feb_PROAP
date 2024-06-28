@@ -10,6 +10,18 @@ use Carbon\Carbon;
 class RelatorioController extends Controller
 {
     public function index(Request $request) {
+        $request->validate([
+            'start_date' => 'nullable|date_format:Y-m-d|after:1900-01-01|before:2099-12-31',
+            'end_date' => 'nullable|date_format:Y-m-d|after:1900-01-01|before:2099-12-31',
+        ], [
+            'start_date.date_format' => 'A data inicial está no formato incorreto.',
+            'start_date.after' => 'A data inicial deve ser posterior a 01/01/1900.',
+            'start_date.before' => 'A data inicial deve ser anterior a 31/12/2099.',
+
+            'end_date.date_format' => 'A data final está no formato incorreto.',
+            'end_date.after' => 'A data final deve ser posterior a 01/01/1900.',
+            'end_date.before' => 'A data final deve ser anterior a 31/12/2099.',
+        ]);
         /**
          * inicialmente, o acesso na página gerava o relatório sem filtro.
          * considerei isso inconveniente do ponto de vista performático,
