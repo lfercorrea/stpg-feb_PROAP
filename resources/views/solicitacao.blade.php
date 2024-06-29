@@ -189,7 +189,7 @@
                             <label for="numero">Número</label>
                         </div>
                         <div class="input-field col s5 m2">
-                            <input name="data" id="data" type="date" class="validate" required>
+                            <input name="data" id="data" type="date" class="validate" min="1900-01-01" max="2099-12-31" required>
                             <label for="data">Data</label>
                         </div>
                         <div class="input-field col s12 m4">

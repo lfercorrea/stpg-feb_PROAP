@@ -32,12 +32,21 @@ class RelatorioController extends Controller
         $str_start_date = $request->filled('start_date') ? Carbon::createFromFormat('Y-m-d', $request->input('start_date'))->startOfDay()->format('d/m/Y H:i:s') : $obj_start_date->format('d/m/Y H:i:s');
         $str_end_date = $request->filled('end_date') ? Carbon::createFromFormat('Y-m-d', $request->input('end_date'))->endOfDay()->format('d/m/Y H:i:s') : $obj_end_date->format('d/m/Y H:i:s');
         $sql = "STR_TO_DATE(carimbo_data_hora, '%d/%m/%Y %H:%i:%s') BETWEEN STR_TO_DATE(?, '%d/%m/%Y %H:%i:%s') AND STR_TO_DATE(?, '%d/%m/%Y %H:%i:%s')";
-    
+        $tipo_solicitante = $request->input('tipo_solicitante');
+        $arr_programa_id = $request->input('programa_id');
+
         $query = Programa::with([
-            'solicitacoes',
-            'solicitantes',
-            ])
-                ->orderBy('nome', 'asc');
+            'solicitacoes' => function($q) use ($sql, $str_start_date, $str_end_date) {
+                $q->whereRaw($sql, [$str_start_date, $str_end_date]);
+            },
+            'solicitantes' => function ($q) use ($request, $tipo_solicitante) {
+                $q->when($request->filled('tipo_solicitante'), function($q1) use ($tipo_solicitante) {
+                    $q1->where('tipo_solicitante', $tipo_solicitante);
+                });
+            },
+            ])->when($request->filled('programa_id'), function($q) use ($arr_programa_id) {
+                $q->whereIn('id', $arr_programa_id);
+            })->orderBy('nome', 'asc');
 
         $query->whereHas('solicitacoes', function($q) use ($sql, $str_start_date, $str_end_date) {
             $q->whereRaw($sql, [$str_start_date, $str_end_date])
@@ -46,35 +55,10 @@ class RelatorioController extends Controller
                         ->groupBy('id');
                 });
         });
-        
-        $tipo_solicitante = $request->input('tipo_solicitante');
-        
-        if($request->filled('tipo_solicitante')) {
-            $query->whereHas('solicitantes', function($q) use ($tipo_solicitante) {
-                $q->where('tipo_solicitante', $tipo_solicitante);
-            });
-        }
-        
-        if($request->filled('programa_id')) {
-            $arr_programa_id = $request->input('programa_id');
-            $query->whereIn('id', $arr_programa_id);
-        }
-    
-        /**
-         * este encadeamento em $query->whereHas() serve tão somente para melhorar a performance e economizar
-         * memória. o código funciona perfeitamente acessando diretamente com $query->with(). no entanto, sem
-         * whereHas(), TODOS os solicitantes serão consultados e armazenados em memória, além de serem todos
-         * iterados nos loops a seguir, reduzindo drasticamente a performance
-         */
-        $query->with('solicitacoes', function($q) use ($sql, $str_start_date, $str_end_date) {
-            $q->whereRaw($sql, [$str_start_date, $str_end_date]);
-        });
-
-        $query->whereHas('solicitacoes', function($q) use ($sql, $str_start_date, $str_end_date) {
-            $q->whereRaw($sql, [$str_start_date, $str_end_date]);
-        });
 
         $programas = $query->get();
+
+        // dd($programas[0]);
 
         foreach($programas as $programa) {
             $programa->solicitacoes = $programa->solicitacoes->filter(function($solicitacao) use ($programa, $tipo_solicitante, $request) {

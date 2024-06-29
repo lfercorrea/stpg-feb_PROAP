@@ -13,7 +13,7 @@ class NotaController extends Controller
 
         $request->validate([
             'numero' => 'required|string|max:255',
-            'data' => 'required|string',
+            'data' => 'nullable|date_format:Y-m-d|after:1900-01-01|before:2099-12-31',
             'descricao' => 'nullable|string',
             'valor_tipo_id' => 'required|integer',
             // 'valor' => 'regex:/^\d+(\,\d{1,2})?$/',
@@ -23,8 +23,9 @@ class NotaController extends Controller
             'numero.required' => 'Deve ser fornecido um número/código para a nota/recibo',
             'numero.string' => 'O número ou código da nota/rebico deve ser uma string',
             'numero.max' => 'O número/código da nota não pode passar de 255 caracteres',
-            'data.required' => 'A data da nota precisa ser informada',
-            'data.string' => 'A data da nota precisa ser uma string',
+            'data.date_format' => 'A data está no formato incorreto.',
+            'data.after' => 'A data deve ser posterior a 01/01/1900.',
+            'data.before' => 'A data deve ser anterior a 31/12/2099.',
             'descricao.string' => 'A descrição precisa ser uma string',
             'valor_tipo_id.required' => 'O tipo de despesa precisa ser informado',
             'valor_tipo_id.integer' => 'O tipo de despesa é do tipo INT',
