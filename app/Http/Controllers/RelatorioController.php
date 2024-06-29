@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Models\Programa;
+use App\Models\Solicitacao;
 use App\Models\Status;
 use Carbon\Carbon;
 
@@ -35,57 +37,55 @@ class RelatorioController extends Controller
         $tipo_solicitante = $request->input('tipo_solicitante');
         $arr_programa_id = $request->input('programa_id');
 
-        $query = Programa::with([
-            'solicitacoes' => function($q) use ($sql, $str_start_date, $str_end_date) {
-                $q->whereRaw($sql, [$str_start_date, $str_end_date]);
-            },
-            'solicitantes' => function ($q) use ($request, $tipo_solicitante) {
-                $q->when($request->filled('tipo_solicitante'), function($q1) use ($tipo_solicitante) {
-                    $q1->where('tipo_solicitante', $tipo_solicitante);
-                });
-            },
-            ])->when($request->filled('programa_id'), function($q) use ($arr_programa_id) {
-                $q->whereIn('id', $arr_programa_id);
-            })->orderBy('nome', 'asc');
+        $query = Solicitacao::whereRaw($sql, [$str_start_date, $str_end_date])
+            ->join('solicitantes', function ($join) use ($request, $tipo_solicitante) {
+                $join->on('solicitantes.id', '=', 'solicitacoes.solicitante_id')
+                    ->when($request->filled('tipo_solicitante'), function($q) use ($tipo_solicitante) {
+                        $q->where('tipo_solicitante', $tipo_solicitante);
+                    });
+            })->orderBy('solicitantes.nome')
+            ->join('programas', function($join) use ($arr_programa_id, $request) {
+                $join->on('programas.id', '=', 'solicitacoes.programa_id')
+                    ->when($request->filled('programa_id'), function($q) use ($arr_programa_id) {
+                        $q->whereIn('programa_id', $arr_programa_id);
+                    });
+            })
+            ->join('notas', function($join) {
+                $join->on('notas.solicitacao_id', '=', 'solicitacoes.id')
+                    ->where('notas.valor', '>', 0);
+            })
+            ->join('solicitacao_tipos', 'solicitacoes.tipo_solicitacao_id', '=', 'solicitacao_tipos.id')
+            ->select(
+                'programas.id as programa_id',
+                'programas.nome as programa_nome',
+                'programas.saldo_inicial as saldo_inicial',
+                'solicitantes.id as solicitante_id',
+                'solicitantes.nome as solicitante_nome',
+                'solicitantes.tipo_solicitante as tipo_solicitante',
+                'solicitacoes.id as id',
+                'solicitacao_tipos.nome as tipo',
+                DB::raw('SUM(notas.valor) as soma_notas'),
+            )->groupBy(
+                'programas.nome',
+                'programas.saldo_inicial',
+                'solicitantes.nome',
+                'solicitantes.id',
+                'solicitacoes.id',
+            );
 
-        $query->whereHas('solicitacoes', function($q) use ($sql, $str_start_date, $str_end_date) {
-            $q->whereRaw($sql, [$str_start_date, $str_end_date])
-                ->whereHas('notas', function($subQ) {
-                    $subQ->havingRaw('SUM(valor) > 0')
-                        ->groupBy('id');
-                });
+        // $solicitacoes = $query->get();
+        $lista_programas = Programa::orderBy('nome', 'asc')->pluck('nome', 'id')->toArray();
+        $programas = $query->get()->groupBy('programa_id');
+
+        $programas->transform(function ($grupo, $programa_id) use ($lista_programas, $programas) {
+            $nome_programa = $lista_programas[$programa_id] ?? null;
+            $grupo->nome = $nome_programa;
+            $grupo->count_solicitacoes = $grupo->count();
+            $grupo->saldo_inicial = $programas[$programa_id]->first()->saldo_inicial;
+
+            return $grupo;
         });
 
-        $programas = $query->get();
-
-        // dd($programas[0]);
-
-        foreach($programas as $programa) {
-            $programa->solicitacoes = $programa->solicitacoes->filter(function($solicitacao) use ($programa, $tipo_solicitante, $request) {
-                $soma_notas = $solicitacao->soma_notas();
-
-                if($soma_notas > 0) {
-                    if($solicitacao->programa_id === $programa->id) {
-                        $solicitacao->soma_notas = $soma_notas;
-                        $solicitacao->id_solicitante = $solicitacao->solicitante->id;
-                        $solicitacao->nome_solicitante = $solicitacao->solicitante->nome;
-                        $solicitacao->tipo_solicitante = $solicitacao->solicitante->tipo_solicitante;
-                        $solicitacao->tipo = $solicitacao->tipo()->first()->nome;
-                        if($request->filled('tipo_solicitante')) {
-                            if($solicitacao->tipo_solicitante === $tipo_solicitante) {
-                                return $solicitacao;
-                            }
-                        }
-                        else {
-                            return $solicitacao;
-                        }
-                    }
-                }
-            })->values();
-        }
-    
-        $lista_programas = Programa::orderBy('nome', 'asc')->pluck('nome', 'id')->toArray();
-    
         $title = 'Relatório consolidado';
     
         if($request->filled('programa_id')) {

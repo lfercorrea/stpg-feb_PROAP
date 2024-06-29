@@ -62,7 +62,7 @@
         </div>
     @endif
     @foreach ($programas as $programa)
-        <h6 class="blue-text text-darken-2"><b><i>{{ $programa->nome }}</i></b> ({{ $programa->solicitacoes->count() }})</h6>
+        <h6 class="blue-text text-darken-2"><b><i>{{ $programa->nome }}</i></b> ({{ $programa->count_solicitacoes }})</h6>
         <table class="compact-table striped responsive-table">
             <thead>
                 <tr>
@@ -71,14 +71,14 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($programa->solicitacoes as $solicitacao)
+                @foreach ($programa as $solicitacao)
                     @php
                         $gastos_programa += $solicitacao->soma_notas;
                     @endphp
                     <tr>
                         <td>
                             <div class="chip print-hidden">{{ ($solicitacao->tipo_solicitante) }}</div>
-                            <a href="{{ route('site.solicitante.show', ['id' => $solicitacao->id_solicitante]) }}" class="hover-underline"><b>{{ Str::upper($solicitacao->nome_solicitante) }}</b></a>
+                            <a href="{{ route('site.solicitante.show', ['id' => $solicitacao->solicitante_id]) }}" class="hover-underline"><b>{{ Str::upper($solicitacao->solicitante_nome) }}</b></a>
                             <i>(<a href="{{ route('site.solicitacao.show', ['id' => $solicitacao->id]) }}" class="hover-underline">{{ $solicitacao->tipo }}</a>)</i>
                         </td>
                         <td>R$ {{ number_format($solicitacao->soma_notas, 2, ',', '.') }}</td>
