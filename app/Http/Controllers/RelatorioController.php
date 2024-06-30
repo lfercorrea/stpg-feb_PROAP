@@ -55,6 +55,7 @@ class RelatorioController extends Controller
                     ->where('notas.valor', '>', 0);
             })
             ->join('solicitacao_tipos', 'solicitacoes.tipo_solicitacao_id', '=', 'solicitacao_tipos.id')
+            ->leftJoin('servico_tipos', 'solicitacoes.servico_tipo_id', '=', 'servico_tipos.id')
             ->select(
                 'programas.id as programa_id',
                 'programas.nome as programa_nome',
@@ -64,6 +65,7 @@ class RelatorioController extends Controller
                 'solicitantes.tipo_solicitante as tipo_solicitante',
                 'solicitacoes.id as id',
                 'solicitacao_tipos.nome as tipo',
+                'servico_tipos.nome as servico_tipo',
                 DB::raw('SUM(notas.valor) as soma_notas'),
             )->groupBy(
                 'programas.nome',

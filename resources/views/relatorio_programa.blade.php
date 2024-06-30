@@ -79,7 +79,7 @@
                         <td>
                             <div class="chip print-hidden">{{ ($solicitacao->tipo_solicitante) }}</div>
                             <a href="{{ route('site.solicitante.show', ['id' => $solicitacao->solicitante_id]) }}" class="hover-underline"><b>{{ Str::upper($solicitacao->solicitante_nome) }}</b></a>
-                            <i>(<a href="{{ route('site.solicitacao.show', ['id' => $solicitacao->id]) }}" class="hover-underline">{{ $solicitacao->tipo }}</a>)</i>
+                            <i>(<a href="{{ route('site.solicitacao.show', ['id' => $solicitacao->id]) }}" class="hover-underline">{{ $solicitacao->servico_tipo ?? $solicitacao->tipo }}</a>)</i>
                         </td>
                         <td>R$ {{ number_format($solicitacao->soma_notas, 2, ',', '.') }}</td>
                     </tr>
