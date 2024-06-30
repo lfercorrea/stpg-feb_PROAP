@@ -58,7 +58,6 @@ class RelatorioController extends Controller
             ->leftJoin('servico_tipos', 'solicitacoes.servico_tipo_id', '=', 'servico_tipos.id')
             ->select(
                 'programas.id as programa_id',
-                'programas.nome as programa_nome',
                 'programas.saldo_inicial as saldo_inicial',
                 'solicitantes.id as solicitante_id',
                 'solicitantes.nome as solicitante_nome',
@@ -74,18 +73,17 @@ class RelatorioController extends Controller
                 'solicitantes.id',
                 'solicitacoes.id',
             );
-
-        // $solicitacoes = $query->get();
+            
         $lista_programas = Programa::orderBy('nome', 'asc')->pluck('nome', 'id')->toArray();
         $programas = $query->get()->groupBy('programa_id');
 
-        $programas->transform(function ($grupo, $programa_id) use ($lista_programas, $programas) {
+        $programas->transform(function ($programa, $programa_id) use ($lista_programas, $programas) {
             $nome_programa = $lista_programas[$programa_id] ?? null;
-            $grupo->nome = $nome_programa;
-            $grupo->count_solicitacoes = $grupo->count();
-            $grupo->saldo_inicial = $programas[$programa_id]->first()->saldo_inicial;
+            $programa->nome = $nome_programa;
+            $programa->count_solicitacoes = $programa->count();
+            $programa->saldo_inicial = $programas[$programa_id]->first()->saldo_inicial;
 
-            return $grupo;
+            return $programa;
         });
 
         $title = 'Relatório consolidado';
