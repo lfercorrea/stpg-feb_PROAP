@@ -62,30 +62,34 @@
         </div>
     @endif
     @foreach ($programas as $programa)
-        <h6 class="blue-text text-darken-2"><b><i>{{ $programa->nome }}</i></b> ({{ $programa->count_solicitacoes }})</h6>
-        <table class="compact-table striped responsive-table">
-            <thead>
-                <tr>
-                    <th>Solicitante</th>
-                    <th>Valor gasto</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($programa as $solicitacao)
+        <h6 class="blue-text text-darken-2 section-margin-top"><b><i>{{ $programa->nome }}</i></b> ({{ $programa->count }})</h6>
+        @foreach ($programa->solicitantes as $solicitante)
+            <table class="compact-table striped responsive-table">
+                <thead>
+                    <th colspan="3">
+                        <a href="{{ route('site.solicitante.show', ['id' => $solicitante->id]) }}" class="hover-underline">{{ Str::upper($solicitante->nome) }}</a> ({{ $solicitante->tipo }})
+                    </th>
+                </thead>
+                <tbody>
+                    @foreach ($solicitante->solicitacoes as $solicitacao)
+                        @php
+                            $gastos_solicitante += $solicitacao->soma_notas; 
+                            $gastos_programa += $solicitacao->soma_notas;
+                        @endphp
+                        <tr>
+                            <td style="padding-left: 20px">
+                                <a href="{{ route('site.solicitacao.show', ['id' => $solicitacao->id]) }}" class="hover-underline">{{ $solicitacao->servico_tipo ?? $solicitacao->tipo }}</a>
+                            </td>
+                            <td class="right-align">R$ {{ number_format($solicitacao->soma_notas, 2, ',', '.') }}</td>
+                        </tr>
+                    @endforeach
+                    <th colspan="3" class="right-align"><i>Total: R$ {{ number_format($gastos_solicitante, 2, ',', '.') }}</i></th>
                     @php
-                        $gastos_programa += $solicitacao->soma_notas;
+                        $gastos_solicitante = 0;
                     @endphp
-                    <tr>
-                        <td>
-                            <div class="chip print-hidden">{{ ($solicitacao->tipo_solicitante) }}</div>
-                            <a href="{{ route('site.solicitante.show', ['id' => $solicitacao->solicitante_id]) }}" class="hover-underline"><b>{{ Str::upper($solicitacao->solicitante_nome) }}</b></a>
-                            <i>(<a href="{{ route('site.solicitacao.show', ['id' => $solicitacao->id]) }}" class="hover-underline">{{ $solicitacao->servico_tipo ?? $solicitacao->tipo }}</a>)</i>
-                        </td>
-                        <td>R$ {{ number_format($solicitacao->soma_notas, 2, ',', '.') }}</td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        @endforeach
         <table class="compact-table responsive-table">
             <tr>
                 <th class="right-align"><span class="blue-text text-darken-2"><i><u>{{ $programa->nome }}</u></i></span></th>

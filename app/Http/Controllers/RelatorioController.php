@@ -58,34 +58,48 @@ class RelatorioController extends Controller
             ->leftJoin('servico_tipos', 'solicitacoes.servico_tipo_id', '=', 'servico_tipos.id')
             ->select(
                 'programas.id as programa_id',
+                'programas.nome as programa_nome',
                 'programas.saldo_inicial as saldo_inicial',
                 'solicitantes.id as solicitante_id',
                 'solicitantes.nome as solicitante_nome',
                 'solicitantes.tipo_solicitante as tipo_solicitante',
-                'solicitacoes.id as id',
-                'solicitacao_tipos.nome as tipo',
-                'servico_tipos.nome as servico_tipo',
-                DB::raw('SUM(notas.valor) as soma_notas'),
+                'solicitacoes.id as solicitacao_id',
+                'solicitacao_tipos.nome as solicitacao_tipo',
+                'servico_tipos.nome as solicitacao_servico_tipo',
+                DB::raw('SUM(notas.valor) as solicitacao_soma_notas'),
             )->groupBy(
                 'programas.nome',
                 'programas.saldo_inicial',
                 'solicitantes.nome',
                 'solicitantes.id',
                 'solicitacoes.id',
-            );
+            )->get();
+
+        $programas = $query->groupBy('programa_id')->map(function($programa) {
+            return (object) [
+                'id' => $programa->first()->programa_id,
+                'nome' => $programa->first()->programa_nome,
+                'saldo_inicial' => $programa->first()->saldo_inicial,
+                'count' => $programa->count(),
+                'solicitantes' => $programa->groupBy('solicitante_id')->map(function($solicitante) {
+                    return (object) [
+                        'id' => $solicitante->first()->solicitante_id,
+                        'nome' => $solicitante->first()->solicitante_nome,
+                        'tipo' => $solicitante->first()->tipo_solicitante,
+                        'solicitacoes' => $solicitante->map(function($solicitacao) {
+                            return (object) [
+                                'id' => $solicitacao->solicitacao_id,
+                                'tipo' => $solicitacao->solicitacao_tipo,
+                                'servico_tipo' => $solicitacao->solicitacao_servico_tipo,
+                                'soma_notas' => $solicitacao->solicitacao_soma_notas,
+                            ];
+                        })
+                    ];
+                })->values(),
+            ];
+        })->values();
             
         $lista_programas = Programa::orderBy('nome', 'asc')->pluck('nome', 'id')->toArray();
-        $programas = $query->get()->groupBy('programa_id');
-
-        $programas->transform(function ($programa, $programa_id) use ($lista_programas, $programas) {
-            $nome_programa = $lista_programas[$programa_id] ?? null;
-            $programa->nome = $nome_programa;
-            $programa->count_solicitacoes = $programa->count();
-            $programa->saldo_inicial = $programas[$programa_id]->first()->saldo_inicial;
-
-            return $programa;
-        });
-
         $title = 'Relatório consolidado';
     
         if($request->filled('programa_id')) {
@@ -99,6 +113,7 @@ class RelatorioController extends Controller
         return view('relatorio_programa', [
             'title' => $title,
             'gastos_programa' => 0,
+            'gastos_solicitante' => 0,
             'total_geral' => 0,
             'lista_programas' => $lista_programas,
             'statuses' => Status::all(),
