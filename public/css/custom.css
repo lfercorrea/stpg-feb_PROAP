@@ -137,6 +137,7 @@ table.highlight tbody tr:hover {
 /* Estilo para impressão */
 .logo-doc-header {
     max-width: 100%;
+    padding-bottom: 20px;
 }
 .print-only {
     display: none;

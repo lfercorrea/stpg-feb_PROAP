@@ -73,7 +73,7 @@ class RelatorioController extends Controller
                 'solicitantes.nome',
                 'solicitantes.id',
                 'solicitacoes.id',
-            )->get();
+            )->orderByRaw("STR_TO_DATE(carimbo_data_hora, '%d/%m/%Y %H:%i:%s') DESC")->get();
 
         $programas = $query->groupBy('programa_id')->map(function($programa) {
             return (object) [
