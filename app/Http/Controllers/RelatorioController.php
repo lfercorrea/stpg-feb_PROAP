@@ -43,7 +43,7 @@ class RelatorioController extends Controller
                     ->when($request->filled('tipo_solicitante'), function($q) use ($tipo_solicitante) {
                         $q->where('tipo_solicitante', $tipo_solicitante);
                     });
-            })->orderBy('solicitantes.nome')
+            })->orderBy('programas.nome', 'asc')->orderBy('solicitantes.nome')
             ->join('programas', function($join) use ($arr_programa_id, $request) {
                 $join->on('programas.id', '=', 'solicitacoes.programa_id')
                     ->when($request->filled('programa_id'), function($q) use ($arr_programa_id) {
