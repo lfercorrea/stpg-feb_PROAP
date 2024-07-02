@@ -55,17 +55,20 @@
                 <tr>
                     <th>Solicitacão</th>
                     <th>Data</th>
-                    <th class="print-hidden">Orientador</th>
+                    @if ($solicitacao->nome_do_orientador)
+                        <th>Orientador</th>
+                    @endif
                     <th class="center-align print-hidden">Parecer</th>
                     <th class="center-align print-hidden">Orçamento</th>
                     <th class="center-align print-hidden">Artigo</th>
                     <th class="center-align print-hidden">Aceite</th>
                 </tr>
                 <tr>
-                    {{-- {{dd($solicitacao->servico_tipo)}} --}}
                     <td class="justify"><i>{{ optional($solicitacao->servico_tipo)->nome ?? $solicitacao->tipo->nome }}</i>: {{ $resumo_solicitacao }}</td>
                     <td>{{ $solicitacao->carimbo_data_hora }}</td>
-                    <td class="print-hidden">{{ $solicitacao->nome_do_orientador }}</td>
+                    @if ($solicitacao->nome_do_orientador)
+                        <td>{{ $solicitacao->nome_do_orientador }}</td>
+                    @endif
                     <td class="center-align print-hidden">
                         @if ($link_parecer)
                             <a href="{{ $link_parecer }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $link_parecer }}"><i class="tiny material-icons black-text">open_in_new</i></a>

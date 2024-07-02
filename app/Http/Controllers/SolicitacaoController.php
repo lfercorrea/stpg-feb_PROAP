@@ -58,17 +58,39 @@ class SolicitacaoController extends Controller
         }
         else{
             $solicitacoes = Solicitacao::with([
-                'status',
-                'tipo',
-                'solicitante',
-                'programa',
-                'programaCategoria',
-                'atividade',
-                'evento',
-                'material',
-                'traducao_artigo',
-                'outro_servico',
-                'manutencao',
+                'status' => function($columns) {
+                    $columns->select('id', 'nome');
+                },
+                'tipo' => function($columns) {
+                    $columns->select('id', 'nome');
+                },
+                'solicitante' => function($columns) {
+                    $columns->select('id', 'email', 'nome', 'tipo_solicitante');
+                },
+                'programa' => function($columns) {
+                    $columns->select('id', 'nome');
+                },
+                'programaCategoria' => function($columns) {
+                    $columns->select('id', 'nome');
+                },
+                'atividade' => function($columns) {
+                    $columns->select('id', 'descricao', 'carta_convite', 'parecer_orientador', 'orcamento_passagens', 'nome_do_orientador');
+                },
+                'evento' => function($columns) {
+                    $columns->select('id', 'nome', 'artigo_copia', 'artigo_aceite', 'parecer_orientador', 'orcamento_passagens');
+                },
+                'material' => function($columns) {
+                    $columns->select('id', 'descricao', 'orcamento', 'parecer_orientador');
+                },
+                'traducao_artigo' => function($columns) {
+                    $columns->select('id', 'titulo_artigo', 'artigo_a_traduzir', 'orcamento', 'parecer_orientador');
+                },
+                'outro_servico' => function($columns) {
+                    $columns->select('id', 'descricao', 'orcamento');
+                },
+                'manutencao' => function($columns) {
+                    $columns->select('id', 'descricao', 'orcamento');
+                },
             ])
             ->orderByRaw("STR_TO_DATE(carimbo_data_hora, '%d/%m/%Y %H:%i:%s') DESC")
             ->paginate($limit);
@@ -139,6 +161,8 @@ class SolicitacaoController extends Controller
 
         $plural = ($count_solicitacoes > 1) ? 's' : '';
         $search_message = implode("<br>", $count_message);
+
+        // var_dump($solicitacoes->appends($request->except('page'))); die();
         
         return view('solicitacoes', [
             'title' => 'Solicitações',
