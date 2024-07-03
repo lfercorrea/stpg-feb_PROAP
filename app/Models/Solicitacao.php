@@ -92,66 +92,92 @@ class Solicitacao extends Model
     public static function search($search, $start_date = null, $end_date = null, $programa_id = null, $tipo_solicitacao = null, $status_id = null) {
         $query = self::query();
 
-        if($search) {
-            $query->where(function($query) use ($search) {
-                /**
-                 * busca por solicitante
-                 */
-                $query->whereHas('solicitante', function($q) use($search) {
-                    $q->where('nome', 'like', '%' . $search . '%')
-                    ->orWhere('email', 'like', '%' . $search . '%')
-                    ->orWhere('tipo_solicitante', 'like', '%' . $search . '%');
+        $query->when($search, function($q) use ($search) {
+            $q->where(function($q1) use ($search) {
+                $q1->whereHas('solicitante', function($q2) use($search) {
+                    $q2->where('nome', 'like', '%' . $search . '%')
+                        ->orWhere('email', 'like', '%' . $search . '%')
+                        ->orWhere('tipo_solicitante', 'like', '%' . $search . '%');
                 })
-                ->orWhereHas('atividade', function($q) use ($search) {
-                    $q->where('descricao', 'like', '%' . $search . '%');
-                })
-                ->orWhereHas('evento', function($q) use ($search) {
-                    $q->where('nome', 'like', '%' . $search . '%');
-                })
-                ->orWhereHas('material', function($q) use ($search) {
-                    $q->where('descricao', 'like', '%' . $search . '%');
-                })
-                /**
-                 * caso seja busca por serviço...
-                 */
-                ->orWhereHas('manutencao', function($q) use ($search) {
-                    $q->where('descricao', 'like', '%' . $search . '%');
-                })
-                ->orWhereHas('outro_servico', function($q) use ($search) {
-                    $q->where('descricao', 'like', '%' . $search . '%');
-                })
-                ->orWhereHas('traducao_artigo', function($q) use ($search) {
-                    $q->where('titulo_artigo', 'like', '%' . $search . '%');
+                ->orWhereHas('atividade', function($q1) use ($search) {
+                    $q1->where('descricao', 'like', '%' . $search . '%');
+                })->orWhereHas('evento', function($q1) use ($search) {
+                    $q1->where('nome', 'like', '%' . $search . '%');
+                })->orWhereHas('material', function($q1) use ($search) {
+                    $q1->where('descricao', 'like', '%' . $search . '%');
+                // serviços
+                })->orWhereHas('manutencao', function($q1) use ($search) {
+                    $q1->where('descricao', 'like', '%' . $search . '%');
+                })->orWhereHas('outro_servico', function($q1) use ($search) {
+                    $q1->where('descricao', 'like', '%' . $search . '%');
+                })->orWhereHas('traducao_artigo', function($q1) use ($search) {
+                    $q1->where('titulo_artigo', 'like', '%' . $search . '%');
                 });
             });
-        }
+        });
 
-        if($start_date AND $end_date) {
+        $query->when($start_date AND $end_date, function($query) use($start_date, $end_date) {
             $obj_start_date = Carbon::createFromFormat('Y-m-d', $start_date)->startOfDay()->format('d/m/Y H:i:s');
             $obj_end_date = Carbon::createFromFormat('Y-m-d', $end_date)->endOfDay()->format('d/m/Y H:i:s');
             $query->whereRaw(
                 "STR_TO_DATE(carimbo_data_hora, '%d/%m/%Y %H:%i:%s') BETWEEN STR_TO_DATE(?, '%d/%m/%Y %H:%i:%s') AND STR_TO_DATE(?, '%d/%m/%Y %H:%i:%s')",
                 [$obj_start_date, $obj_end_date]
             );
-        }
-        
-        if($programa_id) {
-            $query->whereHas('programa', function($query) use($programa_id) {
-                $query->whereIn('programa_id', $programa_id);
-            });
-        }
+        });
 
-        if($tipo_solicitacao) {
-            $query->whereHas('tipo', function($query) use($tipo_solicitacao) {
-                $query->where('id', $tipo_solicitacao);
+        $query->when($programa_id, function($q) use ($programa_id) {
+            $q->whereHas('programa', function($q1) use($programa_id) {
+                $q1->whereIn('programa_id', $programa_id);
             });
-        }
+        });
 
-        if($status_id) {
-            $query->whereHas('status', function($query) use($status_id) {
-                $query->where('status_id', $status_id);
+        $query->when($tipo_solicitacao, function($q) use($tipo_solicitacao) {
+            $q->whereHas('tipo', function($q1) use($tipo_solicitacao) {
+                $q1->where('id', $tipo_solicitacao);
             });
-        }
+        });
+
+        $query->when($status_id, function($q) use($status_id) {
+            $q->whereHas('status', function($q1) use($status_id) {
+                $q1->where('status_id', $status_id);
+            });
+        });
+
+        $query->with([
+            'status' => function($columns) {
+                $columns->select('id', 'nome');
+            },
+            'tipo' => function($columns) {
+                $columns->select('id', 'nome');
+            },
+            'solicitante' => function($columns) {
+                $columns->select('id', 'email', 'nome', 'tipo_solicitante');
+            },
+            'programa' => function($columns) {
+                $columns->select('id', 'nome');
+            },
+            'programaCategoria' => function($columns) {
+                $columns->select('id', 'nome');
+            },
+            'atividade' => function($columns) {
+                $columns->select('id', 'descricao', 'carta_convite', 'parecer_orientador', 'orcamento_passagens', 'nome_do_orientador');
+            },
+            'evento' => function($columns) {
+                $columns->select('id', 'nome', 'artigo_copia', 'artigo_aceite', 'parecer_orientador', 'orcamento_passagens');
+            },
+            'material' => function($columns) {
+                $columns->select('id', 'descricao', 'orcamento', 'parecer_orientador');
+            },
+            'traducao_artigo' => function($columns) {
+                $columns->select('id', 'titulo_artigo', 'artigo_a_traduzir', 'orcamento', 'parecer_orientador');
+            },
+            'outro_servico' => function($columns) {
+                $columns->select('id', 'descricao', 'orcamento');
+            },
+            'manutencao' => function($columns) {
+                $columns->select('id', 'descricao', 'orcamento');
+            },
+        ]);
 
         // $query->toSql();
         // dd($query->toSql(), $query->getBindings());

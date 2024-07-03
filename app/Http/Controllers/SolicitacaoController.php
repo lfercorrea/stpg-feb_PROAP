@@ -28,73 +28,19 @@ class SolicitacaoController extends Controller
         ]);
 
         $count_solicitacoes = 0;
-        $limit = 30;
+        $limit = ($request->filled('limit') AND $request->input('limit') <= 1000) ? $request->input('limit') : 30;
 
-        if($request->filled('limit') AND $request->input('limit') <= 1000) {
-            $limit = $request->input('limit');
-        }
-
-        if($request->has('search') 
-            OR ($request->has('start_date') AND $request->has('end_date')) 
-            OR $request->has('programa_id') 
-            OR $request->has('tipo_solicitacao_id') 
-            OR $request->has('status_id')){
-            $solicitacoes = Solicitacao::search(
-                $request->search,
-                $request->start_date,
-                $request->end_date,
-                $request->programa_id,
-                $request->tipo_solicitacao_id,
-                $request->status_id)
-                    ->orderByRaw("STR_TO_DATE(carimbo_data_hora, '%d/%m/%Y %H:%i:%s') DESC")
-                    ->paginate($limit);
-            $count_solicitacoes = Solicitacao::search($request->search,
-                $request->start_date,
-                $request->end_date,
-                $request->programa_id, 
-                $request->tipo_solicitacao_id, 
-                $request->status_id)
-                    ->count();
-        }
-        else{
-            $solicitacoes = Solicitacao::with([
-                'status' => function($columns) {
-                    $columns->select('id', 'nome');
-                },
-                'tipo' => function($columns) {
-                    $columns->select('id', 'nome');
-                },
-                'solicitante' => function($columns) {
-                    $columns->select('id', 'email', 'nome', 'tipo_solicitante');
-                },
-                'programa' => function($columns) {
-                    $columns->select('id', 'nome');
-                },
-                'programaCategoria' => function($columns) {
-                    $columns->select('id', 'nome');
-                },
-                'atividade' => function($columns) {
-                    $columns->select('id', 'descricao', 'carta_convite', 'parecer_orientador', 'orcamento_passagens', 'nome_do_orientador');
-                },
-                'evento' => function($columns) {
-                    $columns->select('id', 'nome', 'artigo_copia', 'artigo_aceite', 'parecer_orientador', 'orcamento_passagens');
-                },
-                'material' => function($columns) {
-                    $columns->select('id', 'descricao', 'orcamento', 'parecer_orientador');
-                },
-                'traducao_artigo' => function($columns) {
-                    $columns->select('id', 'titulo_artigo', 'artigo_a_traduzir', 'orcamento', 'parecer_orientador');
-                },
-                'outro_servico' => function($columns) {
-                    $columns->select('id', 'descricao', 'orcamento');
-                },
-                'manutencao' => function($columns) {
-                    $columns->select('id', 'descricao', 'orcamento');
-                },
-            ])
-            ->orderByRaw("STR_TO_DATE(carimbo_data_hora, '%d/%m/%Y %H:%i:%s') DESC")
-            ->paginate($limit);
-        }
+        $query = Solicitacao::search(
+            $request->search,
+            $request->start_date,
+            $request->end_date,
+            $request->programa_id,
+            $request->tipo_solicitacao_id,
+            $request->status_id
+        )->orderByRaw("STR_TO_DATE(carimbo_data_hora, '%d/%m/%Y %H:%i:%s') DESC");
+        
+        $count_solicitacoes = $query->count();
+        $solicitacoes = $query->paginate($limit);
         
         foreach($solicitacoes as $solicitacao) {
             $resumo_solicitacao = optional($solicitacao->evento)->nome
@@ -161,8 +107,6 @@ class SolicitacaoController extends Controller
 
         $plural = ($count_solicitacoes > 1) ? 's' : '';
         $search_message = implode("<br>", $count_message);
-
-        // var_dump($solicitacoes->appends($request->except('page'))); die();
         
         return view('solicitacoes', [
             'title' => 'Solicitações',
