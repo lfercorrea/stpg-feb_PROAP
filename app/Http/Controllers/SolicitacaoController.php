@@ -28,7 +28,11 @@ class SolicitacaoController extends Controller
         ]);
 
         $count_solicitacoes = 0;
-        $limit = ($request->filled('limit') AND $request->input('limit') <= 1000) ? $request->input('limit') : 30;
+        $limit = 30;
+        
+        if($request->filled('limit') AND $request->input('limit') <= 1000) {
+            $limit =  $request->input('limit');
+        }
 
         $query = Solicitacao::search(
             $request->search,

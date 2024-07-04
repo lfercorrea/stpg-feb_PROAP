@@ -68,7 +68,7 @@
             </div>
         </div>
     </form>
-    @if ($count_solicitacoes > 0 AND $search_message)
+    @if ($search_message)
         <div class="row">
             <div class="search-terms small-text">
                 {!! $search_message !!}
@@ -76,11 +76,9 @@
         </div>
     @endif
     <div class="print-hidden">
-        {{
-            $solicitacoes->links('common/pagination')
-        }}
+        {{ $solicitacoes->links('common/pagination') }}
     </div>
-    @if (count($solicitacoes) > 0)
+    @if ($count_solicitacoes > 0)
         <table class="bordered striped responsive-table highlight">
             <thead>
                 <tr>
@@ -103,22 +101,22 @@
                         <td>{{ $solicitacao->programa->nome }}</td>
                         <td class="center-align print-hidden">
                             @if ($solicitacao->parecer_orientador)
-                            <a href="{{ $solicitacao->parecer_orientador }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->parecer_orientador }}"><i class="tiny material-icons black-text">open_in_new</i></a>
+                                <a href="{{ $solicitacao->parecer_orientador }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->parecer_orientador }}"><i class="tiny material-icons black-text">open_in_new</i></a>
                             @endif
                         </td>
                         <td class="center-align print-hidden">
                             @if ($solicitacao->orcamento)
-                            <a href="{{ $solicitacao->orcamento }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->orcamento }}"><i class="tiny material-icons black-text">open_in_new</i></a>
+                                <a href="{{ $solicitacao->orcamento }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->orcamento }}"><i class="tiny material-icons black-text">open_in_new</i></a>
                             @endif
                         </td>
                         <td class="center-align print-hidden">
                             @if ($solicitacao->artigo_copia)
-                            <a href="{{ $solicitacao->artigo_copia }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->artigo_copia }}"><i class="tiny material-icons black-text">open_in_new</i></a>
+                                <a href="{{ $solicitacao->artigo_copia }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->artigo_copia }}"><i class="tiny material-icons black-text">open_in_new</i></a>
                             @endif
                         </td>
                         <td class="center-align print-hidden">
                             @if ($solicitacao->artigo_aceite)
-                            <a href="{{ $solicitacao->artigo_aceite }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->artigo_aceite }}"><i class="tiny material-icons black-text">open_in_new</i></a>
+                                <a href="{{ $solicitacao->artigo_aceite }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->artigo_aceite }}"><i class="tiny material-icons black-text">open_in_new</i></a>
                             @endif
                         </td>
                         <td>{{ $solicitacao->carimbo_data_hora }}</td>
@@ -147,9 +145,7 @@
         </div>
     @endif
     <div class="print-hidden">
-        {{
-            $solicitacoes->links('common/pagination')
-        }}
+        {{ $solicitacoes->links('common/pagination') }}
     </div>
     <div class="row center section-margins side-margins print-hidden">
         <a class="btn-small black waves-effect waves-light" onclick="history.back()">Voltar</a>
