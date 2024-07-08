@@ -33,11 +33,27 @@ class RelatorioController extends Controller
         $obj_end_date = Carbon::now()->subMonth()->endOfMonth();
         $str_start_date = $request->filled('start_date') ? Carbon::createFromFormat('Y-m-d', $request->input('start_date'))->startOfDay()->format('d/m/Y H:i:s') : $obj_start_date->format('d/m/Y H:i:s');
         $str_end_date = $request->filled('end_date') ? Carbon::createFromFormat('Y-m-d', $request->input('end_date'))->endOfDay()->format('d/m/Y H:i:s') : $obj_end_date->format('d/m/Y H:i:s');
-        $sql = "STR_TO_DATE(carimbo_data_hora, '%d/%m/%Y %H:%i:%s') BETWEEN STR_TO_DATE(?, '%d/%m/%Y %H:%i:%s') AND STR_TO_DATE(?, '%d/%m/%Y %H:%i:%s')";
+        $sql = "datetime(
+                substr(carimbo_data_hora, 7, 4) || '-' || 
+                substr(carimbo_data_hora, 4, 2) || '-' || 
+                substr(carimbo_data_hora, 1, 2) || ' ' || 
+                substr(carimbo_data_hora, 12, 8)
+            ) BETWEEN datetime(
+                substr(?, 7, 4) || '-' || 
+                substr(?, 4, 2) || '-' || 
+                substr(?, 1, 2) || ' ' || 
+                substr(?, 12, 8)
+            ) AND datetime(
+                substr(?, 7, 4) || '-' || 
+                substr(?, 4, 2) || '-' || 
+                substr(?, 1, 2) || ' ' || 
+                substr(?, 12, 8)
+            )";
+
         $tipo_solicitante = $request->input('tipo_solicitante');
         $arr_programa_id = $request->input('programa_id');
 
-        $query = Solicitacao::whereRaw($sql, [$str_start_date, $str_end_date])
+        $query = Solicitacao::whereRaw($sql, [$str_start_date, $str_start_date, $str_start_date, $str_start_date, $str_end_date, $str_end_date, $str_end_date, $str_end_date])
             ->join('solicitantes', function ($join) use ($request, $tipo_solicitante) {
                 $join->on('solicitantes.id', '=', 'solicitacoes.solicitante_id')
                     ->when($request->filled('tipo_solicitante'), function($q) use ($tipo_solicitante) {
@@ -73,7 +89,13 @@ class RelatorioController extends Controller
                 'solicitantes.nome',
                 'solicitantes.id',
                 'solicitacoes.id',
-            )->orderByRaw("STR_TO_DATE(carimbo_data_hora, '%d/%m/%Y %H:%i:%s') DESC")->get();
+            )->orderByRaw("datetime(
+                substr(carimbo_data_hora, 7, 4) || '-' || 
+                substr(carimbo_data_hora, 4, 2) || '-' || 
+                substr(carimbo_data_hora, 1, 2) || ' ' || 
+                substr(carimbo_data_hora, 12, 8)
+            ) DESC"
+        )->get();
 
         $programas = $query->groupBy('programa_id')->map(function($programa) {
             return (object) [

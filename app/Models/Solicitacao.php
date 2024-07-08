@@ -90,7 +90,14 @@ class Solicitacao extends Model
     }
 
     public static function search($search, $start_date = null, $end_date = null, $programa_id = null, $tipo_solicitacao = null, $status_id = null) {
-        $query = self::query();
+        $query = self::query()
+            ->orderByRaw("datetime(
+                    substr(carimbo_data_hora, 7, 4) || '-' || 
+                    substr(carimbo_data_hora, 4, 2) || '-' || 
+                    substr(carimbo_data_hora, 1, 2) || ' ' || 
+                    substr(carimbo_data_hora, 12, 8)
+                ) DESC"
+            );
 
         $query->when($search, function($q) use ($search) {
             $q->where(function($q1) use ($search) {
@@ -119,9 +126,23 @@ class Solicitacao extends Model
         $query->when($start_date AND $end_date, function($query) use($start_date, $end_date) {
             $obj_start_date = Carbon::createFromFormat('Y-m-d', $start_date)->startOfDay()->format('d/m/Y H:i:s');
             $obj_end_date = Carbon::createFromFormat('Y-m-d', $end_date)->endOfDay()->format('d/m/Y H:i:s');
-            $query->whereRaw(
-                "STR_TO_DATE(carimbo_data_hora, '%d/%m/%Y %H:%i:%s') BETWEEN STR_TO_DATE(?, '%d/%m/%Y %H:%i:%s') AND STR_TO_DATE(?, '%d/%m/%Y %H:%i:%s')",
-                [$obj_start_date, $obj_end_date]
+            $query->whereRaw("datetime(
+                    substr(carimbo_data_hora, 7, 4) || '-' || 
+                    substr(carimbo_data_hora, 4, 2) || '-' || 
+                    substr(carimbo_data_hora, 1, 2) || ' ' || 
+                    substr(carimbo_data_hora, 12, 8)
+                ) BETWEEN datetime(
+                    substr(?, 7, 4) || '-' || 
+                    substr(?, 4, 2) || '-' || 
+                    substr(?, 1, 2) || ' ' || 
+                    substr(?, 12, 8)
+                ) AND datetime(
+                    substr(?, 7, 4) || '-' || 
+                    substr(?, 4, 2) || '-' || 
+                    substr(?, 1, 2) || ' ' || 
+                    substr(?, 12, 8)
+                )",
+                [$obj_start_date, $obj_start_date, $obj_start_date, $obj_start_date, $obj_end_date, $obj_end_date, $obj_end_date, $obj_end_date]
             );
         });
 

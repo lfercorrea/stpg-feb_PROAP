@@ -35,13 +35,13 @@ class SolicitacaoController extends Controller
         }
 
         $query = Solicitacao::search(
-            $request->search,
-            $request->start_date,
-            $request->end_date,
-            $request->programa_id,
-            $request->tipo_solicitacao_id,
-            $request->status_id
-        )->orderByRaw("STR_TO_DATE(carimbo_data_hora, '%d/%m/%Y %H:%i:%s') DESC");
+            $request->input('search'),
+            $request->input('start_date'),
+            $request->input('end_date'),
+            $request->input('programa_id'),
+            $request->input('tipo_solicitacao_id'),
+            $request->input('status_id')
+        );
         
         $count_solicitacoes = $query->count();
         $solicitacoes = $query->paginate($limit);

@@ -66,7 +66,13 @@ class SolicitanteController extends Controller
             'manutencao',
         ])
         ->where('solicitante_id', $id)
-        ->orderByRaw(" STR_TO_DATE(carimbo_data_hora, '%d/%m/%Y %H:%i:%s') DESC ")
+        ->orderByRaw("datetime(
+                substr(carimbo_data_hora, 7, 4) || '-' || 
+                substr(carimbo_data_hora, 4, 2) || '-' || 
+                substr(carimbo_data_hora, 1, 2) || ' ' || 
+                substr(carimbo_data_hora, 12, 8)
+            ) DESC"
+        )
         ->get()
         ->groupBy('programa_id');
         
