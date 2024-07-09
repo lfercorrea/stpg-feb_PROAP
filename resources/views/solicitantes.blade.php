@@ -41,9 +41,11 @@
             </div>
         </div>
     </form>
-    @if ($count_solicitantes > 0)
+    @if ($search_message)
         <div class="row">
-            {!! $search_message !!}
+            <div class="search-terms small-text">
+                {!! $search_message !!}
+            </div>
         </div>
     @endif
     <div class="print-hidden">
