@@ -1,8 +1,5 @@
 <div class='container center'>
     @if ($paginator->hasPages())
-        <ul class="pagination">
-        {{-- Previous Page Link --}}
-        </ul>
         <p class="small text-muted">
             {!! __('Mostrando de') !!}
             <b>{{ $paginator->firstItem() }}</b>
@@ -38,10 +35,9 @@
                 @if (is_array($element))
                     @foreach ($element as $page => $url)
                         @if ($page == $paginator->currentPage())
-                            <li class="active red black">
+                            <li class="active black">
                                 <a>{{ $page }}</a>
                             </li>
-                            {{-- <li class="page-item active" aria-current="page"><span class="page-link">{{ $page }}</span></li> --}}
                         @else
                             <li class="waves-effect"><a href="{{ $url }}">{{ $page }}</a></li>
                         @endif
