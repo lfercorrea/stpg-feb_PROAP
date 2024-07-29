@@ -166,6 +166,15 @@ class SolicitacaoController extends Controller
             ?? optional($solicitacao->manutencao)->orcamento 
             ?? optional($solicitacao->outro_servico)->orcamento 
             ?? optional($solicitacao->traducao_artigo)->orcamento;
+        $valor_inscricao = optional($solicitacao->evento)->valor_inscricao;
+        $valor_passagens = optional($solicitacao->evento)->valor_passagens
+            ?? optional($solicitacao->atividade)->valor_passagens;
+        $valor_diarias = optional($solicitacao->evento)->valor_diarias
+            ?? optional($solicitacao->atividade)->valor_diarias;
+        $valor = optional($solicitacao->manutencao)->valor
+            ?? optional($solicitacao->material)->valor
+            ?? optional($solicitacao->outro_servico)->valor
+            ?? optional($solicitacao->traducao_artigo)->valor;
 
         return view('solicitacao', [
             'title' => 'Detalhes da solicitação' . ' - ' . $solicitacao->solicitante->nome,
@@ -180,6 +189,10 @@ class SolicitacaoController extends Controller
             'valor_tipos' => ValorTipo::all(),
             'statuses' => Status::all(),
             'count_notas' => $solicitacao->notas->count(),
+            'valor' => $valor,
+            'valor_inscricao' => $valor_inscricao,
+            'valor_passagens' => $valor_passagens,
+            'valor_diarias' => $valor_diarias,
             'valor_total' => number_format($solicitacao->notas->sum('valor'), 2, ',', '.'),
         ]);
     }

@@ -99,6 +99,37 @@
                     <td class="justify"><i>{{ $justificativa }}</i></td>
                 </tr>
             </table>
+            <h6>Valor solicitado</h6>
+            <table class="compact-table striped responsive-table">
+                <tr>
+                    @if ($valor)
+                        <th>Geral</th>
+                    @endif
+                    @if ($valor_diarias)
+                        <th>Diárias</th>
+                    @endif
+                    @if ($valor_inscricao)
+                        <th>Taxa de inscrição</th>
+                    @endif
+                    @if ($valor_passagens)
+                        <th>Transporte/passagens</th>
+                    @endif
+                </tr>
+                <tr>
+                    @if ($valor)
+                        <td>{{ $valor }}</td>
+                    @endif
+                    @if ($valor_diarias)
+                        <td>{{ $valor_diarias }}</td>
+                    @endif
+                    @if ($valor_inscricao)
+                        <td>{{ $valor_inscricao }}</td>
+                    @endif
+                    @if ($valor_passagens)
+                        <td>{{ $valor_passagens }}</td>
+                    @endif
+                </tr>
+            </table>
         </div>
         <div class="row print-hidden">
             <form class="col s12" action="{{ route('site.solicitacao.update', ['id' => $solicitacao->id]) }}" method="POST">
