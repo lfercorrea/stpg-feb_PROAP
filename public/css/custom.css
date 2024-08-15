@@ -367,7 +367,7 @@ div.capes-logo {
 
 div.capes-header {
     display: inline-block;
-    text-align: center;
+    text-align: left;
     font-size: 14px;
     /* margin: 1cm; */
 }

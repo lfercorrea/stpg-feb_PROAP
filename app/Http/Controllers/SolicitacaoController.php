@@ -204,8 +204,6 @@ class SolicitacaoController extends Controller
         App::setLocale('pt_BR');
         Carbon::setLocale('pt_BR');
 
-        $nota = Nota::where('id', $nid)->first();
-
         $solicitacao = Solicitacao::where('id', $id)
             ->with([
                 'status',
@@ -220,19 +218,25 @@ class SolicitacaoController extends Controller
                 'outro_servico',
                 'manutencao',
                 'notas',
-            ])->first();
+                ])->first();
+            
+        $nota = Nota::where('id', $nid)->first();
+        $programa = Programa::where('id', $solicitacao->programa_id)->first();
 
-        switch ($solicitacao->solicitante->tipo_solicitante) {
-            case 'Discente':
-                $recibo = 'recibo_a';
-                break;
-            case 'Docente Permanente':
-                $recibo = 'recibo_b';
-                break;
-            case 'Docente Colaborador':
-                $recibo = 'recibo_b';
-                break;
-        }
+        // switch ($solicitacao->solicitante->tipo_solicitante) {
+        //     case 'Discente':
+        //         $recibo = 'recibo_a';
+        //         break;
+        //     case 'Docente Permanente':
+        //         $recibo = 'recibo_a';
+        //         break;
+        //     case 'Docente Colaborador':
+        //         $recibo = 'recibo_a';
+        //         break;
+        // }
+
+        $recibo = ($solicitacao->solicitante->nome != $programa->coordenador) ? 'recibo_a' : 'recibo_b';
+
         $valor_total = number_format($nota->valor, 2, ',', '.');
         $tipo_valor = ValorTipo::where('id', $nota->valor_tipo_id)->first();
 
@@ -248,6 +252,7 @@ class SolicitacaoController extends Controller
 
         return view($recibo, [
             'title' => 'Recibo da solicitação' . ' - ' . $solicitacao->solicitante->nome,
+            'observacao' => $nota->descricao,
             'solicitacao' => $solicitacao,
             'programa' => $programa,
             'fontes_pagadoras' => FontePagadora::all(),

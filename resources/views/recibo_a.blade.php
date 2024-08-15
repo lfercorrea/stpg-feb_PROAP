@@ -21,7 +21,11 @@
                     <b>
                         CAPES - COORDENAÇÃO DE APERFEIÇOAMENTO DE PESSOAL DE NÍVEL SUPERIOR
                         <br>
-                        <i>CNPJ 00.889.834/0001-08 Endereço: SBN Quadra 02 Lote 06 Bloco L, CEP 70040-020, Brasília - DF</i>
+                        <i>
+                            CNPJ 00.889.834/0001-08
+                            <br>
+                            Endereço: SBN Quadra 02 Lote 06 Bloco L, CEP 70040-020, Brasília - DF
+                        </i>
                         <br>
                         <br>
                     </b>

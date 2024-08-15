@@ -40,6 +40,6 @@ class ValoresHelper
             $rt = trim($rt . ($r ? (($i > 0) && ($i <= $fim) && ($inteiro[0] > 0) ? ( ($i < $fim) ? ", " : " e ") : "") . $r : ""));
         }
     
-        return strtoupper($rt ? $rt : "zero reais");
+        return \Str::upper($rt ? $rt : "zero reais");
     }
 }
