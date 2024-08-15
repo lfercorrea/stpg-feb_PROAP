@@ -20,7 +20,7 @@
         </div>
         <div class="col s2">
             <button id="print-button" class="btn-flat waves-effect waves-black" type="button">
-                Imprimir
+                Imprimir solicitação
                 <i class="material-icons right">print</i>
             </button>
         </div>
@@ -184,7 +184,7 @@
                     @foreach ($solicitacao->notas as $nota)
                         <tr>
                             <td class="center-align print-hidden"><a href="{{ route('site.nota.destroy', ['solicitacao_id' => $solicitacao->id, 'nota_id' => $nota->id]) }}" class="confirm-link"><i class="material-icons tiny red-text">delete</i></a></td>
-                            <td>{{ $nota->numero }}</td>
+                            <td><a href="{{ route('site.solicitacao.recibo', ['id' => $solicitacao->id, 'nid' => $nota->id]) }}" class="hover-underline" target="_blank">{{ $nota->numero }}</a></td>
                             <td>{{ \Carbon\Carbon::parse($nota->data)->format('d/m/Y') }}</td>
                             <td>{{ $nota->descricao }}</td>
                             <td>{{ $nota->fonte_pagadora->nome }}</td>

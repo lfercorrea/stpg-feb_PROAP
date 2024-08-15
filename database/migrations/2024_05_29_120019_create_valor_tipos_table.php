@@ -26,7 +26,7 @@ return new class extends Migration
             ['nome' => 'Passagem aérea/transporte'],
             ['nome' => 'Pedágio'],
             ['nome' => 'Serviço'],
-            ['nome' => 'Taxa de inscrição'],
+            ['nome' => 'Taxa de inscrição em congresso'],
         ];
 
         DB::table('valor_tipos')->insert($dados);

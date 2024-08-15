@@ -350,3 +350,111 @@ th.min-width-25 {
     text-align: justify;
     /* hyphens: auto; */
 }
+
+/** para relatório da CAPES */
+/* div {
+    border: 1px dashed red;
+} */
+img.capes-logo {
+    width: 2cm;
+    height: 1,5cm;
+}
+
+div.capes-logo {
+    display: inline-block;
+    margin: 5px;
+}
+
+div.capes-header {
+    display: inline-block;
+    text-align: center;
+    font-size: 14px;
+    /* margin: 1cm; */
+}
+
+.page {
+    background: white;
+}
+
+.abnt-margins {
+    background: white;
+    width: 21cm;
+    margin-left: 1cm;
+    margin-top: 1cm;
+    margin-right: .2cm;
+    margin-bottom: .2cm;
+}
+
+.relatorio {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 18px;
+}
+
+.recibo {
+    line-height: .7cm;
+}
+
+.relatorio-header {
+    /* display: inline-block; */
+    text-align: justify;
+}
+
+.recibo-tipo {
+    margin-bottom: 0.7cm;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-bottom {
+    vertical-align: bottom;
+}
+
+.text-top {
+    vertical-align: top;
+}
+
+.text-small {
+    font-size: 14px;
+    line-height: .4cm;
+}
+
+.margin-top {
+    margin-top: .5cm;
+}
+.margin-bottom {
+    margin-bottom: .5cm;
+}
+
+table.black {
+    border: 1.5px solid black;
+}
+td.title {
+    border: 1.5px solid black;
+    background: #ddd;
+    font-weight: bold;
+    text-align: center;
+    padding: 0px;
+}
+td.cell {
+    border: 1.5px solid black;
+    background: white;
+    padding: 2px;
+}
+tr.mm5 {
+    height: 5mm;
+}
+tr.mm7 {
+    height: 7mm;
+}
+tr.mm9 {
+    height: 9mm;
+}
+tr.mm14 {
+    height: 14mm;
+}
+tr.mm29 {
+    height: 29mm;
+}

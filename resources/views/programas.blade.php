@@ -15,6 +15,8 @@
                     <thead>
                         <tr>
                             <th>Programa</th>
+                            <th>Coordenador</th>
+                            <th>Projeto CAPES</th>
                             <th>Saldo inicial</th>
                         </tr>
                     </thead>
@@ -22,6 +24,18 @@
                         @foreach ($programas as $programa)
                             <tr>
                                 <td>{{ $programa->nome }}</td>
+                                <td>
+                                    <div class="input-field col s12">
+                                        <input name="coordenadores[{{ $programa->id }}]" id="coordenadores_{{ $programa->id }}" value="{{ $programa->coordenador }}" type="text" class="validate">
+                                        <label for="coordenadores_{{ $programa->id }}">Nome completo do coordenador</label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="input-field col s12">
+                                        <input name="projetos_capes[{{ $programa->id }}]" id="projetos_capes_{{ $programa->id }}" value="{{ $programa->projeto_capes }}" type="text" class="validate">
+                                        <label for="projetos_capes_{{ $programa->id }}">Código do projeto CAPES</label>
+                                    </div>
+                                </td>
                                 <td>
                                     <div class="input-field col s12">
                                         <input name="saldos[{{ $programa->id }}]" id="saldo_inicial_{{ $programa->id }}" value="{{ $programa->saldo_inicial }}" type="number" min="0" step="0.01" class="validate">

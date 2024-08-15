@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Helpers\ValoresHelper;
+use App\Models\Nota;
 use App\Models\Programa;
 use App\Models\Solicitacao;
 use App\Models\SolicitacaoTipo;
@@ -10,6 +12,7 @@ use App\Models\Status;
 use App\Models\ValorTipo;
 use App\Models\FontePagadora;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\App;
 
 class SolicitacaoController extends Controller
 {
@@ -194,6 +197,69 @@ class SolicitacaoController extends Controller
             'valor_passagens' => $valor_passagens,
             'valor_diarias' => $valor_diarias,
             'valor_total' => number_format($solicitacao->notas->sum('valor'), 2, ',', '.'),
+        ]);
+    }
+
+    public function recibo(string $id, $nid) {
+        App::setLocale('pt_BR');
+        Carbon::setLocale('pt_BR');
+
+        $nota = Nota::where('id', $nid)->first();
+
+        $solicitacao = Solicitacao::where('id', $id)
+            ->with([
+                'status',
+                'tipo',
+                'solicitante',
+                'programa',
+                'programaCategoria',
+                'atividade',
+                'evento',
+                'material',
+                'traducao_artigo',
+                'outro_servico',
+                'manutencao',
+                'notas',
+            ])->first();
+
+        switch ($solicitacao->solicitante->tipo_solicitante) {
+            case 'Discente':
+                $recibo = 'recibo_a';
+                break;
+            case 'Docente Permanente':
+                $recibo = 'recibo_b';
+                break;
+            case 'Docente Colaborador':
+                $recibo = 'recibo_b';
+                break;
+        }
+        $valor_total = number_format($nota->valor, 2, ',', '.');
+        $tipo_valor = ValorTipo::where('id', $nota->valor_tipo_id)->first();
+
+        $data_nota = Carbon::createFromFormat('Y-m-d', $nota->data);
+        $data_impressao = $data_nota->format('d/m/Y');
+        // $data_extenso = $data_nota->translatedFormat('l, j \d\e  F \d\e Y');
+        $data_extenso = $data_nota->translatedFormat('j \d\e  F \d\e Y');
+
+        $periodo = optional($solicitacao->evento)->periodo
+            ?? optional($solicitacao->atividade)->periodo;
+
+        $programa = Programa::find($solicitacao->programa_id);
+
+        return view($recibo, [
+            'title' => 'Recibo da solicitação' . ' - ' . $solicitacao->solicitante->nome,
+            'solicitacao' => $solicitacao,
+            'programa' => $programa,
+            'fontes_pagadoras' => FontePagadora::all(),
+            'valor_tipos' => ValorTipo::all(),
+            'statuses' => Status::all(),
+            'count_notas' => $solicitacao->notas->count(),
+            'valor_extenso' => ValoresHelper::valorPorExtenso($nota->valor),
+            'periodo' => $periodo,
+            'data_impressao' => $data_impressao,
+            'data_extenso' => $data_extenso,
+            'valor_total' => $valor_total,
+            'tipo_valor' => \Str::upper($tipo_valor->nome),
         ]);
     }
 

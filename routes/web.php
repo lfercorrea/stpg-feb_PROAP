@@ -23,6 +23,7 @@ Route::post('programas/update', [ProgramaController::class, 'update'])->name('si
 
 Route::get('solicitacoes', [SolicitacaoController::class, 'index'])->name('site.solicitacoes.index');
 Route::get('solicitacao/{id}', [SolicitacaoController::class, 'show'])->name('site.solicitacao.show');
+Route::get('solicitacao/{id}/recibo/{nid}', [SolicitacaoController::class, 'recibo'])->name('site.solicitacao.recibo');
 Route::post('solicitacao/{id}/update', [SolicitacaoController::class, 'update'])->name('site.solicitacao.update');
 Route::post('solicitacao/{id}', [NotaController::class, 'store'])->name('site.nota.store');
 Route::get('solicitacao/{solicitacao_id}/nota/{nota_id}', [NotaController::class, 'destroy'])->name('site.nota.destroy');

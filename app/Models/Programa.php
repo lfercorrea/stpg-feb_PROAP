@@ -11,6 +11,9 @@ class Programa extends Model
 
     protected $fillable = [
         'nome',
+        'coordenador',
+        'projeto_capes',
+        'saldo_inicial',
     ];
     
     public function solicitacoes() {
