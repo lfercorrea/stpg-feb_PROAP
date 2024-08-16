@@ -236,6 +236,11 @@ class SolicitacaoController extends Controller
         // }
 
         $recibo = ($solicitacao->solicitante->nome != $programa->coordenador) ? 'recibo_a' : 'recibo_b';
+        $tipo_beneficiario = [
+            'Discente' => 'ESTUDANTE',
+            'Docente Permanente' => 'PESQUISADOR',
+            'Docente Colaborador' => 'PESQUISADOR',
+        ];
 
         $valor_total = number_format($nota->valor, 2, ',', '.');
         $tipo_valor = ValorTipo::where('id', $nota->valor_tipo_id)->first();
@@ -265,6 +270,7 @@ class SolicitacaoController extends Controller
             'data_extenso' => $data_extenso,
             'valor_total' => $valor_total,
             'tipo_valor' => \Str::upper($tipo_valor->nome),
+            'tipo_beneficiario' => $tipo_beneficiario,
         ]);
     }
 

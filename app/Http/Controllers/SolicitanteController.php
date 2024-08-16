@@ -127,4 +127,78 @@ class SolicitanteController extends Controller
             'solicitacoes' => $solicitacoes,
         ]);
     }
+
+    public function edit(string $id) {
+        $solicitante = Solicitante::findOrFail($id);
+
+        return view('solicitante_edit', [
+            'title' => 'Alterar dados do solicitante' . ' - ' . $solicitante->nome,
+            'solicitante' => $solicitante,
+        ]);
+    }
+
+    public function store(Request $request) {
+        $regras = [
+            // 'email' => 'required|email|max:255|string|unique:solicitantes',
+            'nome' => 'required|string|max:255',
+            'tipo_solicitante' => 'required|string|max:255',
+            'cpf' => 'required|string|max:255',
+            'rg' => 'required|string|max:255',
+            'rg_data_expedicao' => 'required|string|max:255',
+            'rg_orgao_expedidor' => 'required|string|max:255',
+            'nascimento' => 'required|string|max:255',
+            'endereco_completo' => 'required|string|max:255',
+            'telefone' => 'required|string|max:255',
+            'banco' => 'required|string|max:255',
+            'banco_agencia' => 'required|string|max:255',
+            'banco_conta' => 'required|string|max:255',
+        ];
+
+        $mensagens_erro = [
+            // 'email.required' => 'O email é obrigatório.',
+            // 'email.email' => 'O email é inválido.',
+            // 'email.max' => 'O email deve ter, no máximo, 255 caracteres.',
+            // 'email.string' => 'O email deve ser uma string.',
+            // 'email.confirmed' => 'O email deve ser confirmado.',
+            // 'email.unique' => 'Há outro solicitante usando este email.',
+            'nome.required' => 'O nome precisa ser preenchido.',
+            'nome.string' => 'O nome precisa ser uma string.',
+            'nome.max' => 'O nome pode ter, no máximo, 255 caracteres.',
+            'tipo_solicitante.required' => 'O tipo de solicitante precisa ser selecionado.',
+            'tipo_solicitante.string' => 'O tipo de solicitante precisa ser uma string.',
+            'tipo_solicitante.max' => 'O tipo de solicitante precisa ter, no máximo, 255 caracteres.',
+            'cpf.required' => 'O CPF precisa ser informado.',
+            'cpf.string' => 'O CPF precisa ser uma string.',
+            'cpf.max' => 'O CPF precisa ter, no máximo, 255 caracteres.',
+            'rg.required' => 'O RG precisa ser informado.',
+            'rg.string' => 'O RG precisa ser uma string.',
+            'rg.max' => 'O RG precisa ter, no máximo, 255 caracteres.',
+            'nascimento.required' => 'A data de nascimento precisa ser informada.',
+            'nascimento.string' => 'A data de nascimento precisa ser uma string.',
+            'nascimento.max' => 'A data de nascimento precisa ter, no máximo, 255 caracteres.',
+            'endereco_completo.required' => 'O endereço precisa ser informado.',
+            'endereco_completo.string' => 'O endereço precisa ser uma string.',
+            'endereco_completo.max' => 'O endereço precisa ter, no máximo, 255 caracteres.',
+            'telefone.required' => 'O telefone precisa ser informado.',
+            'telefone.string' => 'O telefone precisa ser uma string.',
+            'telefone.max' => 'O telefone precisa ter, no máximo, 255 caracteres.',
+            'banco.required' => 'O banco precisa ser informado.',
+            'banco.string' => 'O banco precisa ser uma string.',
+            'banco.max' => 'O banco precisa ter, no máximo, 255 caracteres.',
+            'banco_agencia.required' => 'O código da agência precisa ser informado.',
+            'banco_agencia.string' => 'O código da agência precisa ser uma string.',
+            'banco_agencia.max' => 'O código da agência precisa ter, no máximo, 255 caracteres.',
+            'banco_conta.required' => 'O número da conta precisa ser informado.',
+            'banco_conta.string' => 'O número da conta precisa ser uma string.',
+            'banco_conta.max' => 'O número da conta precisa ter, no máximo, 255 caracteres.',
+        ];
+
+        $request->validate($regras, $mensagens_erro);
+
+        $solicitante = Solicitante::findOrFail($request->id);
+        $request->email = $solicitante->email; // para prevenir a alteração mesmo usando console do navegador
+        $solicitante->update($request->all());
+
+        return redirect()->route('site.solicitantes.index')->with('success', 'Informações do solicitante atualizadas.');
+    }
 }

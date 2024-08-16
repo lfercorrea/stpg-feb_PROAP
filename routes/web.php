@@ -30,5 +30,7 @@ Route::get('solicitacao/{solicitacao_id}/nota/{nota_id}', [NotaController::class
 
 Route::get('solicitantes', [SolicitanteController::class, 'index'])->name('site.solicitantes.index');
 Route::get('solicitante/{id}', [SolicitanteController::class, 'show'])->name('site.solicitante.show');
+Route::get('solicitante/edit/{id}', [SolicitanteController::class, 'edit'])->name('site.solicitante.edit');
+Route::put('solicitante/store/{id}', [SolicitanteController::class, 'store'])->name('site.solicitante.store');
 
 Route::get('relatorio', [RelatorioController::class, 'index'])->name('site.relatorio.index');

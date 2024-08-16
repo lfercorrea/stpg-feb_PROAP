@@ -7,7 +7,11 @@
                 <h6><b>Relatório de solicitações</b></h6>
             </div>
             <div class="col s12 m10">
-                <h5>{{ $solicitante->nome }} (<a href="mailto:{{ $solicitante->email }}" class="hover-underline">{{ $solicitante->email }}</a>)</h5>
+                <h5>
+                    {{ $solicitante->nome }}
+                    (<a href="mailto:{{ $solicitante->email }}" class="hover-underline">{{ $solicitante->email }}</a>)
+                    <a href="{{ route('site.solicitante.edit', ['id' => $solicitante->id]) }}" class="btn-flat waves-effect print-hidden"><i class="material-icons tiny">edit</i></a>
+                </h5>
             </div>
             <div class="col s12 m2 right-align">
                 <button id="print-button" class="btn-flat waves-effect waves-black print-hidden" type="button">

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>STPG-FEB - @yield('title')</title>
+    <title>STPG-FEB -  - {{ $title }}</title>
     <link rel="stylesheet" href="{{ asset('css/materialize.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
     <link rel="icon" type="image/x-icon" href="{{ asset('storage/static/images/favicon.ico') }}">
@@ -54,7 +54,7 @@
                     <td class="cell" colspan="2">
                         <div class="recibo">
                             Declaro, junto a Coordenação de Aperfeiçoamento de Pessoal de Nível Superior - CAPES, que utilizei
-                            parte dos recursos de custeio para o Projeto de Pesquisa n.º _________________________________,
+                            parte dos recursos de custeio para o Projeto de Pesquisa n.º <b><u>{{ $programa->projeto_capes }}</u></b>,
                             no valor de <b>R$ <u>{{ $valor_total }}</u> (<u>{{ $valor_extenso }}</u>),</b>
                             a título de em caráter eventual e sem vínculo empregatício, a título de (<b>{{ $tipo_valor }}</b>)
                             no período de <b>{{ $periodo }}</b>

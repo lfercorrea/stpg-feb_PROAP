@@ -40,7 +40,11 @@
                     <th>Conta</th>
                 </tr>
                 <tr>
-                    <td><a href="{{ route('site.solicitante.show', ['id' => $solicitacao->solicitante->id]) }}" class="hover-underline">{{ $solicitacao->solicitante->nome }}</a> (<a href="mailto:{{ $solicitacao->solicitante->email }}" class="hover-underline">{{ $solicitacao->solicitante->email }}</a>)</td>
+                    <td>
+                        <a href="{{ route('site.solicitante.show', ['id' => $solicitacao->solicitante->id]) }}" class="hover-underline">{{ $solicitacao->solicitante->nome }}</a>
+                        (<a href="mailto:{{ $solicitacao->solicitante->email }}" class="hover-underline">{{ $solicitacao->solicitante->email }}</a>)
+                        <a href="{{ route('site.solicitante.edit', ['id' => $solicitacao->solicitante->id]) }}" class="btn-flat waves-effect print-hidden"><i class="material-icons tiny">edit</i></a>
+                    </td>
                     <td>{{ $solicitacao->solicitante->telefone }}</td>
                     <td class="print-hidden">{{ $solicitacao->solicitante->cpf }}</td>
                     <td class="print-hidden">{{ $solicitacao->solicitante->rg }}</td>

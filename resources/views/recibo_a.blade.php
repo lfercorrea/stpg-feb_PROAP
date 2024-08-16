@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>STPG-FEB - @yield('title')</title>
+    <title>STPG-FEB - {{ $title }}</title>
     <link rel="stylesheet" href="{{ asset('css/materialize.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
     <link rel="icon" type="image/x-icon" href="{{ asset('storage/static/images/favicon.ico') }}">
@@ -47,8 +47,8 @@
                         <div class="recibo">
                             Recebi da Fundação <b>CAPES/<u>{{ Str::upper($programa->coordenador) }}</b></u>
                             <br>
-                            a importância de <b>R$ <u>{{ $valor_total }}</u> (<u>{{ $valor_extenso }}</u>),</b> em caráter eventual e sem vínculo empregatício, a título de <b>AUXÍLIO
-                            <u>FINANCEIRO A ESTUDANTE ({{ $tipo_valor }})</u></b> no período de <b>{{ $periodo }}</b>
+                            a importância de <b>R$ <u>{{ $valor_total }}</u> (<u>{{ $valor_extenso }}</u>),</b> em caráter eventual e sem vínculo empregatício, a título de <b><u>AUXÍLIO
+                            FINANCEIRO A {{ $tipo_beneficiario[$solicitacao->solicitante->tipo_solicitante] }} ({{ $tipo_valor }})</u></b> no período de <b>{{ $periodo }}</b>
                             <b>
                                 <div class="margin-top" style="margin-left: 3.4cm">
                                     VALOR DA REMUNERAÇÃO: R$ {{ $valor_total }}

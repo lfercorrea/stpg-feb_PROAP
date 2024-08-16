@@ -65,7 +65,10 @@
             <tbody>
                 @foreach ($solicitantes as $solicitante)
                 <tr>
-                    <td><a href="{{ route('site.solicitante.show', ['id' => $solicitante->id]) }}" class="hover-underline"><b>{{ Str::upper($solicitante->nome) }}</b></a></td>
+                    <td>
+                        <a href="{{ route('site.solicitante.edit', ['id' => $solicitante->id]) }}" class="btn-flat waves-effect"><i class="material-icons tiny">edit</i></a>
+                        <a href="{{ route('site.solicitante.show', ['id' => $solicitante->id]) }}" class="hover-underline"><b>{{ Str::upper($solicitante->nome) }}</b></a>
+                    </td>
                     <td>{{ $solicitante->tipo_solicitante }}</td>
                     <td><a href="mailto:{{ $solicitante->email }}" class="hover-underline">{{ $solicitante->email }}</a></td>
                     <td>{{ $solicitante->telefone }}</td>
