@@ -223,18 +223,6 @@ class SolicitacaoController extends Controller
         $nota = Nota::where('id', $nid)->first();
         $programa = Programa::where('id', $solicitacao->programa_id)->first();
 
-        // switch ($solicitacao->solicitante->tipo_solicitante) {
-        //     case 'Discente':
-        //         $recibo = 'recibo_a';
-        //         break;
-        //     case 'Docente Permanente':
-        //         $recibo = 'recibo_a';
-        //         break;
-        //     case 'Docente Colaborador':
-        //         $recibo = 'recibo_a';
-        //         break;
-        // }
-
         $recibo = ($solicitacao->solicitante->nome != $programa->coordenador) ? 'recibo_a' : 'recibo_b';
         $tipo_beneficiario = [
             'Discente' => 'ESTUDANTE',

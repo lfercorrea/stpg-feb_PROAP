@@ -57,7 +57,7 @@
                             parte dos recursos de custeio para o Projeto de Pesquisa n.º <b><u>{{ $programa->projeto_capes }}</u></b>,
                             no valor de <b>R$ <u>{{ $valor_total }}</u> (<u>{{ $valor_extenso }}</u>),</b>
                             a título de em caráter eventual e sem vínculo empregatício, a título de (<b>{{ $tipo_valor }}</b>)
-                            no período de <b>{{ $periodo }}</b>
+                            no período de <b>{{ $periodo }}</b>.
                             <br>
                             <div style="margin-left: 4cm">
                                 (&nbsp;&nbsp;&nbsp;&nbsp;) Reembolso
@@ -75,7 +75,7 @@
                 <tr class="mm9">
                     <td class="cell text-top">{{ Str::upper($observacao) }}</td>
                     <td class="cell text-top">
-                        BAURU, {{ $data_extenso }}
+                        BAURU, {{ $data_extenso }}.
                         <br>
                         <br>
                         <br>

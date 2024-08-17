@@ -190,7 +190,7 @@
                             <td class="center-align print-hidden"><a href="{{ route('site.nota.destroy', ['solicitacao_id' => $solicitacao->id, 'nota_id' => $nota->id]) }}" class="confirm-link"><i class="material-icons tiny red-text">delete</i></a></td>
                             <td>
                                 <b>{{ $nota->numero }}</b>
-                                <a href="{{ route('site.solicitacao.recibo', ['id' => $solicitacao->id, 'nid' => $nota->id]) }}" class="hover-underline" target="_blank">(gerar recibo)</a>
+                                (<a href="{{ route('site.solicitacao.recibo', ['id' => $solicitacao->id, 'nid' => $nota->id]) }}" class="hover-underline" target="_blank">gerar recibo</a>)
                             </td>
                             <td>{{ \Carbon\Carbon::parse($nota->data)->format('d/m/Y') }}</td>
                             <td>{{ $nota->descricao }}</td>

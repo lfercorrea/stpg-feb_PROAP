@@ -10,7 +10,7 @@
     @if ($programas->count() > 0)
         <form action="{{ route('site.programas.update') }}" method="POST">
             @csrf
-            <div class="container center">
+            <div class="center">
                 <table class="compact-table striped responsive-table">
                     <thead>
                         <tr>

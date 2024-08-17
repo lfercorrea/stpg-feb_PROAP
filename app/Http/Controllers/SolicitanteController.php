@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Solicitacao;
 use App\Models\Solicitante;
+use Carbon\Carbon;
 
 class SolicitanteController extends Controller
 {
@@ -130,6 +131,8 @@ class SolicitanteController extends Controller
 
     public function edit(string $id) {
         $solicitante = Solicitante::findOrFail($id);
+        $solicitante->rg_data_expedicao = Carbon::createFromFormat('d/m/Y', $solicitante->rg_data_expedicao)->format('Y-m-d');
+        $solicitante->nascimento = Carbon::createFromFormat('d/m/Y', $solicitante->nascimento)->format('Y-m-d');
 
         return view('solicitante_edit', [
             'title' => 'Alterar dados do solicitante' . ' - ' . $solicitante->nome,
@@ -139,15 +142,14 @@ class SolicitanteController extends Controller
 
     public function store(Request $request) {
         $regras = [
-            // 'email' => 'required|email|max:255|string|unique:solicitantes',
             'nome' => 'required|string|max:255',
             'tipo_solicitante' => 'required|string|max:255',
             'cpf' => 'required|string|max:255',
             'rg' => 'required|string|max:255',
-            'rg_data_expedicao' => 'required|string|max:255',
+            'rg_data_expedicao' => 'required|date_format:Y-m-d|after:1900-01-01|before:2099-12-31',
             'rg_orgao_expedidor' => 'required|string|max:255',
-            'nascimento' => 'required|string|max:255',
-            'endereco_completo' => 'required|string|max:255',
+            'nascimento' => 'required|date_format:Y-m-d|after:1900-01-01|before:2099-12-31',
+            'endereco_completo' => 'required|string',
             'telefone' => 'required|string|max:255',
             'banco' => 'required|string|max:255',
             'banco_agencia' => 'required|string|max:255',
@@ -155,12 +157,6 @@ class SolicitanteController extends Controller
         ];
 
         $mensagens_erro = [
-            // 'email.required' => 'O email é obrigatório.',
-            // 'email.email' => 'O email é inválido.',
-            // 'email.max' => 'O email deve ter, no máximo, 255 caracteres.',
-            // 'email.string' => 'O email deve ser uma string.',
-            // 'email.confirmed' => 'O email deve ser confirmado.',
-            // 'email.unique' => 'Há outro solicitante usando este email.',
             'nome.required' => 'O nome precisa ser preenchido.',
             'nome.string' => 'O nome precisa ser uma string.',
             'nome.max' => 'O nome pode ter, no máximo, 255 caracteres.',
@@ -173,12 +169,19 @@ class SolicitanteController extends Controller
             'rg.required' => 'O RG precisa ser informado.',
             'rg.string' => 'O RG precisa ser uma string.',
             'rg.max' => 'O RG precisa ter, no máximo, 255 caracteres.',
+            'rg_data_expedicao.required' => 'A data de expedicao do RG precisa ser informada.',
+            'rg_data_expedicao.date_format' => 'A data de expedicao do RG está num formato incorreto.',
+            'rg_data_expedicao.after' => 'A data de expedicao do RG deve ser posterior a 01/01/1900.',
+            'rg_data_expedicao.before' => 'A data de expedicao do RG deve ser anterior a 31/12/2099.',
+            'rg_orgao_expedidor.required' => 'O órgão expedidor do RG precisa ser informado.',
+            'rg_orgao_expedidor.string' => 'O órgão expedidor do RG precisa ser uma string.',
+            'rg_orgao_expedidor.max' => 'O órgão expedidor do RG precisa ter, no máximo, 255 caracteres.',
             'nascimento.required' => 'A data de nascimento precisa ser informada.',
-            'nascimento.string' => 'A data de nascimento precisa ser uma string.',
-            'nascimento.max' => 'A data de nascimento precisa ter, no máximo, 255 caracteres.',
+            'nascimento.date_format' => 'A data de nascimento está num formato incorreto.',
+            'nascimento.after' => 'A data de nascimento deve ser posterior a 01/01/1900.',
+            'nascimento.before' => 'A data de nascimento deve ser anterior a 31/12/2099.',
             'endereco_completo.required' => 'O endereço precisa ser informado.',
             'endereco_completo.string' => 'O endereço precisa ser uma string.',
-            'endereco_completo.max' => 'O endereço precisa ter, no máximo, 255 caracteres.',
             'telefone.required' => 'O telefone precisa ser informado.',
             'telefone.string' => 'O telefone precisa ser uma string.',
             'telefone.max' => 'O telefone precisa ter, no máximo, 255 caracteres.',
@@ -196,8 +199,11 @@ class SolicitanteController extends Controller
         $request->validate($regras, $mensagens_erro);
 
         $solicitante = Solicitante::findOrFail($request->id);
-        $request->email = $solicitante->email; // para prevenir a alteração mesmo usando console do navegador
-        $solicitante->update($request->all());
+        $arr_request = $request->all();
+        $arr_request['email'] = $solicitante->email; // para prevenir a alteração mesmo usando console do navegador
+        $arr_request['nascimento'] = Carbon::createFromFormat('Y-m-d', $request->input('nascimento'))->format('d/m/Y');
+        $arr_request['rg_data_expedicao'] = Carbon::createFromFormat('Y-m-d', $request->input('rg_data_expedicao'))->format('d/m/Y');
+        $solicitante->update($arr_request);
 
         return redirect()->route('site.solicitantes.index')->with('success', 'Informações do solicitante atualizadas.');
     }
