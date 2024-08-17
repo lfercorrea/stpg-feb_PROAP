@@ -470,3 +470,6 @@ tr.mm14 {
 tr.mm29 {
     height: 29mm;
 }
+td.small {
+    width: 50px;
+}

@@ -23,4 +23,8 @@ class Programa extends Model
     public function solicitantes() {
         return $this->belongsToMany(Solicitante::class, 'solicitacoes');
     }
+
+    public function projetos_capes() {
+        return $this->hasMany(ProjetoCapes::class, 'programa_id');
+    }
 }

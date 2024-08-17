@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CsvImportController;
 use App\Http\Controllers\NotaController;
 use App\Http\Controllers\ProgramaController;
+use App\Http\Controllers\ProjetoCapesController;
 use App\Http\Controllers\SiteController;
 use App\Http\Controllers\SolicitacaoController;
 use App\Http\Controllers\SolicitanteController;
@@ -19,7 +20,12 @@ Route::post('import/docentes', [CsvImportController::class, 'import_docentes'])-
 Route::get('importacoes', [CsvImportController::class, 'importacoes'])->name('site.importacoes');
 
 Route::get('programas', [ProgramaController::class, 'index'])->name('site.programas.index');
-Route::post('programas/update', [ProgramaController::class, 'update'])->name('site.programas.update');
+// Route::post('programas/update', [ProgramaController::class, 'update'])->name('site.programas.update');
+Route::get('programa/edit/{id}', [ProgramaController::class, 'edit'])->name('site.programa.edit');
+Route::post('programa/store/{id}', [ProgramaController::class, 'store'])->name('site.programa.store');
+
+Route::post('projeto_capes/store/{programa_id}', [ProjetoCapesController::class, 'store'])->name('site.projeto_capes.store');
+Route::get('projeto_capes/destroy/{id}', [ProjetoCapesController::class, 'destroy'])->name('site.projeto_capes.destroy');
 
 Route::get('solicitacoes', [SolicitacaoController::class, 'index'])->name('site.solicitacoes.index');
 Route::get('solicitacao/{id}', [SolicitacaoController::class, 'show'])->name('site.solicitacao.show');
