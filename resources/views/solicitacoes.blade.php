@@ -127,14 +127,14 @@
                                 @php
                                     $total_pago += $soma_notas;
                                 @endphp
-                                (R$&nbsp;{{ number_format($soma_notas, 2, ',', '.') }})
+                                ({{ $brl->formatCurrency($soma_notas, 'BRL') }})
                             @endif
                         </td>
                     </tr>
                 @endforeach
                 @if ($total_pago > 0)
                     <tr>
-                        <td colspan="10" class="center"><span class="red-text"><b>Valor total pago: R$ {{ number_format($total_pago, 2, ',', '.') }}</b></span></td>
+                        <td colspan="10" class="center"><span class="red-text"><b>Valor total pago: {{ $brl->formatCurrency($total_pago, 'BRL') }}</b></span></td>
                     </tr>
                 @endif
             </tbody>

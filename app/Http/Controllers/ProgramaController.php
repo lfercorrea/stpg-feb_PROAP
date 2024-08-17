@@ -9,12 +9,10 @@ use App\Models\ProjetoCapes;
 class ProgramaController extends Controller
 {
     public function index() {
-        $brl = new \NumberFormatter('pt_BR', \NumberFormatter::CURRENCY);
 
         return view('programas', [
             'title' => 'Programas',
             'programas' => Programa::orderBy('nome', 'asc')->get(),
-            'brl' => $brl,
         ]);
     }
 

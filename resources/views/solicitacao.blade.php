@@ -200,7 +200,7 @@
                             <td>{{ $nota->descricao }}</td>
                             <td>{{ $nota->fonte_pagadora->nome }}</td>
                             <td>{{ $nota->valor_tipo->nome }}</td>
-                            <td>R$&nbsp;{{ number_format($nota->valor, 2, ',', '.') }}</td>
+                            <td>{{ $brl->formatCurrency($nota->valor, 'BRL') }}</td>
                         </tr>
                     @endforeach
                 </table>
@@ -217,7 +217,7 @@
                         </tr>
                         <tr>
                             <td class="right-align"><b>Valor:</b></td>
-                            <td class="right-align"><span class="blue-text text-darken-2"><b>R$&nbsp;{{ $valor_total }}</b></span></td>
+                            <td class="right-align"><span class="blue-text text-darken-2"><b>{{ $brl->formatCurrency($valor_total, 'BRL') }}</b></span></td>
                         </tr>
                     </tbody>
                 </table>

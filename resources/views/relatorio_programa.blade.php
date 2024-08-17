@@ -80,10 +80,10 @@
                             <td style="padding-left: 20px">
                                 <a href="{{ route('site.solicitacao.show', ['id' => $solicitacao->id]) }}" class="hover-underline">{{ $solicitacao->servico_tipo ?? $solicitacao->tipo }}</a>
                             </td>
-                            <td class="right-align">R$ {{ number_format($solicitacao->soma_notas, 2, ',', '.') }}</td>
+                            <td class="right-align">{{ $brl->formatCurrency($solicitacao->soma_notas, 'BRL') }}</td>
                         </tr>
                     @endforeach
-                    <th colspan="3" class="right-align"><i>Total: R$ {{ number_format($gastos_solicitante, 2, ',', '.') }}</i></th>
+                    <th colspan="3" class="right-align"><i>Total: {{ $brl->formatCurrency($gastos_solicitante, 'BRL') }}</i></th>
                     @php
                         $gastos_solicitante = 0;
                     @endphp
@@ -95,13 +95,13 @@
                 <th class="right-align"><span class="blue-text text-darken-2"><i><u>{{ $programa->nome }}</u></i></span></th>
             </tr>
             <tr>
-                <td class="right-align"><span class="green-text text-darken-2">Saldo inicial (A): R$ {{ number_format($programa->saldo_inicial, 2, ',', '.') }}</span></th>
+                <td class="right-align"><span class="green-text text-darken-2">Saldo inicial (A): {{ $brl->formatCurrency($programa->saldo_inicial, 'BRL') }}</span></th>
             </tr>
             <tr>
-                <td class="right-align"><span class="red-text text-darken-2">Gastos neste relatório (B): R$ {{ number_format($gastos_programa, 2, ',', '.') }}</span></th>
+                <td class="right-align"><span class="red-text text-darken-2">Gastos neste relatório (B): {{ $brl->formatCurrency($gastos_programa, 'BRL') }}</span></th>
             </tr>
             <tr>
-                <td class="right-align"><span class="black-text text-darken-2">Saldo (A-B): R$ {{ number_format(($programa->saldo_inicial - $gastos_programa), 2, ',', '.') }}</span></th>
+                <td class="right-align"><span class="black-text text-darken-2">Saldo (A-B): {{ $brl->formatCurrency($programa->saldo_inicial - $gastos_programa, 'BRL') }}</span></th>
             </tr>
         </table>
         @php
@@ -111,7 +111,7 @@
     @endforeach
     @if ($programas->count() > 1)
         <div class="container center section-margins">
-            <span class="red-text text-darken-2"><h6><b>Total geral de gastos neste relatório: R$ {{ number_format($total_geral, 2, ',', '.') }}</b></h6></span>
+            <span class="red-text text-darken-2"><h6><b>Total geral de gastos neste relatório: {{ $brl->formatCurrency($total_geral, 'BRL') }}</b></h6></span>
         </div>
     @endif
     @if ($programas->count() == 0)

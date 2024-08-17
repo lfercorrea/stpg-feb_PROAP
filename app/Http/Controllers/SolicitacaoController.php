@@ -196,7 +196,7 @@ class SolicitacaoController extends Controller
             'valor_inscricao' => $valor_inscricao,
             'valor_passagens' => $valor_passagens,
             'valor_diarias' => $valor_diarias,
-            'valor_total' => number_format($solicitacao->notas->sum('valor'), 2, ',', '.'),
+            'valor_total' => $solicitacao->notas->sum('valor'),
         ]);
     }
 
