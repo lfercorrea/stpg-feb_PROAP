@@ -39,7 +39,7 @@
                 </div>
                 <div class="row">
                     <div class="input-field col s12 m6">
-                        <select name="projeto_capes" required>
+                        <select name="projeto_capes">
                             <option value="{{ old('projeto_capes', $programa->projeto_capes) }}" selected>{{ old('projeto_capes', $programa->projeto_capes) }}</option>
                             @foreach ($programa->projetos_capes as $projeto)
                                 <option value="{{ $projeto->codigo }}">{{ $projeto->codigo }}</option>
