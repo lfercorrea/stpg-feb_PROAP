@@ -122,9 +122,10 @@
                         <td>{{ $solicitacao->carimbo_data_hora }}</td>
                         <td class="center">
                             {{ $solicitacao->status->nome }}
-                            @if ($soma_notas = ($solicitacao->soma_notas() > 0))
+                            @if ($solicitacao->soma_notas() > 0)
                                 <br>
                                 @php
+                                    $soma_notas = $solicitacao->soma_notas();
                                     $total_pago += $soma_notas;
                                 @endphp
                                 ({{ $brl->formatCurrency($soma_notas, 'BRL') }})
