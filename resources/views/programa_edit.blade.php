@@ -12,7 +12,17 @@
         </div>
     </div>
     <div class="section-margins">
-        <h5>{{ $title }}</h5>
+        <div class="row print-hidden">
+            <div class="col s8 m10">
+                <h5>{{ $title }}</h5>
+            </div>
+            <div class="col s4 m2 input-field">
+                <button id="print-button" class="btn-flat waves-effect waves-black" type="button">
+                    Imprimir
+                    <i class="material-icons right">print</i>
+                </button>
+            </div>
+        </div>
     </div>
     <div class="container">
         @if ($programa->projetos_capes->count() === 0)
@@ -25,7 +35,13 @@
                 </p>
             </div>
         @else
-            <form action="{{ route('site.programa.store', ['id' => $programa->id]) }}" method="POST">
+            <div class="print-only">
+                <h1>{{ $programa->nome }}</h1>
+                Coordenador: <b>{{ $programa->coordenador }}</b>
+                <br>
+                Vice-coordenador: <b>{{ $programa->vice_coordenador }}</b>
+            </div>
+            <form action="{{ route('site.programa.store', ['id' => $programa->id]) }}" method="POST" class="print-hidden">
                 @csrf
                 <div class="row">
                     <div class="input-field col s12 m6">
@@ -38,7 +54,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="input-field col s12 m6">
+                    <div class="input-field col s12 m8">
                         <select name="projeto_capes">
                             <option value="{{ old('projeto_capes', $programa->projeto_capes) }}" selected>{{ old('projeto_capes', $programa->projeto_capes) }}</option>
                             @foreach ($programa->projetos_capes as $projeto)
@@ -46,10 +62,6 @@
                             @endforeach
                         </select>
                         <label>Projeto CAPES/AUXPE vigente</label>
-                    </div>
-                    <div class="input-field col s12 m3">
-                        <input name="saldo_inicial" id="saldo_inicial" value="{{ $programa->saldo_inicial }}" type="text" class="validate">
-                        <label for="saldo_inicial">Saldo inicial (R$)</label>
                     </div>
                 </div>
                 <div class="container center print-hidden">
@@ -63,21 +75,22 @@
             <table class="bordered striped responsive-table highlight">
                 <thead>
                     <tr>
-                        <th colspan="2">Código do projeto</th>
+                        <th class="print-hidden"></th>
+                        <th>Código do projeto</th>
+                        <th class="center">Verba</th>
                         <th class="center">Status</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($programa->projetos_capes as $projeto_capes)
                         <tr>
-                            <td class="center small">
+                            <td class="center small print-hidden">
                                 <a href="{{ route('site.projeto_capes.destroy', ['id' => $projeto_capes->id]) }}" class="confirm-link">
                                     <i class="material-icons tiny red-text">delete</i>
                                 </a>
                             </td>
-                            <td>
-                                {{ $projeto_capes->codigo }}
-                            </td>
+                            <td>{{ $projeto_capes->codigo }}</td>
+                            <td class="center">{{ $brl->formatCurrency($projeto_capes->verba, 'BRL') }}</td>
                             <td class="center">
                                 @if ($projeto_capes->codigo === $programa->projeto_capes)
                                     <b>Vigente</b>
@@ -87,10 +100,13 @@
                             </td>
                         </tr>
                     @endforeach
+                    <tr>
+                        <th colspan="4" class="center">Total de verbas: {{ $brl->formatCurrency($programa->soma_verbas(), 'BRL') }}</th>
+                    </tr>
                 </tbody>
             </table>
         @endif
-        <div class="row">
+        <div class="row print-hidden">
             <div class="section-margin-top">
                 <h6>Adicionar projeto CAPES/AUXPE ao programa</h6>
             </div>
@@ -98,9 +114,13 @@
             <form action="{{ route('site.projeto_capes.store', ['programa_id' => $programa->id]) }}" method="POST">
                 @csrf
                 <div class="row">
-                    <div class="input-field col s12 m8">
+                    <div class="input-field col s12 m7">
                         <input name="codigo" id="codigo" type="text" class="validate">
                         <label for="codigo">Código do projeto (fornecido pelo coordenador do programa)</label>
+                    </div>
+                    <div class="input-field col s12 m3">
+                        <input name="verba" id="verba" type="text" class="validate">
+                        <label for="verba">Verba concedida (R$)</label>
                     </div>
                     <div class="input-field col s12 m2">
                         <button class="btn-small green darken-2 waves-effect waves-light" type="submit" name="action">Adicionar</button>

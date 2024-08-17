@@ -34,7 +34,6 @@ class ProgramaController extends Controller
             'coordenador' => 'required|string|max:255',
             'vice_coordenador' => 'required|string|max:255',
             'projeto_capes' => 'required|string|max:255',
-            'saldo_inicial' => 'required|string|max:255',
         ], [
             'coordenador.required' => 'É necessário definir o nome completo do coordenador do programa.',
             'coordenador.string' => 'O nome completo do coordenador do programa precisa ser uma string.',
@@ -45,15 +44,11 @@ class ProgramaController extends Controller
             'projeto_capes.required' => 'É necessário definir o código do projeto CAPES do programa.',
             'projeto_capes.string' => 'O código do projeto CAPES do programa precisa ser uma string.',
             'projeto_capes.max' => 'O código do projeto CAPES do programa precisa ter, no máximo, 255 caracteres.',
-            'saldo_inicial.required' => 'É necessário definir o saldo inicial do programa.',
-            'saldo_inicial.string' => 'O saldo inicial do programa precisa ser uma string.',
-            'saldo_inicial.max' => 'O saldo inicial do programa precisa ter, no máximo, 255 caracteres.',
         ]);
 
         $programa->coordenador = $request->input('coordenador');
         $programa->vice_coordenador = $request->input('vice_coordenador');
         $programa->projeto_capes = $request->input('projeto_capes');
-        $programa->saldo_inicial = $request->input('saldo_inicial');
 
         $programa->save();
 

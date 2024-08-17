@@ -95,13 +95,13 @@
                 <th class="right-align"><span class="blue-text text-darken-2"><i><u>{{ $programa->nome }}</u></i></span></th>
             </tr>
             <tr>
-                <td class="right-align"><span class="green-text text-darken-2">Saldo inicial (A): {{ $brl->formatCurrency($programa->saldo_inicial, 'BRL') }}</span></th>
+                <td class="right-align"><span class="green-text text-darken-2">Total de verbas aportadas (A): {{ $brl->formatCurrency($programa->soma_verbas, 'BRL') }}</span></th>
             </tr>
             <tr>
                 <td class="right-align"><span class="red-text text-darken-2">Gastos neste relatório (B): {{ $brl->formatCurrency($gastos_programa, 'BRL') }}</span></th>
             </tr>
             <tr>
-                <td class="right-align"><span class="black-text text-darken-2">Saldo (A-B): {{ $brl->formatCurrency($programa->saldo_inicial - $gastos_programa, 'BRL') }}</span></th>
+                <td class="right-align"><span class="black-text text-darken-2">Saldo (A-B): {{ $brl->formatCurrency($programa->soma_verbas - $gastos_programa, 'BRL') }}</span></th>
             </tr>
         </table>
         @php

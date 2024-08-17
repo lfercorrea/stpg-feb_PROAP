@@ -72,20 +72,20 @@ class RelatorioController extends Controller
             })
             ->join('solicitacao_tipos', 'solicitacoes.tipo_solicitacao_id', '=', 'solicitacao_tipos.id')
             ->leftJoin('servico_tipos', 'solicitacoes.servico_tipo_id', '=', 'servico_tipos.id')
+            ->leftJoin('projetos_capes', 'projetos_capes.programa_id', '=', 'programas.id')
             ->select(
                 'programas.id as programa_id',
                 'programas.nome as programa_nome',
-                'programas.saldo_inicial as saldo_inicial',
                 'solicitantes.id as solicitante_id',
                 'solicitantes.nome as solicitante_nome',
                 'solicitantes.tipo_solicitante as tipo_solicitante',
                 'solicitacoes.id as solicitacao_id',
                 'solicitacao_tipos.nome as solicitacao_tipo',
                 'servico_tipos.nome as solicitacao_servico_tipo',
-                DB::raw('SUM(notas.valor) as solicitacao_soma_notas'),
+                DB::raw('SUM(DISTINCT notas.valor) as solicitacao_soma_notas'),
+                DB::raw('SUM(DISTINCT projetos_capes.verba) as soma_verbas'),
             )->groupBy(
                 'programas.nome',
-                'programas.saldo_inicial',
                 'solicitantes.nome',
                 'solicitantes.id',
                 'solicitacoes.id',
@@ -101,7 +101,7 @@ class RelatorioController extends Controller
             return (object) [
                 'id' => $programa->first()->programa_id,
                 'nome' => $programa->first()->programa_nome,
-                'saldo_inicial' => $programa->first()->saldo_inicial,
+                'soma_verbas' => $programa->first()->soma_verbas,
                 'count' => $programa->count(),
                 'solicitantes' => $programa->groupBy('solicitante_id')->map(function($solicitante) {
                     return (object) [

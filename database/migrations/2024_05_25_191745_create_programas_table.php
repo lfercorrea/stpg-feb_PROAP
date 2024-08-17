@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('coordenador')->nullable();
             $table->string('vice_coordenador')->nullable();
             $table->string('projeto_capes')->nullable();
-            $table->string('saldo_inicial')->nullable();
 
             $table->timestamps();
         });

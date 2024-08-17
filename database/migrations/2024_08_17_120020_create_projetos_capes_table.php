@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
 
             $table->string('codigo')->nullable();
+            $table->string('verba')->nullable();
             $table->unsignedBigInteger('programa_id');
 
             $table->foreign('programa_id')->references('id')->on('programas')->onDelete('cascade');

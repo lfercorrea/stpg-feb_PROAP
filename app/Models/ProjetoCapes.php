@@ -13,6 +13,7 @@ class ProjetoCapes extends Model
 
     protected $fillable = [
         'codigo',
+        'verba',
         'programa_id',
     ];
     

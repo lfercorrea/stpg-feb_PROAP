@@ -27,4 +27,8 @@ class Programa extends Model
     public function projetos_capes() {
         return $this->hasMany(ProjetoCapes::class, 'programa_id');
     }
+
+    public function soma_verbas() {
+        return $this->projetos_capes()->sum('verba');
+    }
 }

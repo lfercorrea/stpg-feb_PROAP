@@ -3,9 +3,21 @@
 @section('content')
     <div class='center print-hidden section-margin-bottom'>
         <h5>{{ $title }}</h5>
+        <div class="row">
+            <div class="col s12 m10">
+                {{-- apenas para empurrar o botão imprimir p/ direita --}}
+            </div>
+            <div class="col s12 m2 input-field">
+                <button id="print-button" class="btn-flat waves-effect waves-black" type="button">
+                    Imprimir
+                    <i class="material-icons right">print</i>
+                </button>
+            </div>
+        </div>
+        
     </div>
     <div class="print-only section-margins">
-        <h6><b>Saldos iniciais dos programas</b></h6>
+        <h6><b>Verbas dos programas de pós-graduação</b></h6>
     </div>
     @if ($programas->count() > 0)
         <div class="center">
@@ -15,7 +27,7 @@
                         <th>Programa</th>
                         <th>Coordenador</th>
                         <th>Projeto CAPES vigente</th>
-                        <th>Saldo inicial</th>
+                        <th>Total verbas</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -27,7 +39,7 @@
                             </td>
                             <td>{{ $programa->coordenador }}</td>
                             <td>{{ $programa->projeto_capes }}</td>
-                            <td>{{ $brl->formatCurrency($programa->saldo_inicial, 'BRL') }}</td>
+                            <td>{{ $brl->formatCurrency($programa->soma_verbas(), 'BRL') }}</td>
                         </tr>
                     @endforeach
                 </tbody>
