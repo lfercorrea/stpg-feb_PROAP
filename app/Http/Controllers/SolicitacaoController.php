@@ -156,6 +156,9 @@ class SolicitacaoController extends Controller
             ?? optional($solicitacao->traducao_artigo)->justificativa
             ?? optional($solicitacao->outro_servico)->justificativa
             ?? optional($solicitacao->manutencao)->justificativa;
+        $periodo = optional($solicitacao->evento)->periodo
+            ?? optional($solicitacao->atividade)->periodo;
+        $site_evento = optional($solicitacao->evento)->site_evento;
         $link_artigo_aceite = optional($solicitacao->evento)->artigo_aceite;
         $link_artigo_copia = optional($solicitacao->evento)->artigo_copia
             ?? optional($solicitacao->traducao_artigo)->artigo_a_traduzir;
@@ -184,6 +187,8 @@ class SolicitacaoController extends Controller
             'solicitacao' => $solicitacao,
             'resumo_solicitacao' => $resumo_solicitacao,
             'justificativa' => $justificativa,
+            'periodo' => $periodo,
+            'site_evento' => $site_evento,
             'link_artigo_aceite' => $link_artigo_aceite,
             'link_artigo_copia' => $link_artigo_copia,
             'link_parecer' => $link_parecer,

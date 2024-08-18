@@ -58,9 +58,15 @@
             <table class="compact-table striped responsive-table">
                 <tr>
                     <th>Solicitacão</th>
+                    @if ($periodo)
+                        <th>Período</th>
+                    @endif
                     <th>Data</th>
                     @if ($solicitacao->nome_do_orientador)
                         <th>Orientador</th>
+                    @endif
+                    @if ($site_evento)
+                        <th class="center-align print-hidden">Site</th>
                     @endif
                     <th class="center-align print-hidden">Parecer</th>
                     <th class="center-align print-hidden">Orçamento</th>
@@ -69,9 +75,17 @@
                 </tr>
                 <tr>
                     <td class="justify"><i>{{ optional($solicitacao->servico_tipo)->nome ?? $solicitacao->tipo->nome }}</i>: {{ $resumo_solicitacao }}</td>
+                    @if ($periodo)
+                        <td>{{ $periodo }}</td>
+                    @endif
                     <td>{{ $solicitacao->carimbo_data_hora }}</td>
                     @if ($solicitacao->nome_do_orientador)
-                        <td>{{ $solicitacao->nome_do_orientador }}</td>
+                    <td>{{ $solicitacao->nome_do_orientador }}</td>
+                    @endif
+                    @if ($site_evento)
+                        <td class="center-align print-hidden">
+                            <a href="{{ $site_evento }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $site_evento }}"><i class="tiny material-icons black-text">open_in_new</i></a>
+                        </td>
                     @endif
                     <td class="center-align print-hidden">
                         @if ($link_parecer)
