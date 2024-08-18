@@ -63,7 +63,7 @@ class RelatorioController extends Controller
             ->join('programas', function($join) use ($arr_programa_id, $request) {
                 $join->on('programas.id', '=', 'solicitacoes.programa_id')
                     ->when($request->filled('programa_id'), function($q) use ($arr_programa_id) {
-                        $q->whereIn('programa_id', $arr_programa_id);
+                        $q->whereIn('programas.id', $arr_programa_id);
                     });
             })
             ->join('notas', function($join) {
@@ -72,7 +72,7 @@ class RelatorioController extends Controller
             })
             ->join('solicitacao_tipos', 'solicitacoes.tipo_solicitacao_id', '=', 'solicitacao_tipos.id')
             ->leftJoin('servico_tipos', 'solicitacoes.servico_tipo_id', '=', 'servico_tipos.id')
-            ->leftJoin('projetos_capes', 'projetos_capes.programa_id', '=', 'programas.id')
+            ->leftJoin('projetos_capes', 'projetos_capes.programa_id', '=', 'programas.id') // resolve ambiguidade causada pelo uso de programa_id
             ->select(
                 'programas.id as programa_id',
                 'programas.nome as programa_nome',
