@@ -31,7 +31,7 @@
                 <tr>
                     <th>Solicitante</th>
                     <th>Telefone</th>
-                    <th class="print-hidden">CPF</th>
+                    <th>CPF</th>
                     <th class="print-hidden">RG</th>
                     <th class="print-hidden">Órgão emissor</th>
                     <th class="print-hidden">Data de emissão</th>
@@ -46,7 +46,7 @@
                         <a href="{{ route('site.solicitante.edit', ['id' => $solicitacao->solicitante->id]) }}" class="btn-flat waves-effect print-hidden"><i class="material-icons tiny">edit</i></a>
                     </td>
                     <td>{{ $solicitacao->solicitante->telefone }}</td>
-                    <td class="print-hidden">{{ $solicitacao->solicitante->cpf }}</td>
+                    <td>{{ $solicitacao->solicitante->cpf }}</td>
                     <td class="print-hidden">{{ $solicitacao->solicitante->rg }}</td>
                     <td class="print-hidden">{{ $solicitacao->solicitante->rg_orgao_expedidor }}</td>
                     <td class="print-hidden">{{ $solicitacao->solicitante->rg_data_expedicao }}</td>
@@ -59,9 +59,9 @@
                 <tr>
                     <th>Solicitacão</th>
                     @if ($periodo)
-                        <th>Período</th>
+                        <th>Período do evento</th>
                     @endif
-                    <th>Data</th>
+                    <th>Solicitado em</th>
                     @if ($solicitacao->nome_do_orientador)
                         <th>Orientador</th>
                     @endif
