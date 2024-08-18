@@ -29,9 +29,8 @@
             <div class="alert">
                 <p>
                     Não existe nenhum projeto CAPES/AUXPE associado a este programa. Antes de definir
-                    parâmetros como o saldo inicial e nome dos coordenadores, adicione um projeto CAPES/AUXPE,
-                    então o formulário para preenchimento ficará visível aqui. O código do projeto é fornecido pelo
-                    coordenador do programa.
+                    parâmetros, é preciso associar ao menos um projeto CAPES/AUXPE.
+                    O código do projeto é obtido pelo coordenador do programa através do SIPREC.
                 </p>
             </div>
         @else
