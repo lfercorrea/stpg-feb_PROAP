@@ -20,7 +20,7 @@
         </div>
         <div class="col s2">
             <button id="print-button" class="btn-flat waves-effect waves-black" type="button">
-                Imprimir solicitação
+                Imprimir
                 <i class="material-icons right">print</i>
             </button>
         </div>
