@@ -19,6 +19,7 @@ class NotaController extends Controller
             // 'valor' => 'regex:/^\d+(\,\d{1,2})?$/',
             'valor' => 'required|numeric',
             'fonte_pagadora_id' => 'required|integer',
+            'projeto_capes_id' => 'required|integer',
         ], [
             'numero.required' => 'Deve ser fornecido um número/código para a nota/recibo',
             'numero.string' => 'O número ou código da nota/rebico deve ser uma string',
@@ -33,17 +34,20 @@ class NotaController extends Controller
             'valor.numeric' => 'O valor precisa ser numérico',
             'fonte_pagadora_id.required' => 'A fonte pagadora deve ser informada pelo campo',
             'fonte_pagadora_id.integer' => 'A fonte pagadora deve ser do tipo INT',
+            'projeto_capes_id.required' => 'O código do projeto CAPES deve ser informada pelo campo',
+            'projeto_capes_id.integer' => 'O código do projeto CAPES deve ser do tipo INT',
         ]);
 
         $solicitacao = Solicitacao::find($id);
-        $nota->numero = $request->numero;
-        $nota->data = $request->data;
-        $nota->descricao = $request->descricao;
-        $nota->valor_tipo_id = $request->valor_tipo_id;
-        $nota->valor = $request->valor;
-        $nota->fonte_pagadora_id = $request->fonte_pagadora_id;
+        $nota->numero = $request->input('numero');
+        $nota->data = $request->input('data');
+        $nota->descricao = $request->input('descricao');
+        $nota->valor = $request->input('valor');
+        $nota->valor_tipo_id = $request->input('valor_tipo_id');
+        $nota->fonte_pagadora_id = $request->input('fonte_pagadora_id');
         $nota->solicitacao_id = $id;
         $nota->solicitante_id = $solicitacao->solicitante_id;
+        $nota->projeto_capes_id = $request->input('projeto_capes_id');
         
         if($nota->save()) {
             $solicitacao->status_id = 5;

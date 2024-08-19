@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Helpers\ValoresHelper;
 use App\Models\Nota;
 use App\Models\Programa;
+use App\Models\ProjetoCapes;
 use App\Models\Solicitacao;
 use App\Models\SolicitacaoTipo;
 use App\Models\Status;
@@ -196,6 +197,7 @@ class SolicitacaoController extends Controller
             'fontes_pagadoras' => FontePagadora::all(),
             'valor_tipos' => ValorTipo::all(),
             'statuses' => Status::all(),
+            'projetos_capes' => ProjetoCapes::where('programa_id', $solicitacao->programa_id)->get(),
             'count_notas' => $solicitacao->notas->count(),
             'valor' => $valor,
             'valor_inscricao' => $valor_inscricao,
@@ -256,6 +258,7 @@ class SolicitacaoController extends Controller
             'fontes_pagadoras' => FontePagadora::all(),
             'valor_tipos' => ValorTipo::all(),
             'statuses' => Status::all(),
+            'projeto_capes' => $nota->projeto_capes->codigo,
             'count_notas' => $solicitacao->notas->count(),
             'valor_extenso' => ValoresHelper::valorPorExtenso($nota->valor),
             'periodo' => $periodo,
@@ -276,9 +279,10 @@ class SolicitacaoController extends Controller
             'status_id.numeric' => 'O status da solicitação deve ser do tipo INT',
             'observacao.string' => 'O campo observação deve ser do tipo STRING',
         ]);
+        
         $solicitacao = Solicitacao::findOrFail($id);
-        $solicitacao->status_id = $request->status_id;
-        $solicitacao->observacao = $request->observacao;
+        $solicitacao->status_id = $request->input('status_id');
+        $solicitacao->observacao = $request->input('observacao');
         $solicitacao->save();
 
         return redirect()

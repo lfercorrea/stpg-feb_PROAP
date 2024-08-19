@@ -37,7 +37,7 @@
 
             <table class="bordered">
                 <tr class="mm7">
-                    <td class="cell">PROJETO N°: <b>{{ $programa->projeto_capes }}</b></td>
+                    <td class="cell">PROJETO N°: <b>{{ $projeto_capes }}</b></td>
                 </tr>
                 <tr>
                     <td class="title">RECIBO</td>

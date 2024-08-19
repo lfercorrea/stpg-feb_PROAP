@@ -33,4 +33,8 @@ class Nota extends Model
     public function valor_tipo() {
         return $this->belongsTo(ValorTipo::class, 'valor_tipo_id');
     }
+
+    public function projeto_capes() {
+        return $this->belongsTo(ProjetoCapes::class, 'projeto_capes_id');
+    }
 }

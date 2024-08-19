@@ -15,9 +15,14 @@ class ProjetoCapes extends Model
         'codigo',
         'verba',
         'programa_id',
+        'nota_id',
     ];
     
     public function programas() {
         return $this->belongsTo(Programa::class);
+    }
+
+    public function notas() {
+        return $this->hasMany(Nota::class);
     }
 }
