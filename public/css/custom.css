@@ -473,3 +473,7 @@ tr.mm29 {
 td.small {
     width: 50px;
 }
+
+.inline-flex {
+    display: inline-flex;
+}

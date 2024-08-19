@@ -97,7 +97,11 @@
                 @foreach ($solicitacoes as $solicitacao)
                     <tr>
                         <td><a href="{{ route('site.solicitacao.show', ['id' => $solicitacao->id]) }}"><b>{{ optional($solicitacao->servico_tipo)->nome ?? $solicitacao->tipo->nome }}:</b> {{ $solicitacao->resumo }}</a></td>
-                        <td><div class="chip print-hidden">{{ $solicitacao->solicitante->tipo_solicitante }}</div><a href="{{ route('site.solicitante.show', ['id' => $solicitacao->solicitante->id]) }}" class="black-text hover-underline"><b>{{ Str::upper($solicitacao->solicitante->nome) }}</b></a> <span class="print-hidden">(<a href="mailto:{{ $solicitacao->solicitante->email }}" class="hover-underline">{{ $solicitacao->solicitante->email }}</a>)</span></td>
+                        <td>
+                            <div class="chip print-hidden">{{ $solicitacao->solicitante->tipo_solicitante }}</div>
+                            <a href="{{ route('site.solicitante.show', ['id' => $solicitacao->solicitante->id]) }}" class="black-text hover-underline inline-flex"><b>{{ Str::upper($solicitacao->solicitante->nome) }}</b></a>
+                            <span class="print-hidden">(<a href="mailto:{{ $solicitacao->solicitante->email }}" class="hover-underline">{{ $solicitacao->solicitante->email }}</a>)</span>
+                        </td>
                         <td>{{ $solicitacao->programa->nome }}</td>
                         <td class="center-align print-hidden">
                             @if ($solicitacao->parecer_orientador)
