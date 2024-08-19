@@ -37,7 +37,7 @@
 
             <table class="bordered">
                 <tr class="mm7">
-                    <td class="cell" colspan="2">N.° AUXPE: <b>{{ $programa->projeto_capes }}</b></td>
+                    <td class="cell" colspan="2">N.° AUXPE: <b>{{ $projeto_capes }}</b></td>
                 </tr>
                 <tr>
                     <td class="title" colspan="2">RECIBO</td>
@@ -54,7 +54,7 @@
                     <td class="cell" colspan="2">
                         <div class="recibo">
                             Declaro, junto a Coordenação de Aperfeiçoamento de Pessoal de Nível Superior - CAPES, que utilizei
-                            parte dos recursos de custeio para o Projeto de Pesquisa n.º <b><u>{{ $programa->projeto_capes }}</u></b>,
+                            parte dos recursos de custeio para o Projeto de Pesquisa n.º <b><u>{{ $projeto_capes }}</u></b>,
                             no valor de <b>R$ <u>{{ $valor_total }}</u> (<u>{{ $valor_extenso }}</u>),</b>
                             a título de em caráter eventual e sem vínculo empregatício, a título de (<b>{{ $tipo_valor }}</b>)
                             no período de <b>{{ $periodo }}</b>.
