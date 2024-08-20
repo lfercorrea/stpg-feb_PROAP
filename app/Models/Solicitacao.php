@@ -181,22 +181,22 @@ class Solicitacao extends Model
                 $columns->select('id', 'nome');
             },
             'atividade' => function($columns) {
-                $columns->select('id', 'descricao', 'carta_convite', 'parecer_orientador', 'orcamento_passagens', 'nome_do_orientador');
+                $columns->select('id', 'descricao', 'periodo', 'valor_diarias', 'valor_passagens', 'carta_convite', 'parecer_orientador', 'orcamento_passagens', 'nome_do_orientador');
             },
             'evento' => function($columns) {
-                $columns->select('id', 'nome', 'artigo_copia', 'artigo_aceite', 'parecer_orientador', 'orcamento_passagens');
+                $columns->select('id', 'nome', 'periodo', 'valor_diarias', 'valor_passagens', 'valor_inscricao', 'artigo_copia', 'artigo_aceite', 'parecer_orientador', 'orcamento_passagens');
             },
             'material' => function($columns) {
-                $columns->select('id', 'descricao', 'orcamento', 'parecer_orientador');
+                $columns->select('id', 'descricao', 'valor', 'orcamento', 'parecer_orientador');
             },
             'traducao_artigo' => function($columns) {
-                $columns->select('id', 'titulo_artigo', 'artigo_a_traduzir', 'orcamento', 'parecer_orientador');
+                $columns->select('id', 'titulo_artigo', 'valor', 'artigo_a_traduzir', 'orcamento', 'parecer_orientador');
             },
             'outro_servico' => function($columns) {
-                $columns->select('id', 'descricao', 'orcamento');
+                $columns->select('id', 'descricao', 'valor', 'orcamento');
             },
             'manutencao' => function($columns) {
-                $columns->select('id', 'descricao', 'orcamento');
+                $columns->select('id', 'descricao', 'valor', 'orcamento');
             },
         ]);
 

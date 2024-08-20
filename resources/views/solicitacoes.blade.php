@@ -83,6 +83,8 @@
             <thead>
                 <tr>
                     <th>Solicitação</th>
+                    <th>Período</th>
+                    <th>Valores solicitados</th>
                     <th class="min-width-25">Solicitante</th>
                     <th>Programa</th>
                     <th class="center-align print-hidden">Parecer</th>
@@ -97,6 +99,29 @@
                 @foreach ($solicitacoes as $solicitacao)
                     <tr>
                         <td><a href="{{ route('site.solicitacao.show', ['id' => $solicitacao->id]) }}"><b>{{ optional($solicitacao->servico_tipo)->nome ?? $solicitacao->tipo->nome }}:</b> {{ $solicitacao->resumo }}</a></td>
+                        <td>{{ $solicitacao->periodo }}</td>
+                        <td>
+                            @if ($solicitacao->valor)
+                                <div>
+                                    <i><b>Geral:&nbsp;</b>{{ $solicitacao->valor }}</i>
+                                </div>
+                            @endif
+                            @if ($solicitacao->valor_diarias)
+                                <div>
+                                    <i><b>Diárias:&nbsp;</b>{{ $solicitacao->valor_diarias }}</i>
+                                </div>
+                            @endif
+                            @if ($solicitacao->valor_passagens)
+                                <div>
+                                    <i><b>Passagens:&nbsp;</b>{{ $solicitacao->valor_passagens }}</i>
+                                </div>
+                            @endif
+                            @if ($solicitacao->valor_inscricao)
+                                <div>
+                                    <i><b>Taxa de inscrição:&nbsp;</b>{{ $solicitacao->valor_inscricao }}</i>
+                                </div>
+                            @endif
+                        </td>
                         <td>
                             <div class="chip print-hidden">{{ $solicitacao->solicitante->tipo_solicitante }}</div>
                             <a href="{{ route('site.solicitante.show', ['id' => $solicitacao->solicitante->id]) }}" class="black-text hover-underline inline-flex"><b>{{ Str::upper($solicitacao->solicitante->nome) }}</b></a>

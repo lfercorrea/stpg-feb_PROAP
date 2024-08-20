@@ -70,12 +70,28 @@ class SolicitacaoController extends Controller
                 ?? optional($solicitacao->manutencao)->orcamento 
                 ?? optional($solicitacao->outro_servico)->orcamento 
                 ?? optional($solicitacao->traducao_artigo)->orcamento;
+            $periodo = optional($solicitacao->evento)->periodo
+                ?? optional($solicitacao->atividade)->periodo;
+            $valor = optional($solicitacao->manutencao)->valor
+                ?? optional($solicitacao->material)->valor
+                ?? optional($solicitacao->outro_servico)->valor
+                ?? optional($solicitacao->traducao_artigo)->valor;
+            $valor_diarias = optional($solicitacao->evento)->valor_diarias
+                ?? optional($solicitacao->atividade)->valor_diarias;
+            $valor_passagens = optional($solicitacao->evento)->valor_passagens
+                ?? optional($solicitacao->atividade)->valor_passagens;
+            $valor_inscricao = optional($solicitacao->evento)->valor_inscricao;
 
             $solicitacao->resumo = $resumo_solicitacao;
             $solicitacao->artigo_aceite = $link_artigo_aceite;
             $solicitacao->artigo_copia = $link_artigo_copia;
             $solicitacao->parecer_orientador = $link_parecer;
             $solicitacao->orcamento = $link_orcamento;
+            $solicitacao->periodo = $periodo;
+            $solicitacao->valor = $valor;
+            $solicitacao->valor_diarias = $valor_diarias;
+            $solicitacao->valor_passagens = $valor_passagens;
+            $solicitacao->valor_inscricao = $valor_inscricao;
         }
 
         $tipos_solicitacao = SolicitacaoTipo::orderBy('nome', 'asc')->pluck('nome', 'id')->toArray();
