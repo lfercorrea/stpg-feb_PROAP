@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('nome')->nullable();
             $table->string('coordenador')->nullable();
             $table->string('vice_coordenador')->nullable();
-            $table->string('projeto_capes')->nullable();
 
             $table->timestamps();
         });

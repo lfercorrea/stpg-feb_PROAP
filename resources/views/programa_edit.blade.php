@@ -52,17 +52,6 @@
                         <label for="vice_coordenador">Nome completo do vice-coordenador</label>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="input-field col s12 m8">
-                        <select name="projeto_capes">
-                            <option value="{{ old('projeto_capes', $programa->projeto_capes) }}" selected>{{ old('projeto_capes', $programa->projeto_capes) }}</option>
-                            @foreach ($programa->projetos_capes as $projeto)
-                                <option value="{{ $projeto->codigo }}">{{ $projeto->codigo }}</option>
-                            @endforeach
-                        </select>
-                        <label>Projeto CAPES/AUXPE vigente</label>
-                    </div>
-                </div>
                 <div class="container center print-hidden">
                     <a class="btn-flat waves-effect waves-black" onclick="history.back()">Voltar</a>
                     <button class="btn-small black darken-2 waves-effect waves-light" type="submit" name="action">Salvar</button>
@@ -77,7 +66,6 @@
                         <th class="print-hidden"></th>
                         <th>Código do projeto</th>
                         <th class="center">Verba</th>
-                        <th class="center">Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -90,13 +78,6 @@
                             </td>
                             <td>{{ $projeto_capes->codigo }}</td>
                             <td class="center">{{ $brl->formatCurrency($projeto_capes->verba, 'BRL') }}</td>
-                            <td class="center">
-                                @if ($projeto_capes->codigo === $programa->projeto_capes)
-                                    <b>Vigente</b>
-                                @else
-                                    Inativo
-                                @endif
-                            </td>
                         </tr>
                     @endforeach
                     <tr>
@@ -118,7 +99,7 @@
                         <label for="codigo">Código do projeto (fornecido pelo coordenador do programa)</label>
                     </div>
                     <div class="input-field col s12 m3">
-                        <input name="verba" id="verba" type="text" class="validate">
+                        <input name="verba" id="verba" type="number" placeholder="R$ 1234567,89" min="0" step="0.01" class="validate">
                         <label for="verba">Verba concedida (R$)</label>
                     </div>
                     <div class="input-field col s12 m2">

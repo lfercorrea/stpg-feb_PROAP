@@ -32,23 +32,17 @@ class ProgramaController extends Controller
 
         $request->validate([
             'coordenador' => 'required|string|max:255',
-            'vice_coordenador' => 'required|string|max:255',
-            'projeto_capes' => 'required|string|max:255',
+            'vice_coordenador' => 'nullable|string|max:255',
         ], [
             'coordenador.required' => 'É necessário definir o nome completo do coordenador do programa.',
             'coordenador.string' => 'O nome completo do coordenador do programa precisa ser uma string.',
             'coordenador.max' => 'O nome completo do coordenador do programa precisa ter, no máximo, 255 caracteres.',
-            'vice_coordenador.required' => 'É necessário definir o nome completo do vice-coordenador do programa.',
             'vice_coordenador.string' => 'O nome completo do vice-coordenador do programa precisa ser uma string.',
             'vice_coordenador.max' => 'O nome completo do vice-coordenador do programa precisa ter, no máximo, 255 caracteres.',
-            'projeto_capes.required' => 'É necessário definir o código do projeto CAPES do programa.',
-            'projeto_capes.string' => 'O código do projeto CAPES do programa precisa ser uma string.',
-            'projeto_capes.max' => 'O código do projeto CAPES do programa precisa ter, no máximo, 255 caracteres.',
         ]);
 
         $programa->coordenador = $request->input('coordenador');
         $programa->vice_coordenador = $request->input('vice_coordenador');
-        $programa->projeto_capes = $request->input('projeto_capes');
 
         $programa->save();
 

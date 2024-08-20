@@ -26,7 +26,6 @@
                     <tr>
                         <th>Programa</th>
                         <th>Coordenador</th>
-                        <th>Projeto CAPES vigente</th>
                         <th>Total verbas</th>
                     </tr>
                 </thead>
@@ -38,7 +37,6 @@
                                 <b>{{ $programa->nome }}</b>
                             </td>
                             <td>{{ $programa->coordenador }}</td>
-                            <td>{{ $programa->projeto_capes }}</td>
                             <td>{{ $brl->formatCurrency($programa->soma_verbas(), 'BRL') }}</td>
                         </tr>
                     @endforeach

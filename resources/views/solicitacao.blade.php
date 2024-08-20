@@ -286,7 +286,7 @@
                                 <label>Tipo de despesa</label>
                             </div>
                             <div class="input-field col s8 m2">
-                                <input name="valor" id="valor" type="number" min="0" step="0.01" class="validate" required>
+                                <input name="valor" id="valor" type="number" placeholder="R$ 1234567,89" min="0" step="0.01" class="validate" required>
                                 <label for="valor">Valor</label>
                             </div>
                             <div class="input-field col s4 m1">

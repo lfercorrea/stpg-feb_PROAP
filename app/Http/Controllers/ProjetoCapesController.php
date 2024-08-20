@@ -13,14 +13,13 @@ class ProjetoCapesController extends Controller
 
         $request->validate([
             'codigo' => 'required|string|max:255',
-            'verba' => 'required|string|max:255',
+            'verba' => 'required|numeric',
         ], [
             'codigo.required' => 'É necessário fornecer o código do projeto.',
             'codigo.string' => 'O código do projeto deve ser do tipo string.',
             'codigo.max' => 'O código do projeto deve ter, no máximo, 255 caracteres.',
             'verba.required' => 'É necessário fornecer a verba concedida ao projeto.',
-            'verba.string' => 'O valor da verba deve ser do tipo string.',
-            'verba.max' => 'O valor da verba deve ter, no máximo, 255 caracteres.',
+            'verba.numeric' => 'O valor da verba deve ser numérico.',
         ]);
 
         $projeto->programa_id = $request->programa_id;
