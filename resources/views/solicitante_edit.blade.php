@@ -75,7 +75,7 @@
                         <label for="banco_conta">Número da conta</label>
                     </div>                    
                 </div>
-                <div class="alert">
+                <div class="alert print-hidden">
                     <b>IMPORTANTE</b>
                     <p>
                         É esperado que os dados pessoais dos solicitantes <b>jamais</b> precisem ser alterados manualmente. A idéia é que esses dados sejam atualizados automaticamente a cada nova importação dos CSVs.

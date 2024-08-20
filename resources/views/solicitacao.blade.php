@@ -62,6 +62,7 @@
                         <th>Período do evento</th>
                     @endif
                     <th>Solicitado em</th>
+                    <th>Programa</th>
                     @if ($solicitacao->nome_do_orientador)
                         <th>Orientador</th>
                     @endif
@@ -79,6 +80,7 @@
                         <td>{{ $periodo }}</td>
                     @endif
                     <td>{{ $solicitacao->carimbo_data_hora }}</td>
+                    <td>{{ $solicitacao->programa->nome }}</td>
                     @if ($solicitacao->nome_do_orientador)
                     <td>{{ $solicitacao->nome_do_orientador }}</td>
                     @endif
@@ -296,7 +298,7 @@
                     </form>
                 </div>
             @else
-                <div class="alert">
+                <div class="alert print-hidden">
                     <p>
                         O programa está sem coordenador definido, o que impossibilita o lançamento de notas.
                     </p>

@@ -82,45 +82,47 @@
         <table class="bordered striped responsive-table highlight">
             <thead>
                 <tr>
-                    <th>Solicitação</th>
-                    <th>Período</th>
-                    <th>Valores solicitados</th>
+                    <th>Resumo da solicitação</th>
                     <th class="min-width-25">Solicitante</th>
                     <th>Programa</th>
                     <th class="center-align print-hidden">Parecer</th>
                     <th class="center-align print-hidden">Orçamento</th>
                     <th class="center-align print-hidden">Artigo</th>
                     <th class="center-align print-hidden">Aceite</th>
-                    <th>Data</th>
+                    <th>Data da solicitação</th>
                     <th class="center">Status</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($solicitacoes as $solicitacao)
                     <tr>
-                        <td><a href="{{ route('site.solicitacao.show', ['id' => $solicitacao->id]) }}"><b>{{ optional($solicitacao->servico_tipo)->nome ?? $solicitacao->tipo->nome }}:</b> {{ $solicitacao->resumo }}</a></td>
-                        <td>{{ $solicitacao->periodo }}</td>
                         <td>
-                            @if ($solicitacao->valor)
-                                <div>
-                                    <i><b>Geral:&nbsp;</b>{{ $solicitacao->valor }}</i>
-                                </div>
-                            @endif
-                            @if ($solicitacao->valor_diarias)
-                                <div>
-                                    <i><b>Diárias:&nbsp;</b>{{ $solicitacao->valor_diarias }}</i>
-                                </div>
-                            @endif
-                            @if ($solicitacao->valor_passagens)
-                                <div>
-                                    <i><b>Passagens:&nbsp;</b>{{ $solicitacao->valor_passagens }}</i>
-                                </div>
-                            @endif
-                            @if ($solicitacao->valor_inscricao)
-                                <div>
-                                    <i><b>Taxa de inscrição:&nbsp;</b>{{ $solicitacao->valor_inscricao }}</i>
-                                </div>
-                            @endif
+                            <a href="{{ route('site.solicitacao.show', ['id' => $solicitacao->id]) }}"><b>{{ optional($solicitacao->servico_tipo)->nome ?? $solicitacao->tipo->nome }}:</b>
+                                {{ $solicitacao->resumo }}.
+                                @if ($solicitacao->periodo)
+                                    Período: {{ $solicitacao->periodo }}
+                                @endif
+                                @if ($solicitacao->valor)
+                                    <div>
+                                        <i><b>Valor solicitado: </b>{{ $solicitacao->valor }}</i>
+                                    </div>
+                                @endif
+                                @if ($solicitacao->valor_diarias)
+                                    <div>
+                                        <i><b>Diárias: </b>{{ $solicitacao->valor_diarias }}</i>
+                                    </div>
+                                @endif
+                                @if ($solicitacao->valor_passagens)
+                                    <div>
+                                        <i><b>Passagens: </b>{{ $solicitacao->valor_passagens }}</i>
+                                    </div>
+                                @endif
+                                @if ($solicitacao->valor_inscricao)
+                                    <div>
+                                        <i><b>Taxa de inscrição: </b>{{ $solicitacao->valor_inscricao }}</i>
+                                    </div>
+                                @endif
+                            </a>
                         </td>
                         <td>
                             <div class="chip print-hidden">{{ $solicitacao->solicitante->tipo_solicitante }}</div>

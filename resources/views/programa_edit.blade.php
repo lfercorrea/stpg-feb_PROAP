@@ -11,7 +11,7 @@
             <a href="#" id="confirmDelete" class="waves-effect waves-light btn red darken-1">Confirmar</a>
         </div>
     </div>
-    <div class="section-margins">
+    <div class="section-margin-bottom">
         <div class="row print-hidden">
             <div class="col s8 m10">
                 <h5>{{ $title }}</h5>
@@ -26,7 +26,7 @@
     </div>
     <div class="container">
         @if ($programa->projetos_capes->count() === 0)
-            <div class="alert">
+            <div class="alert print-hidden">
                 <p>
                     Não existe nenhum projeto CAPES/AUXPE associado a este programa. Antes de definir
                     parâmetros, é preciso associar ao menos um projeto CAPES/AUXPE.
