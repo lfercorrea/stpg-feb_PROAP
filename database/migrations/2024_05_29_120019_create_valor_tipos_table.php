@@ -25,6 +25,7 @@ return new class extends Migration
             ['nome' => 'Material'],
             ['nome' => 'Passagem aérea/transporte'],
             ['nome' => 'Pedágio'],
+            ['nome' => 'Publicação'],
             ['nome' => 'Serviço'],
             ['nome' => 'Taxa de inscrição em congresso'],
         ];
