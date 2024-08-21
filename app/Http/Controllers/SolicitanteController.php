@@ -102,25 +102,40 @@ class SolicitanteController extends Controller
                     ?? optional($solicitacao->manutencao)->orcamento 
                     ?? optional($solicitacao->outro_servico)->orcamento 
                     ?? optional($solicitacao->traducao_artigo)->orcamento;
+                $periodo = optional($solicitacao->evento)->periodo
+                    ?? optional($solicitacao->atividade)->periodo;
+                $valor = optional($solicitacao->manutencao)->valor
+                    ?? optional($solicitacao->material)->valor
+                    ?? optional($solicitacao->outro_servico)->valor
+                    ?? optional($solicitacao->traducao_artigo)->valor;
+                $valor_diarias = optional($solicitacao->evento)->valor_diarias
+                    ?? optional($solicitacao->atividade)->valor_diarias;
+                $valor_passagens = optional($solicitacao->evento)->valor_passagens
+                    ?? optional($solicitacao->atividade)->valor_passagens;
+                $valor_inscricao = optional($solicitacao->evento)->valor_inscricao;
+
                 $solicitacao->resumo = $resumo_solicitacao;
                 $solicitacao->artigo_aceite = $link_artigo_aceite;
                 $solicitacao->artigo_copia = $link_artigo_copia;
                 $solicitacao->parecer_orientador = $link_parecer;
                 $solicitacao->orcamento = $link_orcamento;
+                $solicitacao->periodo = $periodo;
+                $solicitacao->valor = $valor;
+                $solicitacao->valor_diarias = $valor_diarias;
+                $solicitacao->valor_passagens = $valor_passagens;
+                $solicitacao->valor_inscricao = $valor_inscricao;
+
                 $soma_notas = $solicitacao->soma_notas();
                 $valor_total_programa += $soma_notas;
-                $solicitacao->soma_notas = number_format($soma_notas, 2, ',' ,'.');
-                foreach($solicitacao->notas as $nota) {
-                    $nota->valor = number_format($nota->valor, 2, ',', '.');
-                }
+                $solicitacao->soma_notas = $soma_notas;
             }
 
             $valor_total += $valor_total_programa;
-            $solicitacoes_programa->valor_total = number_format($valor_total_programa, 2, ',', '.');
+            $solicitacoes_programa->valor_total = $valor_total_programa;
             $valor_total_programa = 0;
         }
 
-        $solicitacoes->valor_total = number_format($valor_total, 2, ',', '.');
+        $solicitacoes->valor_total = $valor_total;
         
         return view('solicitante', [
             'title' => 'Solicitante' . ' - ' . $solicitante->nome,

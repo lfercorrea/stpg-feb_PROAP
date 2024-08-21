@@ -70,13 +70,11 @@
                             <tr>
                                 <th class="print-hidden">Status</th>
                                 <th>Solicitação</th>
+                                <th>Valores solicitados</th>
                                 <th>Valor pago</th>
                                 <th>Discriminação</th>
                                 <th class="print-hidden">Orientador</th>
-                                <th class="center-align print-hidden">Parecer</th>
-                                <th class="center-align print-hidden">Orçamento</th>
-                                <th class="center-align print-hidden">Artigo</th>
-                                <th class="center-align print-hidden">Aceite</th>
+                                <th class="center-align print-hidden">Conferência</th>
                                 <th>Data da solicitação</th>
                             </tr>
                         </thead>
@@ -84,47 +82,72 @@
                             @foreach ($solicitacoes_programa as $solicitacao)
                                 <tr>
                                     <td class="print-hidden">{{ $solicitacao->status->nome }}</td>
-                                    <td><a href="{{ route('site.solicitacao.show', ['id' => $solicitacao->id]) }}"><b>{{ optional($solicitacao->servico_tipo)->nome ?? $solicitacao->tipo->nome }}</b>: {{ $solicitacao->resumo }}</a></td>
-                                    <td>R$&nbsp;{{ $solicitacao->soma_notas }}</td>
+                                    <td>
+                                        <a href="{{ route('site.solicitacao.show', ['id' => $solicitacao->id]) }}"><b>{{ optional($solicitacao->servico_tipo)->nome ?? $solicitacao->tipo->nome }}</b>:
+                                            {{ $solicitacao->resumo }}.
+                                            @if ($solicitacao->periodo)
+                                                Período: {{ $solicitacao->periodo }}
+                                            @endif
+                                        </a>
+                                    </td>
+                                    <td>
+                                        @if ($solicitacao->valor)
+                                            <div>
+                                                <i><b>Valor solicitado: </b>{{ $solicitacao->valor }}</i>
+                                            </div>
+                                        @endif
+                                        @if ($solicitacao->valor_diarias)
+                                            <div>
+                                                <i><b>Diárias: </b>{{ $solicitacao->valor_diarias }}</i>
+                                            </div>
+                                        @endif
+                                        @if ($solicitacao->valor_passagens)
+                                            <div>
+                                                <i><b>Passagens: </b>{{ $solicitacao->valor_passagens }}</i>
+                                            </div>
+                                        @endif
+                                        @if ($solicitacao->valor_inscricao)
+                                            <div>
+                                                <i><b>Taxa de inscrição: </b>{{ $solicitacao->valor_inscricao }}</i>
+                                            </div>
+                                        @endif
+                                    </td>
+                                    <td>{{ $brl->formatCurrency($solicitacao->soma_notas, 'BRL') }}</td>
                                     <td>
                                         @foreach ($solicitacao->notas as $nota)
-                                            <b>R$&nbsp;{{ $nota->valor }}</b>&nbsp;<i>({{ $nota->valor_tipo->nome }})</i><br>
+                                            <div>
+                                                <i>
+                                                    <b>{{ $nota->valor_tipo->nome }}:&nbsp;</b>{{ $brl->formatCurrency($nota->valor, 'BRL') }}
+                                                </i>
+                                            </div>
                                         @endforeach
                                     </td>
                                     <td class="print-hidden">{{ $solicitacao->nome_do_orientador }}</td>
-                                    <td class="center-align print-hidden">
+                                    <td class="center print-hidden">
                                         @if ($solicitacao->parecer_orientador)
-                                            <a href="{{ $solicitacao->parecer_orientador }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->parecer_orientador }}"><i class="tiny material-icons black-text">open_in_new</i></a>
+                                            <a href="{{ $solicitacao->parecer_orientador }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->parecer_orientador }}">Parecer do orientador</a>
                                         @endif
-                                    </td>
-                                    <td class="center-align print-hidden">
                                         @if ($solicitacao->orcamento)
-                                            <a href="{{ $solicitacao->orcamento }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->orcamento }}"><i class="tiny material-icons black-text">open_in_new</i></a>
+                                            <a href="{{ $solicitacao->orcamento }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->orcamento }}">Orçamento</a>
                                         @endif
-                                    </td>
-                                    <td class="center-align print-hidden">
                                         @if ($solicitacao->artigo_copia)
-                                            <a href="{{ $solicitacao->artigo_copia }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->artigo_copia }}"><i class="tiny material-icons black-text">open_in_new</i></a>
+                                            <a href="{{ $solicitacao->artigo_copia }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->artigo_copia }}">Cópia do artigo</a>
                                         @endif
-                                    </td>
-                                    <td class="center-align print-hidden">
                                         @if ($solicitacao->artigo_aceite)
-                                            <a href="{{ $solicitacao->artigo_aceite }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->artigo_aceite }}"><i class="tiny material-icons black-text">open_in_new</i></a>
+                                            <a href="{{ $solicitacao->artigo_aceite }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->artigo_aceite }}">Aceite do artigo</a>
                                         @endif
                                     </td>
                                     <td>{{ $solicitacao->carimbo_data_hora }}</td>
                                 </tr>
                             @endforeach
-                            {{-- <table class="bordered compact-table striped responsive-table"> --}}
                                 <tr>
-                                    <th colspan="10" class="center-align blue-text text-darken-2">Total na {{ $solicitacoes_programa->first()->programa->nome }}:&nbsp;R$&nbsp;{{ $solicitacoes_programa->valor_total }}</th>
+                                    <th colspan="10" class="center-align blue-text text-darken-2">Total na {{ $solicitacoes_programa->first()->programa->nome }}: {{ $brl->formatCurrency($solicitacoes_programa->valor_total, 'BRL') }}</th>
                                 </tr>
-                            {{-- </table> --}}
                         </tbody>
                     </table>
                 @endforeach
                 <div class="container center section-margins">
-                    <span class="red-text text-darken-2"><h6><b>Total geral pago:&nbsp;R$&nbsp;{{ $solicitacoes->valor_total }}</b></h6></span>
+                    <span class="red-text text-darken-2"><h6><b>Total geral pago: {{ $brl->formatCurrency($solicitacoes->valor_total, 'BRL') }}</b></h6></span>
                 </div>
             </div>
         @endif

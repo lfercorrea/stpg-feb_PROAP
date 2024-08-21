@@ -83,12 +83,10 @@
             <thead>
                 <tr>
                     <th>Resumo da solicitação</th>
+                    <th>Valores solicitados</th>
                     <th class="min-width-25">Solicitante</th>
                     <th>Programa</th>
-                    <th class="center-align print-hidden">Parecer</th>
-                    <th class="center-align print-hidden">Orçamento</th>
-                    <th class="center-align print-hidden">Artigo</th>
-                    <th class="center-align print-hidden">Aceite</th>
+                    <th class="center-align print-hidden">Conferência</th>
                     <th>Data da solicitação</th>
                     <th class="center">Status</th>
                 </tr>
@@ -102,52 +100,50 @@
                                 @if ($solicitacao->periodo)
                                     Período: {{ $solicitacao->periodo }}
                                 @endif
-                                @if ($solicitacao->valor)
-                                    <div>
-                                        <i><b>Valor solicitado: </b>{{ $solicitacao->valor }}</i>
-                                    </div>
-                                @endif
-                                @if ($solicitacao->valor_diarias)
-                                    <div>
-                                        <i><b>Diárias: </b>{{ $solicitacao->valor_diarias }}</i>
-                                    </div>
-                                @endif
-                                @if ($solicitacao->valor_passagens)
-                                    <div>
-                                        <i><b>Passagens: </b>{{ $solicitacao->valor_passagens }}</i>
-                                    </div>
-                                @endif
-                                @if ($solicitacao->valor_inscricao)
-                                    <div>
-                                        <i><b>Taxa de inscrição: </b>{{ $solicitacao->valor_inscricao }}</i>
-                                    </div>
-                                @endif
                             </a>
                         </td>
                         <td>
-                            <div class="chip print-hidden">{{ $solicitacao->solicitante->tipo_solicitante }}</div>
+                            @if ($solicitacao->valor)
+                                <div>
+                                    <i><b>Valor solicitado: </b>{{ $solicitacao->valor }}</i>
+                                </div>
+                            @endif
+                            @if ($solicitacao->valor_diarias)
+                                <div>
+                                    <i><b>Diárias: </b>{{ $solicitacao->valor_diarias }}</i>
+                                </div>
+                            @endif
+                            @if ($solicitacao->valor_passagens)
+                                <div>
+                                    <i><b>Passagens: </b>{{ $solicitacao->valor_passagens }}</i>
+                                </div>
+                            @endif
+                            @if ($solicitacao->valor_inscricao)
+                                <div>
+                                    <i><b>Taxa de inscrição: </b>{{ $solicitacao->valor_inscricao }}</i>
+                                </div>
+                            @endif
+                        </td>
+                        <td>
                             <a href="{{ route('site.solicitante.show', ['id' => $solicitacao->solicitante->id]) }}" class="black-text hover-underline inline-flex"><b>{{ Str::upper($solicitacao->solicitante->nome) }}</b></a>
                             <span class="print-hidden">(<a href="mailto:{{ $solicitacao->solicitante->email }}" class="hover-underline">{{ $solicitacao->solicitante->email }}</a>)</span>
+                            <div>
+                                <i>{{ $solicitacao->solicitante->tipo_solicitante }}</i>
+                            </div>
                         </td>
                         <td>{{ $solicitacao->programa->nome }}</td>
-                        <td class="center-align print-hidden">
+                        <td class="center print-hidden">
                             @if ($solicitacao->parecer_orientador)
-                                <a href="{{ $solicitacao->parecer_orientador }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->parecer_orientador }}"><i class="tiny material-icons black-text">open_in_new</i></a>
+                                <a href="{{ $solicitacao->parecer_orientador }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->parecer_orientador }}">Parecer do orientador</a>
                             @endif
-                        </td>
-                        <td class="center-align print-hidden">
                             @if ($solicitacao->orcamento)
-                                <a href="{{ $solicitacao->orcamento }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->orcamento }}"><i class="tiny material-icons black-text">open_in_new</i></a>
+                                <a href="{{ $solicitacao->orcamento }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->orcamento }}">Orçamento</a>
                             @endif
-                        </td>
-                        <td class="center-align print-hidden">
                             @if ($solicitacao->artigo_copia)
-                                <a href="{{ $solicitacao->artigo_copia }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->artigo_copia }}"><i class="tiny material-icons black-text">open_in_new</i></a>
+                                <a href="{{ $solicitacao->artigo_copia }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->artigo_copia }}">Cópia do artigo</a>
                             @endif
-                        </td>
-                        <td class="center-align print-hidden">
                             @if ($solicitacao->artigo_aceite)
-                                <a href="{{ $solicitacao->artigo_aceite }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->artigo_aceite }}"><i class="tiny material-icons black-text">open_in_new</i></a>
+                                <a href="{{ $solicitacao->artigo_aceite }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->artigo_aceite }}">Aceite do artigo</a>
                             @endif
                         </td>
                         <td>{{ $solicitacao->carimbo_data_hora }}</td>
