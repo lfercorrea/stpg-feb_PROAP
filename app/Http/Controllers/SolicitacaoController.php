@@ -34,7 +34,7 @@ class SolicitacaoController extends Controller
         $count_solicitacoes = 0;
         $limit = 30;
         
-        if($request->filled('limit') AND $request->input('limit') <= 1000) {
+        if($request->filled('limit') AND $request->input('limit') <= 10000) {
             $limit =  $request->input('limit');
         }
 
@@ -49,6 +49,10 @@ class SolicitacaoController extends Controller
         
         $count_solicitacoes = $query->count();
         $solicitacoes = $query->paginate($limit);
+
+        $solicitacoes->each(function ($solicitacao) {
+            $solicitacao->notas = $solicitacao->notas->sortBy('valor_tipo.nome');
+        });
         
         foreach($solicitacoes as $solicitacao) {
             $resumo_solicitacao = optional($solicitacao->evento)->nome

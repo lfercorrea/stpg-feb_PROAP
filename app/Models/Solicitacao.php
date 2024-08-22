@@ -105,8 +105,7 @@ class Solicitacao extends Model
                     $q2->where('nome', 'like', '%' . $search . '%')
                         ->orWhere('email', 'like', '%' . $search . '%')
                         ->orWhere('tipo_solicitante', 'like', '%' . $search . '%');
-                })
-                ->orWhereHas('atividade', function($q1) use ($search) {
+                })->orWhereHas('atividade', function($q1) use ($search) {
                     $q1->where('descricao', 'like', '%' . $search . '%');
                 })->orWhereHas('evento', function($q1) use ($search) {
                     $q1->where('nome', 'like', '%' . $search . '%');
@@ -167,6 +166,9 @@ class Solicitacao extends Model
         $query->with([
             'status' => function($columns) {
                 $columns->select('id', 'nome');
+            },
+            'notas.valor_tipo' => function($columns) {
+                $columns->select('id', 'valor', 'valor_tipo_id', 'nome');
             },
             'tipo' => function($columns) {
                 $columns->select('id', 'nome');

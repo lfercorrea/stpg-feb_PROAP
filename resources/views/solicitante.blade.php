@@ -68,11 +68,9 @@
                     <table class="bordered striped responsive-table highlight">
                         <thead>
                             <tr>
-                                <th class="print-hidden">Status</th>
                                 <th>Solicitação</th>
                                 <th>Valores solicitados</th>
-                                <th>Valor pago</th>
-                                <th>Discriminação</th>
+                                <th>Valores pagos</th>
                                 <th class="print-hidden">Orientador</th>
                                 <th class="center-align print-hidden">Conferência</th>
                                 <th>Data da solicitação</th>
@@ -81,7 +79,6 @@
                         <tbody>
                             @foreach ($solicitacoes_programa as $solicitacao)
                                 <tr>
-                                    <td class="print-hidden">{{ $solicitacao->status->nome }}</td>
                                     <td>
                                         <a href="{{ route('site.solicitacao.show', ['id' => $solicitacao->id]) }}"><b>{{ optional($solicitacao->servico_tipo)->nome ?? $solicitacao->tipo->nome }}</b>:
                                             {{ $solicitacao->resumo }}.
@@ -93,34 +90,39 @@
                                     <td>
                                         @if ($solicitacao->valor)
                                             <div>
-                                                <i><b>Valor solicitado: </b>{{ $solicitacao->valor }}</i>
+                                                <i><b>-Valor solicitado: </b>{{ $solicitacao->valor }}</i>
                                             </div>
                                         @endif
                                         @if ($solicitacao->valor_diarias)
                                             <div>
-                                                <i><b>Diárias: </b>{{ $solicitacao->valor_diarias }}</i>
+                                                <i><b>-Diárias: </b>{{ $solicitacao->valor_diarias }}</i>
                                             </div>
                                         @endif
                                         @if ($solicitacao->valor_passagens)
                                             <div>
-                                                <i><b>Passagens: </b>{{ $solicitacao->valor_passagens }}</i>
+                                                <i><b>-Passagens: </b>{{ $solicitacao->valor_passagens }}</i>
                                             </div>
                                         @endif
                                         @if ($solicitacao->valor_inscricao)
                                             <div>
-                                                <i><b>Taxa de inscrição: </b>{{ $solicitacao->valor_inscricao }}</i>
+                                                <i><b>-Taxa de inscrição: </b>{{ $solicitacao->valor_inscricao }}</i>
                                             </div>
                                         @endif
                                     </td>
-                                    <td>{{ $brl->formatCurrency($solicitacao->soma_notas, 'BRL') }}</td>
                                     <td>
                                         @foreach ($solicitacao->notas as $nota)
                                             <div>
                                                 <i>
-                                                    <b>{{ $nota->valor_tipo->nome }}:&nbsp;</b>{{ $brl->formatCurrency($nota->valor, 'BRL') }}
+                                                    <b>-{{ $nota->valor_tipo->nome }}:&nbsp;</b>{{ $brl->formatCurrency($nota->valor, 'BRL') }}
                                                 </i>
                                             </div>
                                         @endforeach
+                                        <div class="center">
+                                            <b>{{ $solicitacao->status->nome }}</b>
+                                            @if ($solicitacao->soma_notas > 0)
+                                                <b>(total):&nbsp;{{ $brl->formatCurrency($solicitacao->soma_notas, 'BRL') }}</b>
+                                            @endif
+                                        </div>
                                     </td>
                                     <td class="print-hidden">{{ $solicitacao->nome_do_orientador }}</td>
                                     <td class="center print-hidden">

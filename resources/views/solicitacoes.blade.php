@@ -51,9 +51,10 @@
                 </div>
                 <div class="col s12 m2">
                     <select name="limit">
-                            <option value="30">Itens por página</option>
-                            <option value="100">100</option>
-                            <option value="1000">1000</option>
+                        <option value="30">Itens por página</option>
+                        <option value="100">100</option>
+                        <option value="1000">1000</option>
+                        <option value="10000">10000</option>
                     </select>
                 </div>
                 <div class="col s6 m2">
@@ -84,11 +85,10 @@
                 <tr>
                     <th>Resumo da solicitação</th>
                     <th>Valores solicitados</th>
+                    <th>Valores pagos</th>
                     <th class="min-width-25">Solicitante</th>
-                    <th>Programa</th>
                     <th class="center-align print-hidden">Conferência</th>
                     <th>Data da solicitação</th>
-                    <th class="center">Status</th>
                 </tr>
             </thead>
             <tbody>
@@ -105,33 +105,51 @@
                         <td>
                             @if ($solicitacao->valor)
                                 <div>
-                                    <i><b>Valor solicitado: </b>{{ $solicitacao->valor }}</i>
+                                    <i><b>-Valor solicitado: </b>{{ $solicitacao->valor }}</i>
                                 </div>
                             @endif
                             @if ($solicitacao->valor_diarias)
                                 <div>
-                                    <i><b>Diárias: </b>{{ $solicitacao->valor_diarias }}</i>
+                                    <i><b>-Diárias: </b>{{ $solicitacao->valor_diarias }}</i>
                                 </div>
                             @endif
                             @if ($solicitacao->valor_passagens)
                                 <div>
-                                    <i><b>Passagens: </b>{{ $solicitacao->valor_passagens }}</i>
+                                    <i><b>-Passagens: </b>{{ $solicitacao->valor_passagens }}</i>
                                 </div>
                             @endif
                             @if ($solicitacao->valor_inscricao)
                                 <div>
-                                    <i><b>Taxa de inscrição: </b>{{ $solicitacao->valor_inscricao }}</i>
+                                    <i><b>-Taxa de inscrição: </b>{{ $solicitacao->valor_inscricao }}</i>
                                 </div>
                             @endif
+                        </td>
+                        <td>
+                            @foreach ($solicitacao->notas as $nota)
+                            <div>
+                                <i>
+                                    <b>-{{ $nota->valor_tipo->nome }}:</b> {{ $brl->formatCurrency($nota->valor, 'BRL') }}
+                                </i>
+                            </div>
+                            @endforeach
+                            <div class="center">
+                                <b>{{ $solicitacao->status->nome }}</b>
+                                @if ($solicitacao->soma_notas() > 0)
+                                    @php
+                                        $soma_notas = $solicitacao->soma_notas();
+                                        $total_pago += $soma_notas;
+                                    @endphp
+                                    <b>(total):&nbsp;{{ $brl->formatCurrency($soma_notas, 'BRL') }}</b>
+                                @endif
+                            </div>
                         </td>
                         <td>
                             <a href="{{ route('site.solicitante.show', ['id' => $solicitacao->solicitante->id]) }}" class="black-text hover-underline inline-flex"><b>{{ Str::upper($solicitacao->solicitante->nome) }}</b></a>
                             <span class="print-hidden">(<a href="mailto:{{ $solicitacao->solicitante->email }}" class="hover-underline">{{ $solicitacao->solicitante->email }}</a>)</span>
                             <div>
-                                <i>{{ $solicitacao->solicitante->tipo_solicitante }}</i>
+                                <i>{{ $solicitacao->solicitante->tipo_solicitante }} da {{ $solicitacao->programa->nome }}</i>
                             </div>
                         </td>
-                        <td>{{ $solicitacao->programa->nome }}</td>
                         <td class="center print-hidden">
                             @if ($solicitacao->parecer_orientador)
                                 <a href="{{ $solicitacao->parecer_orientador }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->parecer_orientador }}">Parecer do orientador</a>
@@ -147,17 +165,6 @@
                             @endif
                         </td>
                         <td>{{ $solicitacao->carimbo_data_hora }}</td>
-                        <td class="center">
-                            {{ $solicitacao->status->nome }}
-                            @if ($solicitacao->soma_notas() > 0)
-                                <br>
-                                @php
-                                    $soma_notas = $solicitacao->soma_notas();
-                                    $total_pago += $soma_notas;
-                                @endphp
-                                ({{ $brl->formatCurrency($soma_notas, 'BRL') }})
-                            @endif
-                        </td>
                     </tr>
                 @endforeach
                 @if ($total_pago > 0)

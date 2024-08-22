@@ -82,6 +82,11 @@ class SolicitanteController extends Controller
         
         foreach($solicitacoes as $programa_id => $solicitacoes_programa) {
             $solicitacoes_programa->nome_programa = $solicitacoes_programa->first()->programa->nome;
+
+            $solicitacoes_programa->each(function($solicitacao) {
+                $solicitacao->notas = $solicitacao->notas->sortBy('valor_tipo.nome');
+            });
+            
             foreach($solicitacoes_programa as $solicitacao) {
                 $resumo_solicitacao = optional($solicitacao->evento)->nome
                     ?? optional($solicitacao->atividade)->descricao
