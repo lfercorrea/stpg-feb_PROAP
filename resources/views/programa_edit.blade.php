@@ -99,7 +99,7 @@
                         <label for="codigo">Código do projeto (fornecido pelo coordenador do programa)</label>
                     </div>
                     <div class="input-field col s12 m3">
-                        <input name="verba" id="verba" type="number" placeholder="R$ 1234567,89" min="0" step="0.01" class="validate">
+                        <input name="verba" id="verba" type="number" placeholder="1234567,89" min="0" step="0.01" class="validate">
                         <label for="verba">Verba concedida (R$)</label>
                     </div>
                     <div class="input-field col s12 m2">
