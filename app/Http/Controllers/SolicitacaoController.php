@@ -72,6 +72,8 @@ class SolicitacaoController extends Controller
                 $indices[$status_nome] = $count;
             }
         }
+
+        $total_pago = 0;
         
         foreach($solicitacoes as $solicitacao) {
             $resumo_solicitacao = optional($solicitacao->evento)->nome
@@ -115,6 +117,9 @@ class SolicitacaoController extends Controller
             $solicitacao->valor_diarias = $valor_diarias;
             $solicitacao->valor_passagens = $valor_passagens;
             $solicitacao->valor_inscricao = $valor_inscricao;
+            $solicitacao->soma_notas = $solicitacao->soma_notas();
+            
+            $total_pago += $solicitacao->soma_notas;
         }
         
         $tipos_solicitacao = SolicitacaoTipo::orderBy('nome', 'asc')->pluck('nome', 'id')->toArray();
@@ -169,8 +174,8 @@ class SolicitacaoController extends Controller
             'tipos_solicitacao' => $tipos_solicitacao,
             'programas' => $programas,
             'statuses' => $statuses,
-            'total_pago' => 0,
             'indices' => $indices,
+            'total_pago' => $total_pago,
         ]);
     }
 

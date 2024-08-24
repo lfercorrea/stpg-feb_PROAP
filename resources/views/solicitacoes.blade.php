@@ -135,13 +135,10 @@
                             </div>
                             @endforeach
                             <div class="center">
-                                <b>{{ $solicitacao->status->nome }}</b>
-                                @if ($solicitacao->soma_notas() > 0)
-                                    @php
-                                        $soma_notas = $solicitacao->soma_notas();
-                                        $total_pago += $soma_notas;
-                                    @endphp
-                                    <b>(total):&nbsp;{{ $brl->formatCurrency($soma_notas, 'BRL') }}</b>
+                                @if ($solicitacao->soma_notas > 0)
+                                    <b>Total:&nbsp;{{ $brl->formatCurrency($solicitacao->soma_notas, 'BRL') }}</b>
+                                @else
+                                    <b>{{ $solicitacao->status->nome }}</b>
                                 @endif
                             </div>
                         </td>
@@ -177,11 +174,6 @@
                         <td>{{ $solicitacao->carimbo_data_hora }}</td>
                     </tr>
                 @endforeach
-                @if ($total_pago > 0)
-                    <tr>
-                        <td colspan="10" class="center"><span class="red-text"><b>Valor total pago: {{ $brl->formatCurrency($total_pago, 'BRL') }}</b></span></td>
-                    </tr>
-                @endif
             </tbody>
         </table>
         <div class="row">
@@ -205,6 +197,11 @@
                             @endforeach
                             <td><b>{{ $solicitacoes->count() }}</b></td>
                         </tr>
+                        @if ($total_pago > 0)
+                            <tr>
+                                <td colspan="10" class="center"><span class="red-text"><b>Valor total pago: {{ $brl->formatCurrency($total_pago, 'BRL') }}</b></span></td>
+                            </tr>
+                        @endif
                     </tbody>
                 </table>
             </div>

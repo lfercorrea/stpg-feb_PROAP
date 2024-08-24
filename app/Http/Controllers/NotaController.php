@@ -61,7 +61,14 @@ class NotaController extends Controller
     
     public function destroy(string $solicitacao_id, $nota_id) {
         $nota = Nota::FindOrFail($nota_id);
-        $nota->delete();
+
+        if ($nota->delete()) {
+            if (Nota::where('solicitacao_id', $solicitacao_id)->count() <= 0) {
+                $solicitacao = Solicitacao::findOrFail($solicitacao_id);
+                $solicitacao->status_id = 6;
+                $solicitacao->save();
+            }
+        }
 
         return redirect()->route('site.solicitacao.show', ['id' => $solicitacao_id])->with('success', 'Nota/recibo já era.');
     }

@@ -118,25 +118,34 @@
                                             </div>
                                         @endforeach
                                         <div class="center">
-                                            <b>{{ $solicitacao->status->nome }}</b>
                                             @if ($solicitacao->soma_notas > 0)
-                                                <b>(total):&nbsp;{{ $brl->formatCurrency($solicitacao->soma_notas, 'BRL') }}</b>
+                                                <b>Total:&nbsp;{{ $brl->formatCurrency($solicitacao->soma_notas, 'BRL') }}</b>
+                                            @else
+                                                <b>{{ $solicitacao->status->nome }}</b>
                                             @endif
                                         </div>
                                     </td>
                                     <td class="print-hidden">{{ $solicitacao->nome_do_orientador }}</td>
                                     <td class="center print-hidden">
                                         @if ($solicitacao->parecer_orientador)
-                                            <a href="{{ $solicitacao->parecer_orientador }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->parecer_orientador }}">Parecer do orientador</a>
+                                            <div class="small-text bold-text">
+                                                <a href="{{ $solicitacao->parecer_orientador }}" class="hover-underline" target="_blank" rel="noreferrer" title="{{ $solicitacao->parecer_orientador }}">Parecer do orientador</a>
+                                            </div>
                                         @endif
                                         @if ($solicitacao->orcamento)
-                                            <a href="{{ $solicitacao->orcamento }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->orcamento }}">Orçamento</a>
+                                        <div class="small-text bold-text">
+                                            <a href="{{ $solicitacao->orcamento }}" class="hover-underline" target="_blank" rel="noreferrer" title="{{ $solicitacao->orcamento }}">Orçamento</a>
+                                        </div>
                                         @endif
                                         @if ($solicitacao->artigo_copia)
-                                            <a href="{{ $solicitacao->artigo_copia }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->artigo_copia }}">Cópia do artigo</a>
+                                            <div class="small-text bold-text">
+                                                <a href="{{ $solicitacao->artigo_copia }}" class="hover-underline" target="_blank" rel="noreferrer" title="{{ $solicitacao->artigo_copia }}">Cópia do artigo</a>
+                                            </div>
                                         @endif
                                         @if ($solicitacao->artigo_aceite)
-                                            <a href="{{ $solicitacao->artigo_aceite }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->artigo_aceite }}">Aceite do artigo</a>
+                                            <div class="small-text bold-text">
+                                                <a href="{{ $solicitacao->artigo_aceite }}" class="hover-underline" target="_blank" rel="noreferrer" title="{{ $solicitacao->artigo_aceite }}">Aceite do artigo</a>
+                                            </div>
                                         @endif
                                     </td>
                                     <td>{{ $solicitacao->carimbo_data_hora }}</td>
