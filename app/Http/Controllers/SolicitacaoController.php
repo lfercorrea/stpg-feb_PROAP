@@ -33,11 +33,16 @@ class SolicitacaoController extends Controller
 
         $count_solicitacoes = 0;
         $limit = 30;
-        
-        if($request->filled('limit') AND $request->input('limit') <= 10000) {
-            $limit =  $request->input('limit');
-        }
 
+        if ($request->filled('limit')) {
+            if ($request->input('limit') <= 10**6) {
+                $limit = $request->input('limit');
+            }
+            elseif ($request->input('limit') === "no") {
+                $limit = 10**6;
+            }
+        }
+        
         $query = Solicitacao::search(
             $request->input('search'),
             $request->input('start_date'),
@@ -49,43 +54,57 @@ class SolicitacaoController extends Controller
         
         $count_solicitacoes = $query->count();
         $solicitacoes = $query->paginate($limit);
-
+        
         $solicitacoes->each(function ($solicitacao) {
             $solicitacao->notas = $solicitacao->notas->sortBy('valor_tipo.nome');
         });
         
+        $statuses = Status::all();
+        $status_nomes = $statuses->pluck('nome')->toArray();
+        $indices = [];
+        
+        foreach ($status_nomes as $status_nome) {
+            $count = $solicitacoes->filter(function ($solicitacao) use ($status_nome) {
+                return $solicitacao->status->nome == $status_nome;
+            })->count();
+            
+            if ($count > 0) {
+                $indices[$status_nome] = $count;
+            }
+        }
+        
         foreach($solicitacoes as $solicitacao) {
             $resumo_solicitacao = optional($solicitacao->evento)->nome
-                ?? optional($solicitacao->atividade)->descricao
-                ?? optional($solicitacao->material)->descricao
-                ?? optional($solicitacao->traducao_artigo)->titulo_artigo
-                ?? optional($solicitacao->outro_servico)->descricao
-                ?? optional($solicitacao->manutencao)->descricao;
+            ?? optional($solicitacao->atividade)->descricao
+            ?? optional($solicitacao->material)->descricao
+            ?? optional($solicitacao->traducao_artigo)->titulo_artigo
+            ?? optional($solicitacao->outro_servico)->descricao
+            ?? optional($solicitacao->manutencao)->descricao;
             $link_artigo_aceite = optional($solicitacao->evento)->artigo_aceite;
             $link_artigo_copia = optional($solicitacao->evento)->artigo_copia
-                ?? optional($solicitacao->traducao_artigo)->artigo_a_traduzir;
+            ?? optional($solicitacao->traducao_artigo)->artigo_a_traduzir;
             $link_parecer = optional($solicitacao->evento)->parecer_orientador 
-                ?? optional($solicitacao->atividade)->parecer_orientador 
-                ?? optional($solicitacao->material)->parecer_orientador 
-                ?? optional($solicitacao->traducao_artigo)->parecer_orientador;
+            ?? optional($solicitacao->atividade)->parecer_orientador 
+            ?? optional($solicitacao->material)->parecer_orientador 
+            ?? optional($solicitacao->traducao_artigo)->parecer_orientador;
             $link_orcamento = optional($solicitacao->evento)->orcamento_passagens 
-                ?? optional($solicitacao->atividade)->orcamento_passagens 
-                ?? optional($solicitacao->material)->orcamento 
-                ?? optional($solicitacao->manutencao)->orcamento 
-                ?? optional($solicitacao->outro_servico)->orcamento 
-                ?? optional($solicitacao->traducao_artigo)->orcamento;
+            ?? optional($solicitacao->atividade)->orcamento_passagens 
+            ?? optional($solicitacao->material)->orcamento 
+            ?? optional($solicitacao->manutencao)->orcamento 
+            ?? optional($solicitacao->outro_servico)->orcamento 
+            ?? optional($solicitacao->traducao_artigo)->orcamento;
             $periodo = optional($solicitacao->evento)->periodo
-                ?? optional($solicitacao->atividade)->periodo;
+            ?? optional($solicitacao->atividade)->periodo;
             $valor = optional($solicitacao->manutencao)->valor
-                ?? optional($solicitacao->material)->valor
-                ?? optional($solicitacao->outro_servico)->valor
-                ?? optional($solicitacao->traducao_artigo)->valor;
+            ?? optional($solicitacao->material)->valor
+            ?? optional($solicitacao->outro_servico)->valor
+            ?? optional($solicitacao->traducao_artigo)->valor;
             $valor_diarias = optional($solicitacao->evento)->valor_diarias
-                ?? optional($solicitacao->atividade)->valor_diarias;
+            ?? optional($solicitacao->atividade)->valor_diarias;
             $valor_passagens = optional($solicitacao->evento)->valor_passagens
-                ?? optional($solicitacao->atividade)->valor_passagens;
+            ?? optional($solicitacao->atividade)->valor_passagens;
             $valor_inscricao = optional($solicitacao->evento)->valor_inscricao;
-
+            
             $solicitacao->resumo = $resumo_solicitacao;
             $solicitacao->artigo_aceite = $link_artigo_aceite;
             $solicitacao->artigo_copia = $link_artigo_copia;
@@ -97,23 +116,29 @@ class SolicitacaoController extends Controller
             $solicitacao->valor_passagens = $valor_passagens;
             $solicitacao->valor_inscricao = $valor_inscricao;
         }
-
+        
         $tipos_solicitacao = SolicitacaoTipo::orderBy('nome', 'asc')->pluck('nome', 'id')->toArray();
         $programas = Programa::orderBy('nome', 'asc')->pluck('nome', 'id')->toArray();
-        $statuses = Status::all();
         $count_message = [];
-
+        $messages = [
+            'assunto' => 'Assunto: <b><i>%s</i></b>',
+            'tipo' => 'Tipo: <b><i>%s</i></b>',
+            'status' => 'Status: <b><i>%s</i></b>',
+            'programas' => 'Programas: <b><i>%s</i></b>',
+            'periodo' => 'Período: de <b>%s</b> até <b>%s</b>',
+        ];
+        
         if($request->filled('search')) {
-            $count_message[] = "Termo buscado: <b><i>\"$request->search\"</i></b>";
+            $count_message[] = sprintf($messages['assunto'], $request->search);
         }
         
         if($request->filled('tipo_solicitacao_id')) {
-            $count_message[] = "Tipo: <b><i>{$tipos_solicitacao[$request->tipo_solicitacao_id]}</i></b>";
+            $count_message[] = sprintf($messages['tipo'], $tipos_solicitacao[$request->tipo_solicitacao_id]);
         }
         
         if($request->filled('status_id')) {
             $status = $statuses->firstWhere('id', $request->status_id);
-            $count_message[] = "Status: <b><i>{$status->nome}</i></b>";
+            $count_message[] = sprintf($messages['status'], $status->nome);
         }
 
         if($request->filled('programa_id')) {
@@ -124,13 +149,13 @@ class SolicitacaoController extends Controller
             }
 
             $programas_selecionados = implode(', ', $arr_programas_selecionados);
-            $count_message[] = "Programas: <b><i>{$programas_selecionados}</i></b>";
+            $count_message[] = sprintf($messages['programas'], $programas_selecionados);
         }
         
         if($request->filled('start_date') AND $request->filled('end_date')) {
             $start_date = Carbon::createFromFormat('Y-m-d', $request->input('start_date'))->startOfDay()->format('d/m/Y H:i:s');
             $end_date = Carbon::createFromFormat('Y-m-d', $request->input('end_date'))->endOfDay()->format('d/m/Y H:i:s');
-            $count_message[] = "Período: de <b>{$start_date}</b> até <b>{$end_date}</b>";
+            $count_message[] = sprintf($messages['periodo'], $start_date, $end_date);
         }
 
         $plural = ($count_solicitacoes > 1) ? 's' : '';
@@ -145,6 +170,7 @@ class SolicitacaoController extends Controller
             'programas' => $programas,
             'statuses' => $statuses,
             'total_pago' => 0,
+            'indices' => $indices,
         ]);
     }
 

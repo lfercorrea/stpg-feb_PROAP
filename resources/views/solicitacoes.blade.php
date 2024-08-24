@@ -33,34 +33,36 @@
                 </select>
             </div>
         </div>
-        <div class="container center">
-            <div class="row center">
+        <div class="container">
+            <div class="row">
                 <div class="col s6 m3">
-                    <select name="tipo_solicitacao_id"><option value="">Tipo</option>
+                    <label for="">Tipo de solicitação</label>
+                    <select name="tipo_solicitacao_id" class="browser-default"><option selected disabled>Selecione</option>
                         @foreach ($tipos_solicitacao as $key => $value)
                             <option value="{{ $key }}">{{ $value }}</option>
                         @endforeach
                     </select>
                 </div>
                 <div class="col s6 m3">
-                    <select name="status_id"><option value="">Status</option>
+                    <label>Status da solicitação</label>
+                    <select name="status_id" class="browser-default"><option selected disabled>Selecione</option>
                         @foreach ($statuses as $status)
                             <option value="{{ $status->id }}">{{ $status->nome }}</option>
                         @endforeach
                     </select>
                 </div>
                 <div class="col s12 m2">
-                    <select name="limit">
-                        <option value="30">Itens por página</option>
+                    <label>Itens por página</label>
+                    <select name="limit" class="browser-default">
+                        <option selected disabled>Selecione</option>
+                        <option value="10">10</option>
+                        <option value="50">50</option>
                         <option value="100">100</option>
-                        <option value="1000">1000</option>
-                        <option value="10000">10000</option>
+                        <option value="no">Sem paginação</option>
                     </select>
                 </div>
-                <div class="col s6 m2">
+                <div class="col s6 m4 input-field">
                     <button class="btn waves-effect waves-light black" type="submit">Buscar</button>
-                </div>
-                <div class="col s6 m2">
                     <button id="print-button" class="btn-flat waves-effect waves-black" type="button">
                         Imprimir
                         <i class="material-icons right">print</i>
@@ -152,16 +154,24 @@
                         </td>
                         <td class="center print-hidden">
                             @if ($solicitacao->parecer_orientador)
-                                <a href="{{ $solicitacao->parecer_orientador }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->parecer_orientador }}">Parecer do orientador</a>
+                                <div class="small-text bold-text">
+                                    <a href="{{ $solicitacao->parecer_orientador }}" class="hover-underline" target="_blank" rel="noreferrer" title="{{ $solicitacao->parecer_orientador }}">Parecer do orientador</a>
+                                </div>
                             @endif
                             @if ($solicitacao->orcamento)
-                                <a href="{{ $solicitacao->orcamento }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->orcamento }}">Orçamento</a>
+                            <div class="small-text bold-text">
+                                <a href="{{ $solicitacao->orcamento }}" class="hover-underline" target="_blank" rel="noreferrer" title="{{ $solicitacao->orcamento }}">Orçamento</a>
+                            </div>
                             @endif
                             @if ($solicitacao->artigo_copia)
-                                <a href="{{ $solicitacao->artigo_copia }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->artigo_copia }}">Cópia do artigo</a>
+                                <div class="small-text bold-text">
+                                    <a href="{{ $solicitacao->artigo_copia }}" class="hover-underline" target="_blank" rel="noreferrer" title="{{ $solicitacao->artigo_copia }}">Cópia do artigo</a>
+                                </div>
                             @endif
                             @if ($solicitacao->artigo_aceite)
-                                <a href="{{ $solicitacao->artigo_aceite }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->artigo_aceite }}">Aceite do artigo</a>
+                                <div class="small-text bold-text">
+                                    <a href="{{ $solicitacao->artigo_aceite }}" class="hover-underline" target="_blank" rel="noreferrer" title="{{ $solicitacao->artigo_aceite }}">Aceite do artigo</a>
+                                </div>
                             @endif
                         </td>
                         <td>{{ $solicitacao->carimbo_data_hora }}</td>
@@ -174,6 +184,31 @@
                 @endif
             </tbody>
         </table>
+        <div class="row">
+            <div class="container">
+                <div class="section-margin-top">
+                    <h6>Índices das solicitações</h6>
+                </div>
+                <table class="bordered striped compact-table">
+                    <thead>
+                        <tr>
+                            @foreach ($indices as $indice => $contagem)
+                                <th>{{ $indice }}</th>
+                            @endforeach
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            @foreach ($indices as $indice => $contagem)
+                                <td>{{ $contagem }}</td>
+                            @endforeach
+                            <td><b>{{ $solicitacoes->count() }}</b></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     @else
         <div class="container center">
             <h6><p>Nenhuma solicitacão encontrada.</p></h6>

@@ -153,15 +153,15 @@
         </div>
         <div class="row print-hidden">
             <form class="col s12" action="{{ route('site.solicitacao.update', ['id' => $solicitacao->id]) }}" method="POST">
-                <div class="input-field col s12 m3">
-                    @csrf
-                    <select name="status_id" required>
+                @csrf
+                <div class="col s12 m3">
+                    <label>Status</label>
+                    <select name="status_id" class="browser-default" required>
                         <option value="{{ $solicitacao->status->id }}" selected>{{ $solicitacao->status->nome }}</option>
                         @foreach ($statuses as $status)
                             <option value="{{ $status->id }}">{{ $status->nome }}</option>
                         @endforeach
                     </select>
-                    <label>Status</label>
                 </div>
                 <div class="input-field col s12 m8">
                     <input id="observacao" name="observacao" type="text" class="validate" value="{{ old('observacao', $solicitacao->observacao) }}">
@@ -256,36 +256,38 @@
                                 <input name="data" id="data" type="date" class="validate" min="1900-01-01" max="2099-12-31" required>
                                 <label for="data">Data</label>
                             </div>
-                            <div class="input-field col s12 m2">
-                                <select name="fonte_pagadora_id" required>
+                            <div class="col s12 m2">
+                                <label>Fonte pagadora</label>
+                                <select name="fonte_pagadora_id" class="browser-default" required>
                                     <option value="" disabled selected>Selecione</option>
                                     @foreach ($fontes_pagadoras as $fonte_pagadora)
                                         <option value="{{ $fonte_pagadora->id }}">{{ $fonte_pagadora->nome }}</option>
                                     @endforeach
                                 </select>
-                                <label>Fonte pagadora</label>
                             </div>
-                            <div class="input-field col s12 m4">
-                                <select name="projeto_capes_id">
+                            <div class="col s12 m4">
+                                <label>Projeto CAPES</label>
+                                <select name="projeto_capes_id" class="browser-default" required>
                                     <option value="" disabled selected>Selecione</option>
                                     @foreach ($projetos_capes as $projeto_capes)
-                                        <option value="{{ $projeto_capes->id }}">{{ $projeto_capes->codigo }}</option>
+                                    <option value="{{ $projeto_capes->id }}">{{ $projeto_capes->codigo }}</option>
                                     @endforeach
                                 </select>
-                                <label>Projeto CAPES</label>
                             </div>
+                        </div>
+                        <div class="row">
                             <div class="input-field col s12 m6">
                                 <input name="descricao" id="descricao" type="text" class="validate">
                                 <label for="descricao">Descrição/observação</label>
                             </div>
-                            <div class="input-field col s12 m3">
-                                <select name="valor_tipo_id" required>
+                            <div class="col s12 m3">
+                                <label>Tipo de despesa</label>
+                                <select name="valor_tipo_id" class="browser-default" required>
                                     <option value="" disabled selected>Selecione</option>
                                     @foreach ($valor_tipos as $valor_tipo)
                                         <option value="{{ $valor_tipo->id }}">{{ $valor_tipo->nome }}</option>
                                     @endforeach
                                 </select>
-                                <label>Tipo de despesa</label>
                             </div>
                             <div class="input-field col s8 m2">
                                 <input name="valor" id="valor" type="number" placeholder="1234567,89" min="0" step="0.01" class="validate" required>

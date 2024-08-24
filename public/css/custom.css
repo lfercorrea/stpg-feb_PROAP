@@ -343,7 +343,11 @@ th.min-width-25 {
 }
 
 .small-text {
-    font-size: 12px;
+    font-size: 13px;
+}
+
+.bold-text {
+    font-weight: bold;
 }
 
 .justify {

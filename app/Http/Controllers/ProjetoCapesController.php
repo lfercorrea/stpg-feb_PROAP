@@ -38,6 +38,6 @@ class ProjetoCapesController extends Controller
 
         return redirect()
             ->back()
-            ->with('success', 'Projeto CAPES/AUXPE removido.');
+            ->with('success', 'Projeto CAPES/AUXPE já era.');
     }
 }

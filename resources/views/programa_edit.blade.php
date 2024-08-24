@@ -44,7 +44,7 @@
                 @csrf
                 <div class="row">
                     <div class="input-field col s12 m6">
-                        <input name="coordenador" id="coordenador" value="{{ $programa->coordenador }}" type="text" class="validate">
+                        <input name="coordenador" id="coordenador" value="{{ $programa->coordenador }}" type="text" class="validate" required>
                         <label for="coordenador">Nome completo do coordenador</label>
                     </div>
                     <div class="input-field col s12 m6">
@@ -95,11 +95,11 @@
                 @csrf
                 <div class="row">
                     <div class="input-field col s12 m7">
-                        <input name="codigo" id="codigo" type="text" class="validate">
+                        <input name="codigo" id="codigo" type="text" class="validate" required>
                         <label for="codigo">Código do projeto (fornecido pelo coordenador do programa)</label>
                     </div>
                     <div class="input-field col s12 m3">
-                        <input name="verba" id="verba" type="number" placeholder="1234567,89" min="0" step="0.01" class="validate">
+                        <input name="verba" id="verba" type="number" placeholder="1234567,89" min="0" step="0.01" class="validate" required>
                         <label for="verba">Verba concedida (R$)</label>
                     </div>
                     <div class="input-field col s12 m2">

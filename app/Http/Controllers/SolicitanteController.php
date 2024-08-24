@@ -14,7 +14,16 @@ class SolicitanteController extends Controller
      */
     public function index(Request $request) {
         $count_solicitantes = 0;
-        $limite = empty($request->limite_paginacao) ? 30 : $request->limite_paginacao;
+        $limite = 30;
+
+        if ($request->filled('limit')) {
+            if ($request->input('limit') <= 10**6) {
+                $limite = $request->input('limit');
+            }
+            elseif ($request->input('limit') === "no") {
+                $limite = 10**6;
+            }
+        }
 
         if($request->has('search') OR $request->has('tipo_solicitante')){
             $solicitantes = Solicitante::search($request->search, $request->tipo_solicitante)
@@ -29,13 +38,17 @@ class SolicitanteController extends Controller
 
         $solicitante_tipos = Solicitante::orderBy('nome', 'asc')->pluck('nome', 'id')->toArray();
         $count_message = [];
+        $messages = [
+            'termo' => 'Termo buscado: <b><i>%s</i></b>',
+            'tipo_solicitante' => 'Tipo de solicitante: <b><i>%s</i></b>',
+        ];
 
         if(!empty($request->search)) {
-            $count_message[] = "Termo buscado: <b><i>\"$request->search\"</i></b>";
+            $count_message[] = sprintf($messages['termo'], $request->search);
         }
         
         if(!empty($request->tipo_solicitante)) {
-            $count_message[] = "Tipo de solicitante: <b><i>$request->tipo_solicitante</i></b>";
+            $count_message[] = sprintf($messages['tipo_solicitante'], $request->tipo_solicitante);
         }
 
         $plural = ($count_solicitantes > 1) ? 's' : '';

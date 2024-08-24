@@ -16,21 +16,24 @@
             <div class="col s12 m3 input-field">
                 <input type="text" name="search" placeholder="Nome, email, endereço, cidade, etc."> 
             </div>
-            <div class="col s4 m3 input-field">
-                <select name="tipo_solicitante">
-                    <option value="" selected disabled>Tipo de solicitante</option>
+            <div class="col s4 m2">
+                <label>Tipo de solicitante</label>
+                <select name="tipo_solicitante" class="browser-default">
+                    <option selected disabled>Selecione</option>
                     <option value="Discente">Discente</option>
                     <option value="Docente Colaborador">Docente Colaborador</option>
                     <option value="Docente Permanente">Docente Permanente</option>
                 </select>
-                <label>Tipo de solicitante</label>
             </div>
-            <div class="col s4 m1 input-field">
-                <select name="limite_paginacao">
-                    <option value="30" selected>30</option>
-                    <option value="1000">1000</option>
-                </select>
+            <div class="col s4 m2">
                 <label>Itens por página</label>
+                <select name="limit" class="browser-default">
+                    <option selected disabled>Selecione</option>
+                    <option value="10">10</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                    <option value="no">Sem paginação</option>
+                </select>
             </div>
             <div class="col s4 m3 input-field">
                 <button class="btn waves-effect waves-light black" type="submit">Buscar</button>

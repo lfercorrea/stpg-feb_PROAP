@@ -21,11 +21,11 @@ return new class extends Migration
         });
 
         $dados = [
-            ['nome' => 'Aguardando pagamento'],
-            ['nome' => 'Cancelado'],
-            ['nome' => 'Deferido'],
-            ['nome' => 'Indeferido'],
-            ['nome' => 'Pago'],
+            ['nome' => 'Aguardando deliberação do conselho'],
+            ['nome' => 'Cancelada'],
+            ['nome' => 'Deferida'],
+            ['nome' => 'Indeferida'],
+            ['nome' => 'Paga'],
             ['nome' => 'Pendente'],
         ];
 
