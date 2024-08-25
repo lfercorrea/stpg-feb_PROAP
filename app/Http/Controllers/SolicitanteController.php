@@ -65,7 +65,7 @@ class SolicitanteController extends Controller
      * mostra a página de visualização com dados do solicitante
      */
     public function show(string $id) {
-        $solicitante = Solicitante::where('id', $id)->first();
+        $solicitante = Solicitante::where('id', $id)->firstOrFail();
         $solicitacoes = Solicitacao::with([
             'notas.valor_tipo',
             'tipo',

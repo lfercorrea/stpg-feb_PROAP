@@ -194,7 +194,7 @@ class SolicitacaoController extends Controller
                 'outro_servico',
                 'manutencao',
                 'notas',
-            ])->first();
+            ])->firstOrFail();
             
         $resumo_solicitacao = optional($solicitacao->evento)->nome
             ?? optional($solicitacao->atividade)->descricao
@@ -276,10 +276,10 @@ class SolicitacaoController extends Controller
                 'outro_servico',
                 'manutencao',
                 'notas',
-                ])->first();
+                ])->firstOrFail();
             
-        $nota = Nota::where('id', $nid)->first();
-        $programa = Programa::where('id', $solicitacao->programa_id)->first();
+        $nota = Nota::where('id', $nid)->firstOrFail();
+        $programa = Programa::where('id', $solicitacao->programa_id)->firstOrFail();
 
         $recibo = ($solicitacao->solicitante->nome != $programa->coordenador) ? 'recibo_a' : 'recibo_b';
         $tipo_beneficiario = [
@@ -289,7 +289,7 @@ class SolicitacaoController extends Controller
         ];
 
         $valor_total = number_format($nota->valor, 2, ',', '.');
-        $tipo_valor = ValorTipo::where('id', $nota->valor_tipo_id)->first();
+        $tipo_valor = ValorTipo::where('id', $nota->valor_tipo_id)->firstOrFail();
 
         $data_nota = Carbon::createFromFormat('Y-m-d', $nota->data);
         $data_impressao = $data_nota->format('d/m/Y');
