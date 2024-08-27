@@ -86,6 +86,7 @@
             <thead>
                 <tr>
                     <th>Resumo da solicitação</th>
+                    <th class="print-hidden">Observação</th>
                     <th>Valores solicitados</th>
                     <th>Valores pagos</th>
                     <th class="min-width-25">Solicitante</th>
@@ -104,6 +105,7 @@
                                 @endif
                             </a>
                         </td>
+                        <td class="print-hidden"><i>{{ $solicitacao->observacao }}</i></td>
                         <td>
                             @if ($solicitacao->valor)
                                 <div>
