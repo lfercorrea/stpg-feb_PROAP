@@ -129,6 +129,11 @@
                                     </td>
                                     <td class="print-hidden">{{ $solicitacao->nome_do_orientador }}</td>
                                     <td class="center print-hidden">
+                                        @if ($solicitacao->site_evento)
+                                            <div class="small-text bold-text">
+                                                <a href="{{ $solicitacao->site_evento }}" class="hover-underline" target="_blank" rel="noreferrer" title="{{ $solicitacao->site_evento }}">Site do evento</a>
+                                            </div>
+                                        @endif
                                         @if ($solicitacao->parecer_orientador)
                                             <div class="small-text bold-text">
                                                 <a href="{{ $solicitacao->parecer_orientador }}" class="hover-underline" target="_blank" rel="noreferrer" title="{{ $solicitacao->parecer_orientador }}">Parecer do orientador</a>

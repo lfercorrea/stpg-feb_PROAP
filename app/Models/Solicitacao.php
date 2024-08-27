@@ -186,7 +186,7 @@ class Solicitacao extends Model
                 $columns->select('id', 'descricao', 'periodo', 'valor_diarias', 'valor_passagens', 'carta_convite', 'parecer_orientador', 'orcamento_passagens', 'nome_do_orientador');
             },
             'evento' => function($columns) {
-                $columns->select('id', 'nome', 'periodo', 'valor_diarias', 'valor_passagens', 'valor_inscricao', 'artigo_copia', 'artigo_aceite', 'parecer_orientador', 'orcamento_passagens');
+                $columns->select('id', 'nome', 'periodo', 'valor_diarias', 'valor_passagens', 'valor_inscricao', 'site_evento', 'artigo_copia', 'artigo_aceite', 'parecer_orientador', 'orcamento_passagens');
             },
             'material' => function($columns) {
                 $columns->select('id', 'descricao', 'valor', 'orcamento', 'parecer_orientador');

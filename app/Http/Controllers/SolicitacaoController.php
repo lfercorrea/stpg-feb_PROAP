@@ -77,37 +77,39 @@ class SolicitacaoController extends Controller
         
         foreach($solicitacoes as $solicitacao) {
             $resumo_solicitacao = optional($solicitacao->evento)->nome
-            ?? optional($solicitacao->atividade)->descricao
-            ?? optional($solicitacao->material)->descricao
-            ?? optional($solicitacao->traducao_artigo)->titulo_artigo
-            ?? optional($solicitacao->outro_servico)->descricao
-            ?? optional($solicitacao->manutencao)->descricao;
+                ?? optional($solicitacao->atividade)->descricao
+                ?? optional($solicitacao->material)->descricao
+                ?? optional($solicitacao->traducao_artigo)->titulo_artigo
+                ?? optional($solicitacao->outro_servico)->descricao
+                ?? optional($solicitacao->manutencao)->descricao;
+            $site_evento = optional($solicitacao->evento)->site_evento;
             $link_artigo_aceite = optional($solicitacao->evento)->artigo_aceite;
             $link_artigo_copia = optional($solicitacao->evento)->artigo_copia
-            ?? optional($solicitacao->traducao_artigo)->artigo_a_traduzir;
+                ?? optional($solicitacao->traducao_artigo)->artigo_a_traduzir;
             $link_parecer = optional($solicitacao->evento)->parecer_orientador 
-            ?? optional($solicitacao->atividade)->parecer_orientador 
-            ?? optional($solicitacao->material)->parecer_orientador 
-            ?? optional($solicitacao->traducao_artigo)->parecer_orientador;
+                ?? optional($solicitacao->atividade)->parecer_orientador 
+                ?? optional($solicitacao->material)->parecer_orientador 
+                ?? optional($solicitacao->traducao_artigo)->parecer_orientador;
             $link_orcamento = optional($solicitacao->evento)->orcamento_passagens 
-            ?? optional($solicitacao->atividade)->orcamento_passagens 
-            ?? optional($solicitacao->material)->orcamento 
-            ?? optional($solicitacao->manutencao)->orcamento 
-            ?? optional($solicitacao->outro_servico)->orcamento 
-            ?? optional($solicitacao->traducao_artigo)->orcamento;
+                ?? optional($solicitacao->atividade)->orcamento_passagens 
+                ?? optional($solicitacao->material)->orcamento 
+                ?? optional($solicitacao->manutencao)->orcamento 
+                ?? optional($solicitacao->outro_servico)->orcamento 
+                ?? optional($solicitacao->traducao_artigo)->orcamento;
             $periodo = optional($solicitacao->evento)->periodo
-            ?? optional($solicitacao->atividade)->periodo;
+                ?? optional($solicitacao->atividade)->periodo;
             $valor = optional($solicitacao->manutencao)->valor
-            ?? optional($solicitacao->material)->valor
-            ?? optional($solicitacao->outro_servico)->valor
-            ?? optional($solicitacao->traducao_artigo)->valor;
+                ?? optional($solicitacao->material)->valor
+                ?? optional($solicitacao->outro_servico)->valor
+                ?? optional($solicitacao->traducao_artigo)->valor;
             $valor_diarias = optional($solicitacao->evento)->valor_diarias
-            ?? optional($solicitacao->atividade)->valor_diarias;
+                ?? optional($solicitacao->atividade)->valor_diarias;
             $valor_passagens = optional($solicitacao->evento)->valor_passagens
-            ?? optional($solicitacao->atividade)->valor_passagens;
+                ?? optional($solicitacao->atividade)->valor_passagens;
             $valor_inscricao = optional($solicitacao->evento)->valor_inscricao;
             
             $solicitacao->resumo = $resumo_solicitacao;
+            $solicitacao->site_evento = $site_evento;
             $solicitacao->artigo_aceite = $link_artigo_aceite;
             $solicitacao->artigo_copia = $link_artigo_copia;
             $solicitacao->parecer_orientador = $link_parecer;

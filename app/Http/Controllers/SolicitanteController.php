@@ -107,6 +107,7 @@ class SolicitanteController extends Controller
                     ?? optional($solicitacao->traducao_artigo)->titulo_artigo
                     ?? optional($solicitacao->outro_servico)->descricao
                     ?? optional($solicitacao->manutencao)->descricao;
+                $site_evento = optional($solicitacao->evento)->site_evento;
                 $link_artigo_aceite = optional($solicitacao->evento)->artigo_aceite;
                 $link_artigo_copia = optional($solicitacao->evento)->artigo_copia
                     ?? optional($solicitacao->traducao_artigo)->artigo_a_traduzir;
@@ -133,6 +134,7 @@ class SolicitanteController extends Controller
                 $valor_inscricao = optional($solicitacao->evento)->valor_inscricao;
 
                 $solicitacao->resumo = $resumo_solicitacao;
+                $solicitacao->site_evento = $site_evento;
                 $solicitacao->artigo_aceite = $link_artigo_aceite;
                 $solicitacao->artigo_copia = $link_artigo_copia;
                 $solicitacao->parecer_orientador = $link_parecer;
