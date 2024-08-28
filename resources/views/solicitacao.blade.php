@@ -26,134 +26,141 @@
         </div>
     </div>
     <div class="side-margins">
-        <div class="row">
-            <table class="compact-table striped responsive-table">
-                <tr>
-                    <th>Solicitante</th>
-                    <th>Telefone</th>
-                    <th>CPF</th>
-                    <th class="print-hidden">RG</th>
-                    <th class="print-hidden">Órgão emissor</th>
-                    <th class="print-hidden">Data de emissão</th>
-                    <th>Banco</th>
-                    <th>Agência</th>
-                    <th>Conta</th>
-                </tr>
-                <tr>
-                    <td>
-                        <a href="{{ route('site.solicitante.show', ['id' => $solicitacao->solicitante->id]) }}" class="hover-underline">{{ $solicitacao->solicitante->nome }}</a>
-                        (<a href="mailto:{{ $solicitacao->solicitante->email }}" class="hover-underline">{{ $solicitacao->solicitante->email }}</a>)
-                        <a href="{{ route('site.solicitante.edit', ['id' => $solicitacao->solicitante->id]) }}" class="btn-flat waves-effect print-hidden"><i class="material-icons tiny">edit</i></a>
-                    </td>
-                    <td>{{ $solicitacao->solicitante->telefone }}</td>
-                    <td>{{ $solicitacao->solicitante->cpf }}</td>
-                    <td class="print-hidden">{{ $solicitacao->solicitante->rg }}</td>
-                    <td class="print-hidden">{{ $solicitacao->solicitante->rg_orgao_expedidor }}</td>
-                    <td class="print-hidden">{{ $solicitacao->solicitante->rg_data_expedicao }}</td>
-                    <td>{{ $solicitacao->solicitante->banco }}</td>
-                    <td>{{ $solicitacao->solicitante->banco_agencia }}</td>
-                    <td>{{ $solicitacao->solicitante->banco_conta }}</td>
-                </tr>
-            </table>
-            <table class="compact-table striped responsive-table">
-                <tr>
-                    <th>Solicitacão</th>
-                    @if ($periodo)
-                        <th>Período do evento</th>
-                    @endif
-                    <th>Solicitado em</th>
-                    <th>Programa</th>
-                    @if ($solicitacao->nome_do_orientador)
-                        <th>Orientador</th>
-                    @endif
-                    @if ($site_evento)
-                        <th class="center-align print-hidden">Site</th>
-                    @endif
-                    <th class="center-align print-hidden">Parecer</th>
-                    <th class="center-align print-hidden">Orçamento</th>
-                    <th class="center-align print-hidden">Artigo</th>
-                    <th class="center-align print-hidden">Aceite</th>
-                </tr>
-                <tr>
-                    <td class="justify"><i>{{ optional($solicitacao->servico_tipo)->nome ?? $solicitacao->tipo->nome }}</i>: {{ $resumo_solicitacao }}</td>
-                    @if ($periodo)
-                        <td>{{ $periodo }}</td>
-                    @endif
-                    <td>{{ $solicitacao->carimbo_data_hora }}</td>
-                    <td>{{ $solicitacao->programa->nome }}</td>
-                    @if ($solicitacao->nome_do_orientador)
-                    <td>{{ $solicitacao->nome_do_orientador }}</td>
-                    @endif
-                    @if ($site_evento)
-                        <td class="center-align print-hidden">
-                            <a href="{{ $site_evento }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $site_evento }}"><i class="tiny material-icons black-text">open_in_new</i></a>
+        <form class="col s12" action="{{ route('site.solicitacao.update', ['id' => $solicitacao->id]) }}" method="POST">
+            @csrf
+            <div class="row">
+                <table class="compact-table striped responsive-table">
+                    <tr>
+                        <th>Solicitante</th>
+                        <th>Telefone</th>
+                        <th>CPF</th>
+                        <th class="print-hidden">RG</th>
+                        <th class="print-hidden">Órgão emissor</th>
+                        <th class="print-hidden">Data de emissão</th>
+                        <th>Banco</th>
+                        <th>Agência</th>
+                        <th>Conta</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="{{ route('site.solicitante.show', ['id' => $solicitacao->solicitante->id]) }}" class="hover-underline">{{ $solicitacao->solicitante->nome }}</a>
+                            (<a href="mailto:{{ $solicitacao->solicitante->email }}" class="hover-underline">{{ $solicitacao->solicitante->email }}</a>)
+                            <a href="{{ route('site.solicitante.edit', ['id' => $solicitacao->solicitante->id]) }}" class="btn-flat waves-effect print-hidden"><i class="material-icons tiny">edit</i></a>
                         </td>
-                    @endif
-                    <td class="center-align print-hidden">
-                        @if ($link_parecer)
-                            <a href="{{ $link_parecer }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $link_parecer }}"><i class="tiny material-icons black-text">open_in_new</i></a>
+                        <td>{{ $solicitacao->solicitante->telefone }}</td>
+                        <td>{{ $solicitacao->solicitante->cpf }}</td>
+                        <td class="print-hidden">{{ $solicitacao->solicitante->rg }}</td>
+                        <td class="print-hidden">{{ $solicitacao->solicitante->rg_orgao_expedidor }}</td>
+                        <td class="print-hidden">{{ $solicitacao->solicitante->rg_data_expedicao }}</td>
+                        <td>{{ $solicitacao->solicitante->banco }}</td>
+                        <td>{{ $solicitacao->solicitante->banco_agencia }}</td>
+                        <td>{{ $solicitacao->solicitante->banco_conta }}</td>
+                    </tr>
+                </table>
+                <table class="compact-table striped responsive-table">
+                    <tr>
+                        <th>Solicitacão</th>
+                        @if ($periodo)
+                            <th>Período do evento</th>
                         @endif
-                    </td>
-                    <td class="center-align print-hidden">
-                        @if ($link_orcamento)
-                            <a href="{{ $link_orcamento }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $link_orcamento }}"><i class="tiny material-icons black-text">open_in_new</i></a>
+                        <th>Solicitado em</th>
+                        <th>Programa</th>
+                        @if ($solicitacao->nome_do_orientador)
+                            <th>Orientador</th>
                         @endif
-                    </td>
-                    <td class="center-align print-hidden">
-                        @if ($link_artigo_copia)
-                            <a href="{{ $link_artigo_copia }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $link_artigo_copia }}"><i class="tiny material-icons black-text">open_in_new</i></a>
+                        @if ($site_evento)
+                            <th class="center-align print-hidden">Site</th>
                         @endif
-                    </td>
-                    <td class="center-align print-hidden">
-                        @if ($link_artigo_aceite)
-                            <a href="{{ $link_artigo_aceite }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $link_artigo_aceite }}"><i class="tiny material-icons black-text">open_in_new</i></a>
+                        <th class="center-align print-hidden">Parecer</th>
+                        <th class="center-align print-hidden">Orçamento</th>
+                        <th class="center-align print-hidden">Artigo</th>
+                        <th class="center-align print-hidden">Aceite</th>
+                    </tr>
+                    <tr>
+                        <td class="justify"><i>{{ optional($solicitacao->servico_tipo)->nome ?? $solicitacao->tipo->nome }}</i>: {{ $resumo_solicitacao }}</td>
+                        @if ($periodo)
+                            <td>
+                                <div class="print-only">
+                                    {{ $periodo }}
+                                </div>
+                                <div class="print-hidden">
+                                    <textarea name="periodo" class="materialize-textarea" cols="30" required>{{ $periodo }}</textarea>
+                                </div>
+                            </td>
                         @endif
-                    </td>
-                </tr>
-            </table>
-            <table class="compact-table striped responsive-table">
-                <tr>
-                    <th>Justificativa</th>
-                </tr>
-                <tr>
-                    <td class="justify"><i>{{ $justificativa }}</i></td>
-                </tr>
-            </table>
-            <h6>Valor solicitado</h6>
-            <table class="compact-table striped responsive-table">
-                <tr>
-                    @if ($valor)
-                        <th>Geral</th>
-                    @endif
-                    @if ($valor_diarias)
-                        <th>Diárias</th>
-                    @endif
-                    @if ($valor_inscricao)
-                        <th>Taxa de inscrição</th>
-                    @endif
-                    @if ($valor_passagens)
-                        <th>Transporte/passagens</th>
-                    @endif
-                </tr>
-                <tr>
-                    @if ($valor)
-                        <td>{{ $valor }}</td>
-                    @endif
-                    @if ($valor_diarias)
-                        <td>{{ $valor_diarias }}</td>
-                    @endif
-                    @if ($valor_inscricao)
-                        <td>{{ $valor_inscricao }}</td>
-                    @endif
-                    @if ($valor_passagens)
-                        <td>{{ $valor_passagens }}</td>
-                    @endif
-                </tr>
-            </table>
-        </div>
-        <div class="row print-hidden">
-            <form class="col s12" action="{{ route('site.solicitacao.update', ['id' => $solicitacao->id]) }}" method="POST">
-                @csrf
+                        <td>{{ $solicitacao->carimbo_data_hora }}</td>
+                        <td>{{ $solicitacao->programa->nome }}</td>
+                        @if ($solicitacao->nome_do_orientador)
+                            <td>{{ $solicitacao->nome_do_orientador }}</td>
+                        @endif
+                        @if ($site_evento)
+                            <td class="center-align print-hidden">
+                                <a href="{{ $site_evento }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $site_evento }}"><i class="tiny material-icons black-text">open_in_new</i></a>
+                            </td>
+                        @endif
+                        <td class="center-align print-hidden">
+                            @if ($link_parecer)
+                                <a href="{{ $link_parecer }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $link_parecer }}"><i class="tiny material-icons black-text">open_in_new</i></a>
+                            @endif
+                        </td>
+                        <td class="center-align print-hidden">
+                            @if ($link_orcamento)
+                                <a href="{{ $link_orcamento }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $link_orcamento }}"><i class="tiny material-icons black-text">open_in_new</i></a>
+                            @endif
+                        </td>
+                        <td class="center-align print-hidden">
+                            @if ($link_artigo_copia)
+                                <a href="{{ $link_artigo_copia }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $link_artigo_copia }}"><i class="tiny material-icons black-text">open_in_new</i></a>
+                            @endif
+                        </td>
+                        <td class="center-align print-hidden">
+                            @if ($link_artigo_aceite)
+                                <a href="{{ $link_artigo_aceite }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $link_artigo_aceite }}"><i class="tiny material-icons black-text">open_in_new</i></a>
+                            @endif
+                        </td>
+                    </tr>
+                </table>
+                <table class="compact-table striped responsive-table">
+                    <tr>
+                        <th>Justificativa</th>
+                    </tr>
+                    <tr>
+                        <td class="justify"><i>{{ $justificativa }}</i></td>
+                    </tr>
+                </table>
+                <h6>Valor solicitado</h6>
+                <table class="compact-table striped responsive-table">
+                    <tr>
+                        @if ($valor)
+                            <th>Geral</th>
+                        @endif
+                        @if ($valor_diarias)
+                            <th>Diárias</th>
+                        @endif
+                        @if ($valor_inscricao)
+                            <th>Taxa de inscrição</th>
+                        @endif
+                        @if ($valor_passagens)
+                            <th>Transporte/passagens</th>
+                        @endif
+                    </tr>
+                    <tr>
+                        @if ($valor)
+                            <td>{{ $valor }}</td>
+                        @endif
+                        @if ($valor_diarias)
+                            <td>{{ $valor_diarias }}</td>
+                        @endif
+                        @if ($valor_inscricao)
+                            <td>{{ $valor_inscricao }}</td>
+                        @endif
+                        @if ($valor_passagens)
+                            <td>{{ $valor_passagens }}</td>
+                        @endif
+                    </tr>
+                </table>
+            </div>
+            <div class="row print-hidden">
                 <div class="col s12 m3">
                     <label>Status</label>
                     <select name="status_id" class="browser-default" required>
@@ -170,8 +177,8 @@
                 <div class="input-field col s12 m1">
                     <button class="btn-small green darken-2 waves-effect waves-light" type="submit" name="action">Salvar</button>
                 </div>
-            </form>
-        </div>
+            </div>
+        </form>
         <div class="print-only">
             <div class="row">
                 <div class="col s6 small-text">
@@ -189,7 +196,7 @@
         <div class="row">
             @if ($solicitacao->notas->isNotEmpty())
                 <div class="section-margins">
-                    <h6>Notas/recibos</h6>
+                    <h5>Notas/recibos</h5>
                 </div>
                 <table class="compact-table striped responsive-table">
                     <tr>

@@ -237,7 +237,7 @@ class SolicitacaoController extends Controller
             ?? optional($solicitacao->traducao_artigo)->valor;
 
         return view('solicitacao', [
-            'title' => 'Detalhes da solicitação' . ' - ' . $solicitacao->solicitante->nome,
+            'title' => 'Detalhes da solicitação' . ' - ' . $resumo_solicitacao,
             'solicitacao' => $solicitacao,
             'resumo_solicitacao' => $resumo_solicitacao,
             'justificativa' => $justificativa,
@@ -301,6 +301,10 @@ class SolicitacaoController extends Controller
         $periodo = optional($solicitacao->evento)->periodo
             ?? optional($solicitacao->atividade)->periodo;
 
+        if ($periodo) {
+            $periodo = ' no período de ' . $periodo;
+        }
+
         $programa = Programa::find($solicitacao->programa_id);
 
         return view($recibo, [
@@ -327,16 +331,26 @@ class SolicitacaoController extends Controller
         $request->validate([
             'status_id' => 'required|numeric',
             'observacao' => 'nullable|string',
+            'periodo' => 'required|string',
         ], [
             'status_id.required' => 'Deve ser fornecido um status para a solicitação',
             'status_id.numeric' => 'O status da solicitação deve ser do tipo INT',
             'observacao.string' => 'O campo observação deve ser do tipo STRING',
+            'periodo.required' => 'O campo período deve ser preenchido',
+            'periodo.string' => 'O campo período deve ser do tipo STRING',
         ]);
         
         $solicitacao = Solicitacao::findOrFail($id);
         $solicitacao->status_id = $request->input('status_id');
         $solicitacao->observacao = $request->input('observacao');
         $solicitacao->save();
+
+        foreach (['atividade', 'evento'] as $tipo_solicitacao) {
+            if ($solicitacao->$tipo_solicitacao) {
+                $solicitacao->$tipo_solicitacao->periodo = $request->input('periodo');
+                $solicitacao->$tipo_solicitacao->save();
+            }
+        }
 
         return redirect()
             ->route('site.solicitacao.show', ['id' => $solicitacao->id])
