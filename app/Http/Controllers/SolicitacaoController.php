@@ -302,7 +302,7 @@ class SolicitacaoController extends Controller
             ?? optional($solicitacao->atividade)->periodo;
 
         if ($periodo) {
-            $periodo = ' no período de ' . $periodo;
+            $periodo = sprintf(' no período de %s', $periodo);
         }
 
         $programa = Programa::find($solicitacao->programa_id);
@@ -331,13 +331,10 @@ class SolicitacaoController extends Controller
         $request->validate([
             'status_id' => 'required|numeric',
             'observacao' => 'nullable|string',
-            'periodo' => 'required|string',
         ], [
             'status_id.required' => 'Deve ser fornecido um status para a solicitação',
             'status_id.numeric' => 'O status da solicitação deve ser do tipo INT',
             'observacao.string' => 'O campo observação deve ser do tipo STRING',
-            'periodo.required' => 'O campo período deve ser preenchido',
-            'periodo.string' => 'O campo período deve ser do tipo STRING',
         ]);
         
         $solicitacao = Solicitacao::findOrFail($id);
@@ -347,6 +344,13 @@ class SolicitacaoController extends Controller
 
         foreach (['atividade', 'evento'] as $tipo_solicitacao) {
             if ($solicitacao->$tipo_solicitacao) {
+                $request->validate([
+                    'periodo' => 'required|string',
+                ], [
+                    'periodo.required' => 'O campo período deve ser preenchido',
+                    'periodo.string' => 'O campo período deve ser do tipo STRING',
+                ]);
+
                 $solicitacao->$tipo_solicitacao->periodo = $request->input('periodo');
                 $solicitacao->$tipo_solicitacao->save();
             }
