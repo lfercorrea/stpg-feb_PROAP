@@ -40,6 +40,9 @@
                             <td>{{ $brl->formatCurrency($programa->soma_verbas(), 'BRL') }}</td>
                         </tr>
                     @endforeach
+                    <tr>
+                        <td colspan="3" class="center"><span class="red-text"><b>Total programas: {{ $brl->formatCurrency($programas->total_verbas, 'BRL') }}</b></span></td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -53,7 +56,7 @@
             </div>
         </div>
     @endif
-    <div class="row center section-margins side-margins">
+    <div class="row center section-margins side-margins print-hidden">
         <a class="btn-small black waves-effect waves-light" onclick="history.back()">Voltar</a>
     </div>
 @endsection

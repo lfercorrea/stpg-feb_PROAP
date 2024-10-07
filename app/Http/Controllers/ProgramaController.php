@@ -9,10 +9,19 @@ use App\Models\ProjetoCapes;
 class ProgramaController extends Controller
 {
     public function index() {
+        $programas = Programa::orderBy('nome', 'asc')->get();
+
+        $total_verbas = 0;
+
+        foreach ($programas as $programa) {
+            $total_verbas += $programa->soma_verbas();
+        }
+
+        $programas->total_verbas = $total_verbas;
 
         return view('programas', [
             'title' => 'Programas',
-            'programas' => Programa::orderBy('nome', 'asc')->get(),
+            'programas' => $programas,
         ]);
     }
 
