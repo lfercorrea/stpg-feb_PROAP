@@ -218,7 +218,9 @@
                             </td>
                             <td>
                                 <b>{{ $nota->numero }}</b>
-                                (<a href="{{ route('site.solicitacao.recibo', ['id' => $solicitacao->id, 'nid' => $nota->id]) }}" class="hover-underline" target="_blank">gerar recibo</a>)
+                                <span class="print-hidden">
+                                    (<a href="{{ route('site.solicitacao.recibo', ['id' => $solicitacao->id, 'nid' => $nota->id]) }}" class="hover-underline" target="_blank">ver recibo</a>)
+                                </span>
                             </td>
                             <td>{{ \Carbon\Carbon::parse($nota->data)->format('d/m/Y') }}</td>
                             <td>{{ $nota->descricao }}</td>
