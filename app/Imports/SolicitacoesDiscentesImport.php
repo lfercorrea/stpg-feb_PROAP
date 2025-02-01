@@ -22,7 +22,7 @@ class SolicitacoesDiscentesImport implements ToCollection
             ImportacoesDiscentes::create([
                 'status' => $row[0],
                 'carimbo_data_hora' => $row[1],
-                'email' => $row[2],
+                'email' => str_replace(' ', '', $row[2]),
                 'programa' => $row[3],
                 'categoria' => $row[4],
                 'nome' => $row[5],
