@@ -153,13 +153,18 @@ class CsvImportController extends Controller
              */
             ImportacoesDiscentes::truncate();
             (new SolicitacoesDiscentesImport($novas_linhas))->collection(collect($novas_linhas));
-            // Excel::import(new SolicitacoesDiscentesImport, $request->file('file'));
-            // ImportacoesDiscentes::destroy(1); // passa o rodo na linha do csv que contem os cabeçalhos
+            
             ImportacoesDiscentes::whereNull('tipo_solicitante')->update(['tipo_solicitante' => 'Discente']);
             $importacoes_discentes = ImportacoesDiscentes::all();
-
-            // o que será feito a seguir é horroroso, eu sei. mas é uma medida emergencial até que o PROAP seja finalizado. 
-            // é o que pode ser feito no momento que o sistema está em produção.
+            
+            /**
+             * o que será feito a seguir é horroroso, eu sei. mas é uma medida emergencial até que o PROAP seja finalizado.
+             * ocorre que o index = 0 precisa ficar alinhado entre banco e CSV, mas como não tratei isso na primeira importação,
+             * a linha com os headers foi importada no index[0] e logo em seguida removida. index[0], agora, já não existe mais...
+             * 
+             * quando a prestação atual finalizar, zerar as tabelas no banco e começar uma planilha nova. então, o loop a seguir
+             * poderá ser removido
+             */
             foreach($importacoes_discentes as $importacao_discente) {
                 $importacao_discente->id++;
             }
@@ -527,10 +532,6 @@ class CsvImportController extends Controller
     
             return back()->withErrors($errorMessages);
         }
-        // catch (\Exception $e) {
-
-        //     return back()->with('fail', 'Deu merda na importação: ' . $e->getMessage());
-        // }
     }
 
     public function import_docentes(Request $request) {
@@ -543,8 +544,8 @@ class CsvImportController extends Controller
 
         try{
             /**
-            * teste para ver se a planilha é a correta
-            */
+             * teste para ver se a planilha é a correta
+             */
             $csv_modelo = asset('storage/static/csv/header_docente.csv');
             $csv_modelo = fopen($csv_modelo, 'r');
             $csv_modelo = fgetcsv($csv_modelo);
@@ -561,9 +562,9 @@ class CsvImportController extends Controller
             }
             
             /**
-                * agora, comparar as linhas no banco com as presentes no CSV,
-                * só por precaução
-                */
+             * agora, comparar as linhas no banco com as presentes no CSV,
+             * só por precaução
+             */
             if(file_exists($file_path) !== FALSE) {
                 $novas_linhas = [];
                 while($linha = fgetcsv($file)) {
@@ -582,18 +583,18 @@ class CsvImportController extends Controller
             $count_novas_linhas = count($novas_linhas);
 
             /**
-            * primeiro, comparar a quantidade de linhas no CSV. deve ser maior ou igual ao numero de linhas
-            * da última importacao
-            */
+             * primeiro, comparar a quantidade de linhas no CSV. deve ser maior ou igual ao numero de linhas
+             * da última importacao
+             */
             if($count_novas_linhas < $count_importadas_anteriormente) {
                 return redirect()->route('import_docentes_form')
                     ->with('fail', 'O número de linhas do CSV é menor do que o número de linhas da última importação.');
             }
 
             /**
-            * caso o número de linhas confira, ainda é preciso ver, linha a linha, se algum dado do CSV
-            * foi removido manualmente
-            */
+             * caso o número de linhas confira, ainda é preciso ver, linha a linha, se algum dado do CSV
+             * foi removido manualmente
+             */
             for($i = 0, $j = 0; $i < $count_importadas_anteriormente; $i++){
                 if($novas_linhas[$i][1] === $importadas_anteriormente[$i]['carimbo_data_hora']) {
                     Log::info("[ OK ] Comparando linha do CSV com última importação; (CSV linha n° {$i}) {$novas_linhas[$i][1]} confere com {$importadas_anteriormente[$i]['carimbo_data_hora']} (linha nº {$i} já cadastrada no banco)");
@@ -618,17 +619,22 @@ class CsvImportController extends Controller
             }
 
             /**
-            * OK, agora dá pra passar o rodo na tabela importacoes e realimentá-la,
-            * comparando a consistencia com os dados das demais tabelas
-            */
+             * OK, agora dá pra passar o rodo na tabela importacoes e realimentá-la,
+             * comparando a consistencia com os dados das demais tabelas
+             */
             ImportacoesDocentes::truncate();
             (new SolicitacoesDocentesImport($novas_linhas))->collection(collect($novas_linhas));
-            // Excel::import(new SolicitacoesDocentesImport, $request->file('file'));
-            // ImportacoesDocentes::destroy(1); // passa o rodo na linha do csv que contem os cabeçalhos
+            
             $importacoes_docentes = ImportacoesDocentes::all();
             
-            // o que será feito a seguir é horroroso, eu sei. mas é uma medida emergencial até que o PROAP seja finalizado. 
-            // é o que pode ser feito no momento que o sistema está em produção.
+            /**
+             * o que será feito a seguir é horroroso, eu sei. mas é uma medida emergencial até que o PROAP seja finalizado.
+             * ocorre que o index = 0 precisa ficar alinhado entre banco e CSV, mas como não tratei isso na primeira importação,
+             * a linha com os headers foi importada no index[0] e logo em seguida removida. index[0], agora, já não existe mais...
+             * 
+             * quando a prestação atual finalizar, zerar as tabelas no banco e começar uma planilha nova. então, o loop a seguir
+             * poderá ser removido
+             */
             foreach($importacoes_docentes as $importacao_docente) {
                 $importacao_docente->id++;
             }
@@ -1009,9 +1015,5 @@ class CsvImportController extends Controller
     
             return back()->withErrors($errorMessages);
         }
-        // catch (\Exception $e) {
-
-        //     return back()->with('fail', 'Deu merda na importação: ' . $e->getMessage());
-        // }
     }
 }

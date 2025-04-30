@@ -11,7 +11,7 @@
         </p>
 
         <ul class="pagination">
-            {{-- Previous Page Link --}}
+            {{-- mostra o chevron < --}}
             @if ($paginator->onFirstPage())
                 <li class="disabled">
                     <a href="#!">
@@ -24,14 +24,14 @@
                 </li>
             @endif
 
-            {{-- Pagination Elements --}}
+            {{-- paginação de fato --}}
             @foreach ($elements as $element)
-                {{-- "Three Dots" Separator --}}
+                {{-- divisor '...' entre seções --}}
                 @if (is_string($element))
                     <li class="disabled">{{ $element }}</li>
                 @endif
 
-                {{-- Array Of Links --}}
+                {{-- páginas --}}
                 @if (is_array($element))
                     @foreach ($element as $page => $url)
                         @if ($page == $paginator->currentPage())
@@ -45,7 +45,7 @@
                 @endif
             @endforeach
 
-            {{-- Next Page Link --}}
+            {{-- mostra o chevron > --}}
             @if ($paginator->hasMorePages())
                 <li class="waves-effect">
                     <a href="{{ $paginator->nextPageUrl() }}"><i class="material-icons">chevron_right</i></a>

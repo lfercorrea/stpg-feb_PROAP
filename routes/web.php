@@ -20,7 +20,6 @@ Route::post('import/docentes', [CsvImportController::class, 'import_docentes'])-
 Route::get('importacoes', [CsvImportController::class, 'importacoes'])->name('site.importacoes');
 
 Route::get('programas', [ProgramaController::class, 'index'])->name('site.programas.index');
-// Route::post('programas/update', [ProgramaController::class, 'update'])->name('site.programas.update');
 Route::get('programa/edit/{id}', [ProgramaController::class, 'edit'])->name('site.programa.edit');
 Route::post('programa/store/{id}', [ProgramaController::class, 'store'])->name('site.programa.store');
 

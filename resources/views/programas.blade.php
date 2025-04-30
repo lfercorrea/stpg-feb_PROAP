@@ -5,7 +5,7 @@
         <h5>{{ $title }}</h5>
         <div class="row">
             <div class="col s12 m10">
-                {{-- apenas para empurrar o botão imprimir p/ direita --}}
+                {{-- gambiarrinha basica para empurrar o botão imprimir p/ direita --}}
             </div>
             <div class="col s12 m2 input-field">
                 <button id="print-button" class="btn-flat waves-effect waves-black" type="button">
