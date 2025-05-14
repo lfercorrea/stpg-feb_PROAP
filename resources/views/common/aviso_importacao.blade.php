@@ -1,4 +1,4 @@
-<b>Antes de importar, saiba que:</b>
+<b>Antes de importar, tome nota:</b>
 <p>
     <ol>
         <li>
