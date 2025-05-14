@@ -11,6 +11,9 @@ class Programa extends Model
 
     protected $fillable = [
         'nome',
+        'coordenador',
+        'projeto_capes',
+        'saldo_inicial',
     ];
     
     public function solicitacoes() {
@@ -19,5 +22,13 @@ class Programa extends Model
 
     public function solicitantes() {
         return $this->belongsToMany(Solicitante::class, 'solicitacoes');
+    }
+
+    public function projetos_capes() {
+        return $this->hasMany(ProjetoCapes::class, 'programa_id');
+    }
+
+    public function soma_verbas() {
+        return $this->projetos_capes()->sum('verba');
     }
 }

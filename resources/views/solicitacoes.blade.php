@@ -33,33 +33,36 @@
                 </select>
             </div>
         </div>
-        <div class="container center">
-            <div class="row center">
+        <div class="container">
+            <div class="row">
                 <div class="col s6 m3">
-                    <select name="tipo_solicitacao_id"><option value="">Tipo</option>
+                    <label for="">Tipo de solicitação</label>
+                    <select name="tipo_solicitacao_id" class="browser-default"><option selected disabled>Selecione</option>
                         @foreach ($tipos_solicitacao as $key => $value)
                             <option value="{{ $key }}">{{ $value }}</option>
                         @endforeach
                     </select>
                 </div>
                 <div class="col s6 m3">
-                    <select name="status_id"><option value="">Status</option>
+                    <label>Status da solicitação</label>
+                    <select name="status_id" class="browser-default"><option selected disabled>Selecione</option>
                         @foreach ($statuses as $status)
                             <option value="{{ $status->id }}">{{ $status->nome }}</option>
                         @endforeach
                     </select>
                 </div>
                 <div class="col s12 m2">
-                    <select name="limit">
-                            <option value="30">Itens por página</option>
-                            <option value="100">100</option>
-                            <option value="1000">1000</option>
+                    <label>Itens por página</label>
+                    <select name="limit" class="browser-default">
+                        <option selected disabled>Selecione</option>
+                        <option value="10">10</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                        <option value="no">Sem paginação</option>
                     </select>
                 </div>
-                <div class="col s6 m2">
+                <div class="col s6 m4 input-field">
                     <button class="btn waves-effect waves-light black" type="submit">Buscar</button>
-                </div>
-                <div class="col s6 m2">
                     <button id="print-button" class="btn-flat waves-effect waves-black" type="button">
                         Imprimir
                         <i class="material-icons right">print</i>
@@ -82,63 +85,134 @@
         <table class="bordered striped responsive-table highlight">
             <thead>
                 <tr>
-                    <th>Solicitação</th>
+                    <th>Resumo da solicitação</th>
+                    <th class="print-hidden">Observação</th>
+                    <th>Valores solicitados</th>
+                    <th>Valores pagos</th>
                     <th class="min-width-25">Solicitante</th>
-                    <th>Programa</th>
-                    <th class="center-align print-hidden">Parecer</th>
-                    <th class="center-align print-hidden">Orçamento</th>
-                    <th class="center-align print-hidden">Artigo</th>
-                    <th class="center-align print-hidden">Aceite</th>
-                    <th>Data</th>
-                    <th class="center">Status</th>
+                    <th class="center-align print-hidden">Conferência</th>
+                    <th>Data da solicitação</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($solicitacoes as $solicitacao)
                     <tr>
-                        <td><a href="{{ route('site.solicitacao.show', ['id' => $solicitacao->id]) }}"><b>{{ optional($solicitacao->servico_tipo)->nome ?? $solicitacao->tipo->nome }}:</b> {{ $solicitacao->resumo }}</a></td>
-                        <td><div class="chip print-hidden">{{ $solicitacao->solicitante->tipo_solicitante }}</div><a href="{{ route('site.solicitante.show', ['id' => $solicitacao->solicitante->id]) }}" class="black-text hover-underline"><b>{{ Str::upper($solicitacao->solicitante->nome) }}</b></a> <span class="print-hidden">(<a href="mailto:{{ $solicitacao->solicitante->email }}" class="hover-underline">{{ $solicitacao->solicitante->email }}</a>)</span></td>
-                        <td>{{ $solicitacao->programa->nome }}</td>
-                        <td class="center-align print-hidden">
+                        <td>
+                            <a href="{{ route('site.solicitacao.show', ['id' => $solicitacao->id]) }}"><b>{{ optional($solicitacao->servico_tipo)->nome ?? $solicitacao->tipo->nome }}:</b>
+                                {{ $solicitacao->resumo }}.
+                                @if ($solicitacao->periodo)
+                                    Período: {{ $solicitacao->periodo }}
+                                @endif
+                            </a>
+                        </td>
+                        <td class="print-hidden"><i>{{ $solicitacao->observacao }}</i></td>
+                        <td>
+                            @if ($solicitacao->valor)
+                                <div>
+                                    <i><b>-Valor solicitado: </b>{{ $solicitacao->valor }}</i>
+                                </div>
+                            @endif
+                            @if ($solicitacao->valor_diarias)
+                                <div>
+                                    <i><b>-Diárias: </b>{{ $solicitacao->valor_diarias }}</i>
+                                </div>
+                            @endif
+                            @if ($solicitacao->valor_passagens)
+                                <div>
+                                    <i><b>-Passagens: </b>{{ $solicitacao->valor_passagens }}</i>
+                                </div>
+                            @endif
+                            @if ($solicitacao->valor_inscricao)
+                                <div>
+                                    <i><b>-Taxa de inscrição: </b>{{ $solicitacao->valor_inscricao }}</i>
+                                </div>
+                            @endif
+                        </td>
+                        <td>
+                            @foreach ($solicitacao->notas as $nota)
+                            <div>
+                                <i>
+                                    <b>-{{ $nota->valor_tipo->nome }}:</b> {{ $brl->formatCurrency($nota->valor, 'BRL') }}
+                                </i>
+                            </div>
+                            @endforeach
+                            <div class="center">
+                                @if ($solicitacao->soma_notas > 0)
+                                    <b>Total:&nbsp;{{ $brl->formatCurrency($solicitacao->soma_notas, 'BRL') }}</b>
+                                @else
+                                    <b>{{ $solicitacao->status->nome }}</b>
+                                @endif
+                            </div>
+                        </td>
+                        <td>
+                            <a href="{{ route('site.solicitante.show', ['id' => $solicitacao->solicitante->id]) }}" class="black-text hover-underline inline-flex"><b>{{ Str::upper($solicitacao->solicitante->nome) }}</b></a>
+                            <span class="print-hidden">(<a href="mailto:{{ $solicitacao->solicitante->email }}" class="hover-underline">{{ $solicitacao->solicitante->email }}</a>)</span>
+                            <div>
+                                <i>{{ $solicitacao->solicitante->tipo_solicitante }} da {{ $solicitacao->programa->nome }}</i>
+                            </div>
+                        </td>
+                        <td class="center print-hidden">
+                            @if ($solicitacao->site_evento)
+                                <div class="small-text bold-text">
+                                    <a href="{{ $solicitacao->site_evento }}" class="hover-underline" target="_blank" rel="noreferrer" title="{{ $solicitacao->site_evento }}">Site do evento</a>
+                                </div>
+                            @endif
                             @if ($solicitacao->parecer_orientador)
-                                <a href="{{ $solicitacao->parecer_orientador }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->parecer_orientador }}"><i class="tiny material-icons black-text">open_in_new</i></a>
+                                <div class="small-text bold-text">
+                                    <a href="{{ $solicitacao->parecer_orientador }}" class="hover-underline" target="_blank" rel="noreferrer" title="{{ $solicitacao->parecer_orientador }}">Parecer do orientador</a>
+                                </div>
                             @endif
-                        </td>
-                        <td class="center-align print-hidden">
                             @if ($solicitacao->orcamento)
-                                <a href="{{ $solicitacao->orcamento }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->orcamento }}"><i class="tiny material-icons black-text">open_in_new</i></a>
+                            <div class="small-text bold-text">
+                                <a href="{{ $solicitacao->orcamento }}" class="hover-underline" target="_blank" rel="noreferrer" title="{{ $solicitacao->orcamento }}">Orçamento</a>
+                            </div>
                             @endif
-                        </td>
-                        <td class="center-align print-hidden">
                             @if ($solicitacao->artigo_copia)
-                                <a href="{{ $solicitacao->artigo_copia }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->artigo_copia }}"><i class="tiny material-icons black-text">open_in_new</i></a>
+                                <div class="small-text bold-text">
+                                    <a href="{{ $solicitacao->artigo_copia }}" class="hover-underline" target="_blank" rel="noreferrer" title="{{ $solicitacao->artigo_copia }}">Cópia do artigo</a>
+                                </div>
                             @endif
-                        </td>
-                        <td class="center-align print-hidden">
                             @if ($solicitacao->artigo_aceite)
-                                <a href="{{ $solicitacao->artigo_aceite }}" class="btn-flat waves-effect" target="_blank" rel="noreferrer" title="{{ $solicitacao->artigo_aceite }}"><i class="tiny material-icons black-text">open_in_new</i></a>
+                                <div class="small-text bold-text">
+                                    <a href="{{ $solicitacao->artigo_aceite }}" class="hover-underline" target="_blank" rel="noreferrer" title="{{ $solicitacao->artigo_aceite }}">Aceite do artigo</a>
+                                </div>
                             @endif
                         </td>
                         <td>{{ $solicitacao->carimbo_data_hora }}</td>
-                        <td class="center">
-                            {{ $solicitacao->status->nome }}
-                            @if ($soma_notas = ($solicitacao->soma_notas() > 0))
-                                <br>
-                                @php
-                                    $total_pago += $soma_notas;
-                                @endphp
-                                (R$&nbsp;{{ number_format($soma_notas, 2, ',', '.') }})
-                            @endif
-                        </td>
                     </tr>
                 @endforeach
-                @if ($total_pago > 0)
-                    <tr>
-                        <td colspan="10" class="center"><span class="red-text"><b>Valor total pago: R$ {{ number_format($total_pago, 2, ',', '.') }}</b></span></td>
-                    </tr>
-                @endif
             </tbody>
         </table>
+        <div class="row">
+            <div class="container">
+                <div class="section-margin-top">
+                    <h6>Índices das solicitações</h6>
+                </div>
+                <table class="bordered striped compact-table">
+                    <thead>
+                        <tr>
+                            @foreach ($indices as $indice => $contagem)
+                                <th>{{ $indice }}</th>
+                            @endforeach
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            @foreach ($indices as $indice => $contagem)
+                                <td>{{ $contagem }}</td>
+                            @endforeach
+                            <td><b>{{ $solicitacoes->count() }}</b></td>
+                        </tr>
+                        @if ($total_pago > 0)
+                            <tr>
+                                <td colspan="10" class="center"><span class="red-text"><b>Valor total pago: {{ $brl->formatCurrency($total_pago, 'BRL') }}</b></span></td>
+                            </tr>
+                        @endif
+                    </tbody>
+                </table>
+            </div>
+        </div>
     @else
         <div class="container center">
             <h6><p>Nenhuma solicitacão encontrada.</p></h6>

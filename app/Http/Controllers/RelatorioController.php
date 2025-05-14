@@ -33,11 +33,27 @@ class RelatorioController extends Controller
         $obj_end_date = Carbon::now()->subMonth()->endOfMonth();
         $str_start_date = $request->filled('start_date') ? Carbon::createFromFormat('Y-m-d', $request->input('start_date'))->startOfDay()->format('d/m/Y H:i:s') : $obj_start_date->format('d/m/Y H:i:s');
         $str_end_date = $request->filled('end_date') ? Carbon::createFromFormat('Y-m-d', $request->input('end_date'))->endOfDay()->format('d/m/Y H:i:s') : $obj_end_date->format('d/m/Y H:i:s');
-        $sql = "STR_TO_DATE(carimbo_data_hora, '%d/%m/%Y %H:%i:%s') BETWEEN STR_TO_DATE(?, '%d/%m/%Y %H:%i:%s') AND STR_TO_DATE(?, '%d/%m/%Y %H:%i:%s')";
+        $sql = "datetime(
+                substr(carimbo_data_hora, 7, 4) || '-' || 
+                substr(carimbo_data_hora, 4, 2) || '-' || 
+                substr(carimbo_data_hora, 1, 2) || ' ' || 
+                substr(carimbo_data_hora, 12, 8)
+            ) BETWEEN datetime(
+                substr(?, 7, 4) || '-' || 
+                substr(?, 4, 2) || '-' || 
+                substr(?, 1, 2) || ' ' || 
+                substr(?, 12, 8)
+            ) AND datetime(
+                substr(?, 7, 4) || '-' || 
+                substr(?, 4, 2) || '-' || 
+                substr(?, 1, 2) || ' ' || 
+                substr(?, 12, 8)
+            )";
+
         $tipo_solicitante = $request->input('tipo_solicitante');
         $arr_programa_id = $request->input('programa_id');
 
-        $query = Solicitacao::whereRaw($sql, [$str_start_date, $str_end_date])
+        $query = Solicitacao::whereRaw($sql, [$str_start_date, $str_start_date, $str_start_date, $str_start_date, $str_end_date, $str_end_date, $str_end_date, $str_end_date])
             ->join('solicitantes', function ($join) use ($request, $tipo_solicitante) {
                 $join->on('solicitantes.id', '=', 'solicitacoes.solicitante_id')
                     ->when($request->filled('tipo_solicitante'), function($q) use ($tipo_solicitante) {
@@ -47,7 +63,7 @@ class RelatorioController extends Controller
             ->join('programas', function($join) use ($arr_programa_id, $request) {
                 $join->on('programas.id', '=', 'solicitacoes.programa_id')
                     ->when($request->filled('programa_id'), function($q) use ($arr_programa_id) {
-                        $q->whereIn('programa_id', $arr_programa_id);
+                        $q->whereIn('programas.id', $arr_programa_id);
                     });
             })
             ->join('notas', function($join) {
@@ -56,30 +72,36 @@ class RelatorioController extends Controller
             })
             ->join('solicitacao_tipos', 'solicitacoes.tipo_solicitacao_id', '=', 'solicitacao_tipos.id')
             ->leftJoin('servico_tipos', 'solicitacoes.servico_tipo_id', '=', 'servico_tipos.id')
+            ->leftJoin('projetos_capes', 'projetos_capes.programa_id', '=', 'programas.id') // resolve ambiguidade causada pelo uso de programa_id
             ->select(
                 'programas.id as programa_id',
                 'programas.nome as programa_nome',
-                'programas.saldo_inicial as saldo_inicial',
                 'solicitantes.id as solicitante_id',
                 'solicitantes.nome as solicitante_nome',
                 'solicitantes.tipo_solicitante as tipo_solicitante',
                 'solicitacoes.id as solicitacao_id',
                 'solicitacao_tipos.nome as solicitacao_tipo',
                 'servico_tipos.nome as solicitacao_servico_tipo',
-                DB::raw('SUM(notas.valor) as solicitacao_soma_notas'),
+                DB::raw('SUM(DISTINCT notas.valor) as solicitacao_soma_notas'),
+                DB::raw('SUM(DISTINCT projetos_capes.verba) as soma_verbas'),
             )->groupBy(
                 'programas.nome',
-                'programas.saldo_inicial',
                 'solicitantes.nome',
                 'solicitantes.id',
                 'solicitacoes.id',
-            )->orderByRaw("STR_TO_DATE(carimbo_data_hora, '%d/%m/%Y %H:%i:%s') DESC")->get();
+            )->orderByRaw("datetime(
+                substr(carimbo_data_hora, 7, 4) || '-' || 
+                substr(carimbo_data_hora, 4, 2) || '-' || 
+                substr(carimbo_data_hora, 1, 2) || ' ' || 
+                substr(carimbo_data_hora, 12, 8)
+            ) DESC"
+        )->get();
 
         $programas = $query->groupBy('programa_id')->map(function($programa) {
             return (object) [
                 'id' => $programa->first()->programa_id,
                 'nome' => $programa->first()->programa_nome,
-                'saldo_inicial' => $programa->first()->saldo_inicial,
+                'soma_verbas' => $programa->first()->soma_verbas,
                 'count' => $programa->count(),
                 'solicitantes' => $programa->groupBy('solicitante_id')->map(function($solicitante) {
                     return (object) [

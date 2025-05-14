@@ -90,7 +90,14 @@ class Solicitacao extends Model
     }
 
     public static function search($search, $start_date = null, $end_date = null, $programa_id = null, $tipo_solicitacao = null, $status_id = null) {
-        $query = self::query();
+        $query = self::query()
+            ->orderByRaw("datetime(
+                    substr(carimbo_data_hora, 7, 4) || '-' || 
+                    substr(carimbo_data_hora, 4, 2) || '-' || 
+                    substr(carimbo_data_hora, 1, 2) || ' ' || 
+                    substr(carimbo_data_hora, 12, 8)
+                ) DESC"
+            );
 
         $query->when($search, function($q) use ($search) {
             $q->where(function($q1) use ($search) {
@@ -98,8 +105,7 @@ class Solicitacao extends Model
                     $q2->where('nome', 'like', '%' . $search . '%')
                         ->orWhere('email', 'like', '%' . $search . '%')
                         ->orWhere('tipo_solicitante', 'like', '%' . $search . '%');
-                })
-                ->orWhereHas('atividade', function($q1) use ($search) {
+                })->orWhereHas('atividade', function($q1) use ($search) {
                     $q1->where('descricao', 'like', '%' . $search . '%');
                 })->orWhereHas('evento', function($q1) use ($search) {
                     $q1->where('nome', 'like', '%' . $search . '%');
@@ -119,9 +125,23 @@ class Solicitacao extends Model
         $query->when($start_date AND $end_date, function($query) use($start_date, $end_date) {
             $obj_start_date = Carbon::createFromFormat('Y-m-d', $start_date)->startOfDay()->format('d/m/Y H:i:s');
             $obj_end_date = Carbon::createFromFormat('Y-m-d', $end_date)->endOfDay()->format('d/m/Y H:i:s');
-            $query->whereRaw(
-                "STR_TO_DATE(carimbo_data_hora, '%d/%m/%Y %H:%i:%s') BETWEEN STR_TO_DATE(?, '%d/%m/%Y %H:%i:%s') AND STR_TO_DATE(?, '%d/%m/%Y %H:%i:%s')",
-                [$obj_start_date, $obj_end_date]
+            $query->whereRaw("datetime(
+                    substr(carimbo_data_hora, 7, 4) || '-' || 
+                    substr(carimbo_data_hora, 4, 2) || '-' || 
+                    substr(carimbo_data_hora, 1, 2) || ' ' || 
+                    substr(carimbo_data_hora, 12, 8)
+                ) BETWEEN datetime(
+                    substr(?, 7, 4) || '-' || 
+                    substr(?, 4, 2) || '-' || 
+                    substr(?, 1, 2) || ' ' || 
+                    substr(?, 12, 8)
+                ) AND datetime(
+                    substr(?, 7, 4) || '-' || 
+                    substr(?, 4, 2) || '-' || 
+                    substr(?, 1, 2) || ' ' || 
+                    substr(?, 12, 8)
+                )",
+                [$obj_start_date, $obj_start_date, $obj_start_date, $obj_start_date, $obj_end_date, $obj_end_date, $obj_end_date, $obj_end_date]
             );
         });
 
@@ -147,6 +167,9 @@ class Solicitacao extends Model
             'status' => function($columns) {
                 $columns->select('id', 'nome');
             },
+            'notas.valor_tipo' => function($columns) {
+                $columns->select('id', 'valor', 'valor_tipo_id', 'nome');
+            },
             'tipo' => function($columns) {
                 $columns->select('id', 'nome');
             },
@@ -160,22 +183,22 @@ class Solicitacao extends Model
                 $columns->select('id', 'nome');
             },
             'atividade' => function($columns) {
-                $columns->select('id', 'descricao', 'carta_convite', 'parecer_orientador', 'orcamento_passagens', 'nome_do_orientador');
+                $columns->select('id', 'descricao', 'periodo', 'valor_diarias', 'valor_passagens', 'carta_convite', 'parecer_orientador', 'orcamento_passagens', 'nome_do_orientador');
             },
             'evento' => function($columns) {
-                $columns->select('id', 'nome', 'artigo_copia', 'artigo_aceite', 'parecer_orientador', 'orcamento_passagens');
+                $columns->select('id', 'nome', 'periodo', 'valor_diarias', 'valor_passagens', 'valor_inscricao', 'site_evento', 'artigo_copia', 'artigo_aceite', 'parecer_orientador', 'orcamento_passagens');
             },
             'material' => function($columns) {
-                $columns->select('id', 'descricao', 'orcamento', 'parecer_orientador');
+                $columns->select('id', 'descricao', 'valor', 'orcamento', 'parecer_orientador');
             },
             'traducao_artigo' => function($columns) {
-                $columns->select('id', 'titulo_artigo', 'artigo_a_traduzir', 'orcamento', 'parecer_orientador');
+                $columns->select('id', 'titulo_artigo', 'valor', 'artigo_a_traduzir', 'orcamento', 'parecer_orientador');
             },
             'outro_servico' => function($columns) {
-                $columns->select('id', 'descricao', 'orcamento');
+                $columns->select('id', 'descricao', 'valor', 'orcamento');
             },
             'manutencao' => function($columns) {
-                $columns->select('id', 'descricao', 'orcamento');
+                $columns->select('id', 'descricao', 'valor', 'orcamento');
             },
         ]);
 

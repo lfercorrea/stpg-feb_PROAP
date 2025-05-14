@@ -19,6 +19,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        $brl = new \NumberFormatter('pt_BR', \NumberFormatter::CURRENCY);
+
+        view()->share([
+            'brl' => $brl,
+        ]);
     }
 }

@@ -3,41 +3,49 @@
 @section('content')
     <div class='center print-hidden section-margin-bottom'>
         <h5>{{ $title }}</h5>
+        <div class="row">
+            <div class="col s12 m10">
+                {{-- gambiarrinha basica para empurrar o botão imprimir p/ direita --}}
+            </div>
+            <div class="col s12 m2 input-field">
+                <button id="print-button" class="btn-flat waves-effect waves-black" type="button">
+                    Imprimir
+                    <i class="material-icons right">print</i>
+                </button>
+            </div>
+        </div>
+        
     </div>
     <div class="print-only section-margins">
-        <h6><b>Saldos iniciais dos programas</b></h6>
+        <h6><b>Verbas dos programas de pós-graduação</b></h6>
     </div>
     @if ($programas->count() > 0)
-        <form action="{{ route('site.programas.update') }}" method="POST">
-            @csrf
-            <div class="container center">
-                <table class="compact-table striped responsive-table">
-                    <thead>
+        <div class="center">
+            <table class="compact-table striped responsive-table">
+                <thead>
+                    <tr>
+                        <th>Programa</th>
+                        <th>Coordenador</th>
+                        <th>Total verbas</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($programas as $programa)
                         <tr>
-                            <th>Programa</th>
-                            <th>Saldo inicial</th>
+                            <td>
+                                <a href="{{ route('site.programa.edit', ['id' => $programa->id]) }}" class="btn-flat waves-effect print-hidden"><i class="material-icons tiny">edit</i></a>
+                                <b>{{ $programa->nome }}</b>
+                            </td>
+                            <td>{{ $programa->coordenador }}</td>
+                            <td>{{ $brl->formatCurrency($programa->soma_verbas(), 'BRL') }}</td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($programas as $programa)
-                            <tr>
-                                <td>{{ $programa->nome }}</td>
-                                <td>
-                                    <div class="input-field col s12">
-                                        <input name="saldos[{{ $programa->id }}]" id="saldo_inicial_{{ $programa->id }}" value="{{ $programa->saldo_inicial }}" type="number" min="0" step="0.01" class="validate">
-                                        <label for="saldo_inicial_{{ $programa->id }}">R$</label>
-                                    </div>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-            <div class="row center section-margins side-margins print-hidden">
-                <a class="btn-small black waves-effect waves-light" onclick="history.back()">Voltar</a>
-                <button type="submit" class="btn-small green darken-2 waves-effect waves-light">Salvar</button>
-            </div>
-        </form>
+                    @endforeach
+                    <tr>
+                        <td colspan="3" class="center"><span class="red-text"><b>Total programas: {{ $brl->formatCurrency($programas->total_verbas, 'BRL') }}</b></span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     @else
         <div class="container center">
             <h6><p>Nenhum dado para mostrar.</p></h6>
@@ -48,4 +56,7 @@
             </div>
         </div>
     @endif
+    <div class="row center section-margins side-margins print-hidden">
+        <a class="btn-small black waves-effect waves-light" onclick="history.back()">Voltar</a>
+    </div>
 @endsection
