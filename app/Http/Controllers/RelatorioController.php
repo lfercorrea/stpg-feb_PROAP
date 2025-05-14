@@ -101,7 +101,7 @@ class RelatorioController extends Controller
             return (object) [
                 'id' => $programa->first()->programa_id,
                 'nome' => $programa->first()->programa_nome,
-                'soma_verbas' => $programa->first()->soma_verbas,
+                'soma_verbas' => $programa->first()->soma_verbas / 100,
                 'count' => $programa->count(),
                 'solicitantes' => $programa->groupBy('solicitante_id')->map(function($solicitante) {
                     return (object) [
