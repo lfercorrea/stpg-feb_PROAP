@@ -23,6 +23,8 @@ class ValorIntegerCast implements CastsAttributes
      */
     public function set(Model $model, string $key, mixed $value, array $attributes): mixed
     {
+        $pontos = 0;
+
         if (is_null($value) || $value === '') {
 
             return 0;
@@ -32,13 +34,12 @@ class ValorIntegerCast implements CastsAttributes
             $numeric_val = (float) $value;
         }
         elseif (is_string($value)) {
-            $cleaned = str_replace('R$', '', $value);
-            $cleaned = str_replace('.', '', $cleaned);
-            $cleaned = str_replace(',', '.', $cleaned);
+            $cleaned = str_replace(',', '', $value);
+            $cleaned = str_replace('.', '', $cleaned, $pontos);
             $cleaned = trim($cleaned);
             $numeric_val = is_numeric($cleaned) ? (float) $cleaned : 0.0;
 
-            if (! is_numeric($cleaned)) {
+            if (!is_numeric($cleaned)) {
                 // se a string limpa ainda não passar nesse teste, então é uma entrada inválida.
                 // o ideal seria lançar uma exceção agora, mas estou com pressa. sinta-se à vontade para
                 // melhorar isso. tysm
