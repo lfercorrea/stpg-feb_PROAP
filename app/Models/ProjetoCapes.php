@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Casts\ValorIntegerCast;
 
 class ProjetoCapes extends Model
 {
@@ -16,6 +17,10 @@ class ProjetoCapes extends Model
         'verba',
         'programa_id',
         'nota_id',
+    ];
+
+    protected $casts = [
+        'verba' => ValorIntegerCast::class,
     ];
     
     public function programas() {

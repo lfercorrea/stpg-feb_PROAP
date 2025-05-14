@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Casts\ValorIntegerCast;
 
 class Programa extends Model
 {
@@ -14,6 +15,10 @@ class Programa extends Model
         'coordenador',
         'projeto_capes',
         'saldo_inicial',
+    ];
+
+    protected $casts = [
+        'saldo_inicial' => ValorIntegerCast::class,
     ];
     
     public function solicitacoes() {
@@ -29,6 +34,6 @@ class Programa extends Model
     }
 
     public function soma_verbas() {
-        return $this->projetos_capes()->sum('verba');
+        return $this->projetos_capes()->sum('verba') / 100;
     }
 }
