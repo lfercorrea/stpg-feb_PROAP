@@ -86,7 +86,7 @@ class Solicitacao extends Model
     }
 
     public function soma_notas() {
-        return $this->notas()->sum('valor');
+        return $this->notas()->sum('valor') / 100;
     }
 
     public static function search($search, $start_date = null, $end_date = null, $programa_id = null, $tipo_solicitacao = null, $status_id = null) {

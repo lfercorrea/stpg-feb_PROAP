@@ -21,16 +21,14 @@ return new class extends Migration
             foreach ($notas as $nota) {
                 $valorString = $nota->valor;
                 $valorInteger = 0;
+                $pontos = 0;
 
                 if (!empty($valorString)) {
-                    $cleanedString = str_replace('R$', '', $valorString);
-                    $cleanedString = str_replace('.', '', $cleanedString);
-                    $cleanedString = str_replace(',', '.', $cleanedString);
-                    $cleanedString = trim($cleanedString);
-                    
+                    $cleanedString = str_replace('.', '', $valorString, $pontos);                    
+                    $cleanedString = trim($cleanedString);                    
                     $valorFloat = is_numeric($cleanedString) ? (float) $cleanedString : 0.0;
                     
-                    $valorInteger = (int) round($valorFloat * 100);
+                    $valorInteger = ($pontos > 0) ? (int) $valorFloat : (int) round($valorFloat * 100);
                 }
                 
                 DB::table('notas')

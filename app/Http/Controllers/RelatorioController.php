@@ -113,7 +113,7 @@ class RelatorioController extends Controller
                                 'id' => $solicitacao->solicitacao_id,
                                 'tipo' => $solicitacao->solicitacao_tipo,
                                 'servico_tipo' => $solicitacao->solicitacao_servico_tipo,
-                                'soma_notas' => $solicitacao->solicitacao_soma_notas,
+                                'soma_notas' => $solicitacao->solicitacao_soma_notas / 100,
                             ];
                         })
                     ];

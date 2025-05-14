@@ -290,7 +290,7 @@ class SolicitacaoController extends Controller
             'Docente Colaborador' => 'PESQUISADOR',
         ];
 
-        $valor_total = number_format($nota->valor, 2, ',', '.');
+        $valor_total = $nota->valor;
         $tipo_valor = ValorTipo::where('id', $nota->valor_tipo_id)->firstOrFail();
 
         $data_nota = Carbon::createFromFormat('Y-m-d', $nota->data);

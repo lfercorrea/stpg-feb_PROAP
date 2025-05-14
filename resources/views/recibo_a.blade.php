@@ -47,16 +47,16 @@
                         <div class="recibo">
                             Recebi da Fundação <b>CAPES/<u>{{ Str::upper($programa->coordenador) }}</b></u>
                             <br>
-                            a importância de <b>R$ <u>{{ $valor_total }}</u> (<u>{{ $valor_extenso }}</u>),</b> em caráter eventual e sem vínculo empregatício, a título de <b><u>AUXÍLIO
+                            a importância de <b><u>{{ $brl->formatCurrency($valor_total, 'BRL') }}</u> (<u>{{ $valor_extenso }}</u>),</b> em caráter eventual e sem vínculo empregatício, a título de <b><u>AUXÍLIO
                             FINANCEIRO A {{ $tipo_beneficiario[$solicitacao->solicitante->tipo_solicitante] }} ({{ $tipo_valor }})</u></b>{{ $periodo }}.
                             <b>
                                 <div class="margin-top" style="margin-left: 3.4cm">
-                                    VALOR DA REMUNERAÇÃO: R$ {{ $valor_total }}
+                                    VALOR DA REMUNERAÇÃO: {{ $brl->formatCurrency($valor_total, 'BRL') }}
                                 </div>
                                 Deduções (*)
                                 <div style="margin-left: 4.4cm">
                                     Líquido recebido: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        R$ {{ $valor_total }}
+                                        {{ $brl->formatCurrency($valor_total, 'BRL') }}
                                 </div>
                             </b>
                         </div>
