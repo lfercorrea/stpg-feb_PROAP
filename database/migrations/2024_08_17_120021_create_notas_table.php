@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('numero');
             $table->string('data');
             $table->string('descricao')->nullable();
-            $table->string('valor');
+            $table->BigInteger('valor');
             $table->unsignedBigInteger('valor_tipo_id');
             $table->unsignedBigInteger('fonte_pagadora_id');
             $table->unsignedBigInteger('solicitacao_id');
