@@ -205,7 +205,7 @@
                         <th>Data</th>
                         <th>Descrição</th>
                         <th>Fonte pagadora</th>
-                        <th>Projeto CAPES</th>
+                        <th>Cód. da fonte de recurso</th>
                         <th>Tipo de despesa</th>
                         <th>Valor</th>
                     </tr>
@@ -275,7 +275,7 @@
                                 </select>
                             </div>
                             <div class="col s12 m4">
-                                <label>Projeto CAPES</label>
+                                <label>Cód. da fonte pagadora</label>
                                 <select name="projeto_capes_id" class="browser-default" required>
                                     <option value="" disabled selected>Selecione</option>
                                     @foreach ($projetos_capes as $projeto_capes)

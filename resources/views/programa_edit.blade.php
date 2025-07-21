@@ -28,9 +28,9 @@
         @if ($programa->projetos_capes->count() === 0)
             <div class="alert print-hidden">
                 <p>
-                    Não existe nenhum projeto CAPES/AUXPE associado a este programa. Antes de definir
-                    parâmetros, é preciso associar ao menos um projeto CAPES/AUXPE.
-                    O código do projeto é obtido pelo coordenador do programa através do SIPREC.
+                    Não existe nenhum projeto CAPES/AUXPE ou verba do Tesouro/Diretoria associados a este programa. Antes de definir
+                    parâmetros, é preciso associar ao menos uma fonte pagadora.
+                    No caso do PROAP, o código do projeto é obtido pelo coordenador do programa através do SIPREC.
                 </p>
             </div>
         @else
@@ -58,7 +58,7 @@
                 </div>
             </form>
             <div class="section-margin-top">
-                <h6>Projetos CAPES/AUXPE do programa</h6>
+                <h6>Fontes de recurso</h6>
             </div>
             <table class="bordered striped responsive-table highlight">
                 <thead>
@@ -88,7 +88,7 @@
         @endif
         <div class="row print-hidden">
             <div class="section-margin-top">
-                <h6>Adicionar projeto CAPES/AUXPE ao programa</h6>
+                <h6>Adicionar fonte de recurso ao programa</h6>
             </div>
             {{-- Aciona o controlador ProjetoCapes --}}
             <form action="{{ route('site.projeto_capes.store', ['programa_id' => $programa->id]) }}" method="POST">
@@ -96,7 +96,7 @@
                 <div class="row">
                     <div class="input-field col s12 m7">
                         <input name="codigo" id="codigo" type="text" class="validate" required>
-                        <label for="codigo">Código do projeto (fornecido pelo coordenador do programa)</label>
+                        <label for="codigo">Código (se for PROAP, deve ser o mesmo código fornecido pela CAPES)</label>
                     </div>
                     <div class="input-field col s12 m3">
                         <input name="verba" id="verba" type="number" placeholder="1234567,89" min="0" step="0.01" class="validate" required>
